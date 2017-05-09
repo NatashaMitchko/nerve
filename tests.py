@@ -1,7 +1,7 @@
 import unittest
 
 from server import app
-from model import db, example_data, connect_to_db
+from model import User, UserChallenge, Challenge, db, example_data, connect_to_db
 
 class NerveTestsDatabase(unittest.TestCase):
     """Flask tests that use the database."""
@@ -29,16 +29,19 @@ class NerveTestsDatabase(unittest.TestCase):
     def test_profile_page_no_challenges(self):
         """Does profile page for the user in session with no challenges 
         show options to create challenge and/or accept existing challenges"""
+        pass
 
-    def test_profile_page_in_progress(self):
+    def test_profile_page_one_in_progress(self):
         """Tests content for profile page where user in session has only 
         challenges that are in progress"""
+        pass
 
     def test_profile_page_all_complete(self):
         """Tests profile page content where user in session has no active 
         challenges but does have completed challenges. They should see their 
         past completed challenges as well as options to create/ accept 
         challenges"""
+        pass
 
 
 class NerveTestsPageData(unittest.TestCase):

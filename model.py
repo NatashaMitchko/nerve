@@ -113,39 +113,73 @@ def example_data():
 
     And their corresponding user_challenges and challenges.
     """
-import datetime
+    import datetime
 
-# Amazing. A dimension where all proper nouns begin with "Schmla":
-    u1 = User(username='Shmlony', password='123', email='shmlony@email.com', phone='111-222-3333')
-    u2 = User(username='Shmlantha', password='123', email='shmlantha@email.com', phone='111-222-3333')
-    u3 = User(username='Schmlona', password='123', email='schmlona@email.com', phone='111-222-3333')
-    u4 = User(username='Schmlove', password='123', email='schmlove@email.com', phone='111-222-3333')
-    u5 = User(username='Schmlandula', password='123', email='schmlandula@email.com', phone='111-222-3333')
-    u6 = User(username='Schmlonathan', password='123', email='schmlonathan@email.com', phone='111-222-3333')
+    # Amazing. A dimension where all proper nouns begin with "Schmla":
+    u1 = User(username='Shmlony', password='123', email='shmlony@email.com', 
+                phone='111-222-3333')
+    u2 = User(username='Shmlantha', password='123', email='shmlantha@email.com', 
+                phone='111-222-3333')
+    u3 = User(username='Schmlona', password='123', email='schmlona@email.com', 
+                phone='111-222-3333')
+    u4 = User(username='Schmlove', password='123', email='schmlove@email.com', 
+                phone='111-222-3333')
+    u5 = User(username='Schmlandula', password='123', email='schmlandula@email.com', 
+                phone='111-222-3333')
+    u6 = User(username='Schmlonathan', password='123', email='schmlonathan@email.com', 
+                phone='111-222-3333')
 
-accepted = datetime.datetime(2017, 3, 30)
-accepted2 = datetime.datetime(2017, 4, 30) # you can't accept two challenges at the exact same instant 
-completed = datetime.datetime.now() # does not take into account time travel
+    accepted = datetime.datetime(2017, 3, 30)
+    # you shouldn't be able to accept two challenges at the exact same instant 
+    accepted2 = datetime.datetime(2017, 4, 30) 
+    completed = datetime.datetime.now() # does not take into account time travel
 
-# Starting with user_id 2 because user_id 1 should have no challenges
+    # Starting with user_id 2 because user_id 1 should have no challenges
     # user 2, one pending
-    uc1 = UserChallenge(user_id=2, challenge_id=1, is_completed=False, accepted_timestamp=accepted)
+    uc1 = UserChallenge(user_id=2, challenge_id=1, is_completed=False, 
+                                                    accepted_timestamp=accepted)
     # user 3, two pending
-    uc2 = UserChallenge(user_id=3, challenge_id=1, is_completed=False, accepted_timestamp=accepted)
-    uc3 = UserChallenge(user_id=3, challenge_id=2, is_completed=False, accepted_timestamp=accepted2)
+    uc2 = UserChallenge(user_id=3, challenge_id=1, is_completed=False, 
+                                                    accepted_timestamp=accepted)
+    uc3 = UserChallenge(user_id=3, challenge_id=2, is_completed=False, 
+                                                    accepted_timestamp=accepted2)
     # user 4, pending and complete
-    uc4 = UserChallenge(user_id=4, challenge_id=1, is_completed=False, accepted_timestamp=accepted )
-    uc5 = UserChallenge(user_id=4, challenge_id=2, is_completed=True, accepted_timestamp=accepted2 , completed_timestamp=completed , lat='', long='', image_path='',)
+    uc4 = UserChallenge(user_id=4, challenge_id=1, is_completed=False, 
+                                                    accepted_timestamp=accepted )
+    uc5 = UserChallenge(user_id=4, challenge_id=2, is_completed=True, 
+                        accepted_timestamp=accepted2, completed_timestamp=completed,
+                        lat='51.507351', long='-0.127758', 
+                        image_path='static/images/currency.png')
     # user 5, one complete
-    uc6 = UserChallenge(user_id=5, challenge_id=2, is_completed=True, accepted_timestamp=accepted , completed_timestamp=completed , lat='', long='', image_path='',)
+    uc6 = UserChallenge(user_id=5, challenge_id=2, is_completed=True, 
+                        accepted_timestamp=accepted, completed_timestamp=completed, 
+                        lat='40.712784', long='-74.005941', 
+                        image_path='static/images/currency.png')
     # user 6, many complete
-    uc7 = UserChallenge(user_id=6, challenge_id=1, is_completed=True, accepted_timestamp=accepted , completed_timestamp=completed , lat='', long='', image_path='',)
-    uc8 = UserChallenge(user_id=6, challenge_id=2, is_completed=True, accepted_timestamp=accepted2 , completed_timestamp=completed , lat='', long='', image_path='',)
+    uc7 = UserChallenge(user_id=6, challenge_id=1, is_completed=True, 
+                        accepted_timestamp=accepted, completed_timestamp=completed, 
+                        lat='-33.868820', long='151.209296', 
+                        image_path='static/images/butter.png')
+    uc8 = UserChallenge(user_id=6, challenge_id=2, is_completed=True, 
+                        accepted_timestamp=accepted2, completed_timestamp=completed,
+                        lat='35.689487', long='139.691706', 
+                        image_path='static/images/currency.png')
 
-# Challenges
+    # Challenges
 
-    c1 = Challenge(title='Existential Crisis', description='Build an unnecessarily complex robot to do a simple task', difficulty=5, image_path='static/images/butter.png')
-    c2 = Challenge(title='Bring Down the Federation', description='Take down the Galactic Federation by changing a 1 to a 0', difficulty=2, image_path='static/images/currency.png')
+    c1 = Challenge(title='Existential Crisis', 
+            description='Build an unnecessarily complex robot to do a simple task', 
+            difficulty=5, image_path='static/images/butter.png')
+    c2 = Challenge(title='Bring Down the Federation', 
+            description='Take down the Galactic Federation by changing a 1 to a 0', 
+            difficulty=2, image_path='static/images/currency.png')
+
+    db.session.add(u1) 
+    # u2, u3, u4, u5, u6,
+    #                 uc1, uc2, uc3, uc4, uc5, uc6, uc7, uc8,
+    #                 c1, c2)
+
+    db.session.commit()
 
 
 if __name__ == '__main__':
