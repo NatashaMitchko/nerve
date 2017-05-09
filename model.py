@@ -17,7 +17,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 class User(db.Model):
-    """Game user"""
+    """Game user - basic info"""
 
     __tablename__ = 'users'
 
@@ -35,7 +35,9 @@ class User(db.Model):
                                                             id=self.id)
 
 class UserChallenge(db.Model):
-    """This table maps users to tasks they've accepted"""
+    """This table maps users to challenges they've accepted.
+    Related to User through user, to Challenge through challenge.
+    """
 
     __tablename__ = 'user_challenges'
 
@@ -53,8 +55,8 @@ class UserChallenge(db.Model):
     image_path = db.Column(db.String(50))
     points_earned = db.Column(db.Integer, default=0, nullable=False)
 
-    user = db.relationship('User', backref=db.backref('users'))
-    challenge = db.relationship('Challenge', backref=db.backref('challenges'))
+    user = db.relationship('User', backref=db.backref('user_challenges'))
+    challenge = db.relationship('Challenge', backref=db.backref('user_challenges'))
 
     def __repr__(self):
         return '<UserChallenge challenge_id:{challenge_id} id:{id}>'.format(challenge_id=self.challenge_id, 
@@ -94,7 +96,7 @@ def init_app():
 def connect_to_db(app):
     """Connect the database to Flask app."""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres:///nerves'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres:///test_nerve'
     app.config['SQLALCHEMY_ECHO'] = False
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
@@ -174,10 +176,9 @@ def example_data():
             description='Take down the Galactic Federation by changing a 1 to a 0', 
             difficulty=2, image_path='static/images/currency.png')
 
-    db.session.add(u1) 
-    # u2, u3, u4, u5, u6,
-    #                 uc1, uc2, uc3, uc4, uc5, uc6, uc7, uc8,
-    #                 c1, c2)
+    db.session.add_all([u1, u2, u3, u4, u5, u6,
+                    uc1, uc2, uc3, uc4, uc5, uc6, uc7, uc8,
+                    c1, c2])
 
     db.session.commit()
 
@@ -185,7 +186,8 @@ def example_data():
 if __name__ == '__main__':
 
 # in terminal: createdb nerve
-# run this file in interactive mode and run db.create_all()
 
         init_app()
+        db.create_all()
+
 

@@ -1,7 +1,9 @@
 import unittest
 
-from server import app
-from model import User, UserChallenge, Challenge, db, example_data, connect_to_db
+# uncomment below when ready to test server
+# from server import app 
+
+from model import User, UserChallenge, Challenge, db, example_data, connect_to_db, init_app
 
 class NerveTestsDatabase(unittest.TestCase):
     """Flask tests that use the database."""
@@ -67,4 +69,5 @@ class NerveTestsPageData(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    init_app()
     unittest.main()

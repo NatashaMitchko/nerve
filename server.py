@@ -19,27 +19,25 @@ def index():
 
     return render_template('/homepage.html')
 
-def get_profile_page_info(username):
-    """Return relevant data to be displayed on profile page"""
-    User.query.filter(User.username=='Shmlony').one() #This works!!!
-    
-    query = db.session.query(User.id,
-                        User, UserChallenge, Challenge).filter_by(username=username).join(UserChallenge)
-    print query.all()
-    return query.all()
+def get_profile_page_info(name):
+    """Return relevant data to be displayed on profile page."""
+
+    user_id = db.session.query(User.id).filter(User.username==name).one()
+
+    info = db.session.query(UserChallenge, Challenge).join(Challenge).filter(UserChallenge.user_id==user_id)
+    return info.all()
 
 
 @app.route('/profile/<username>')
 def load_user_profile(username):
     """Shows the profile of the specified User and their UserChallenges
     If the user clicks their own profile icon they will go to their profile, if
-    they click another profile it will load that users profile.
+    they click another profile it will load that users profile and challenges.
     """
 
-    username = request.form.get('username')
-    get_profile_page_info(username)
+    info = get_profile_page_info(username)
 
-    return render_template('profile.html')
+    return render_template('profile.html', username=username, info=info)
 
 if __name__ == "__main__":
 
