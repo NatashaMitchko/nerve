@@ -4,6 +4,8 @@
 
 {% block content %}
 {{ username }}
+<button href='/accept'>Accept a Challenge</button>
+<button href='/create'>Create a Challenge</button>
 {% for i in info %}
 <ul> 
   <li>{{ i.Challenge.title }}</li>

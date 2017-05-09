@@ -1,7 +1,7 @@
 import unittest
 
 # uncomment below when ready to test server
-# from server import app 
+from server import app 
 
 from model import User, UserChallenge, Challenge, db, example_data, connect_to_db, init_app
 
@@ -16,7 +16,8 @@ class NerveTestsDatabase(unittest.TestCase):
 
         # test_nerve is the name of the test database
         # connect_to_db comes from model.py
-        connect_to_db(app, "postgresql:///test_nerve")
+
+        connect_to_db(app, 'postgresql:///test_nerve')
 
         # Create tables and adds sample data
         db.create_all()
@@ -31,20 +32,34 @@ class NerveTestsDatabase(unittest.TestCase):
     def test_profile_page_no_challenges(self):
         """Does profile page for the user in session with no challenges 
         show options to create challenge and/or accept existing challenges"""
-        pass
+
+        result = self.client.get('/profile/Shmlony') # see example_data() in model.py for test user attributes
+        self.assertNotIn('Accepted', result.data)
+        self.assertNotIn('Completed', result.data)
+        self.assertIn('Create a Challenge', result.data)
+        self.assertIn('Accept a Challenge', result.data)
 
     def test_profile_page_one_in_progress(self):
         """Tests content for profile page where user in session has only 
         challenges that are in progress"""
-        pass
+
+        result = self.client.get('/profile/Shmlantha') # see example_data() in model.py for test user attributes
+        self.assertIn('Accepted', result.data)
+        self.assertNotIn('Completed', result.data)
+        self.assertIn('Create a Challenge', result.data) 
+        self.assertIn('Accept a Challenge', result.data) 
 
     def test_profile_page_all_complete(self):
         """Tests profile page content where user in session has no active 
         challenges but does have completed challenges. They should see their 
         past completed challenges as well as options to create/ accept 
         challenges"""
-        pass
 
+        result = self.client.get('/profile/Schmlonathan') # see example_data() in model.py for test user attributes
+        self.assertIn('Accepted', result.data)
+        self.assertIn('Completed', result.data)
+        self.assertIn('Create a Challenge', result.data)
+        self.assertIn('Accept a Challenge', result.data)
 
 class NerveTestsPageData(unittest.TestCase):
     """Determine if the correct page is showing in the specified route"""
@@ -69,5 +84,5 @@ class NerveTestsPageData(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    init_app()
+    # init_app()
     unittest.main()

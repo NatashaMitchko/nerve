@@ -3,7 +3,7 @@ from jinja2 import StrictUndefined
 from flask_debugtoolbar import DebugToolbarExtension
 from flask import Flask, jsonify, render_template, redirect, request, flash, session
 
-from model import User, UserChallenge, Challenge, connect_to_db, db
+from model import User, UserChallenge, Challenge, connect_to_db, db, example_data
 
 app = Flask(__name__)
 
@@ -22,7 +22,8 @@ def index():
 def get_profile_page_info(name):
     """Return relevant data to be displayed on profile page."""
 
-    user_id = db.session.query(User.id).filter(User.username==name).one()
+    #fails for usernames that are not unique - added db constraint
+    user_id = db.session.query(User.id).filter(User.username==name).one() 
 
     info = db.session.query(UserChallenge, Challenge).join(Challenge).filter(UserChallenge.user_id==user_id)
     return info.all()
@@ -36,18 +37,21 @@ def load_user_profile(username):
     """
 
     info = get_profile_page_info(username)
-
-    return render_template('profile.html', username=username, info=info)
+    return render_template('profile.html', 
+                            username=username, 
+                            info=info)
 
 if __name__ == "__main__":
 
     app.debug = True
+
     # make sure templates, etc. are not cached in debug mode
     app.jinja_env.auto_reload = app.debug
 
-    connect_to_db(app)
+    connect_to_db(app, 'postgres:///test_nerve') 
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)
+    db.create_all()
 
     app.run(port=5000, host='0.0.0.0')

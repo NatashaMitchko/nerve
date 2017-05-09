@@ -25,7 +25,7 @@ class User(db.Model):
                     nullable=False, 
                     autoincrement=True, 
                     primary_key=True)
-    username = db.Column(db.String(50), nullable=False)
+    username = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(25), nullable=False) #not encrypted
     email = db.Column(db.String(50), nullable=False)
     phone = db.Column(db.String(30)) #not stored as phone number type
@@ -89,14 +89,14 @@ def init_app():
     from flask import Flask
     app = Flask(__name__)
 
-    connect_to_db(app)
+    connect_to_db(app, 'postgres:///test_nerve') # the actual db is specified in the server
     print "Connected to DB."
 
 
-def connect_to_db(app):
+def connect_to_db(app, database_URI):
     """Connect the database to Flask app."""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres:///test_nerve'
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_URI
     app.config['SQLALCHEMY_ECHO'] = False
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
