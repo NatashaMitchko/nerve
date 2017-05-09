@@ -21,7 +21,10 @@ class User(db.Model):
 
     __tablename__ = 'users'
 
-    id = db.Column(db.Integer, nullable=False, autoincrement=True, primary_key=True)
+    id = db.Column(db.Integer, 
+                    nullable=False, 
+                    autoincrement=True, 
+                    primary_key=True)
     username = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(25), nullable=False) #not encrypted
     email = db.Column(db.String(50), nullable=False)
@@ -36,7 +39,10 @@ class UserChallenge(db.Model):
 
     __tablename__ = 'user_challenges'
 
-    id = db.Column(db.Integer, nullable=False, autoincrement=True, primary_key=True)
+    id = db.Column(db.Integer, 
+                    nullable=False, 
+                    autoincrement=True, 
+                    primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     challenge_id = db.Column(db.Integer, db.ForeignKey('challenges.id'))
     is_completed = db.Column(db.Boolean, nullable=False, default=False)
@@ -59,14 +65,18 @@ class Challenge(db.Model):
 
     __tablename__ = 'challenges'
 
-    id = db.Column(db.Integer, nullable=False, autoincrement=True, primary_key=True)
+    id = db.Column(db.Integer, 
+                    nullable=False, 
+                    autoincrement=True, 
+                    primary_key=True)
     title = db.Column(db.String(35), nullable=False)
     description = db.Column(db.Text, nullable=False)
     difficulty = db.Column(db.Integer, nullable=False)
     image_path = db.Column(db.String(50))
 
     def __repr__(self):
-        return '<Challenge title:{title} id:{id}>'.format(title=self.title, id=self.id)
+        return '<Challenge title:{title} id:{id}>'.format(title=self.title, 
+                                                            id=self.id)
 
 
 ################################################################################
@@ -90,10 +100,57 @@ def connect_to_db(app):
     db.app = app
     db.init_app(app)
 
+def example_data():
+    """Generates example data for test purposes. Create users with
+    different characteristics:
+
+    - One with no challenges
+    - One with one pending
+    - One with many pending
+    - One with one pending and one complete
+    - One with one complete
+    - One with many complete
+
+    And their corresponding user_challenges and challenges.
+    """
+import datetime
+
+# Amazing. A dimension where all proper nouns begin with "Schmla":
+    u1 = User(username='Shmlony', password='123', email='shmlony@email.com', phone='111-222-3333')
+    u2 = User(username='Shmlantha', password='123', email='shmlantha@email.com', phone='111-222-3333')
+    u3 = User(username='Schmlona', password='123', email='schmlona@email.com', phone='111-222-3333')
+    u4 = User(username='Schmlove', password='123', email='schmlove@email.com', phone='111-222-3333')
+    u5 = User(username='Schmlandula', password='123', email='schmlandula@email.com', phone='111-222-3333')
+    u6 = User(username='Schmlonathan', password='123', email='schmlonathan@email.com', phone='111-222-3333')
+
+accepted = datetime.datetime(2017, 3, 30)
+accepted2 = datetime.datetime(2017, 4, 30) # you can't accept two challenges at the exact same instant 
+completed = datetime.datetime.now() # does not take into account time travel
+
+# Starting with user_id 2 because user_id 1 should have no challenges
+    # user 2, one pending
+    uc1 = UserChallenge(user_id=2, challenge_id=1, is_completed=False, accepted_timestamp=accepted)
+    # user 3, two pending
+    uc2 = UserChallenge(user_id=3, challenge_id=1, is_completed=False, accepted_timestamp=accepted)
+    uc3 = UserChallenge(user_id=3, challenge_id=2, is_completed=False, accepted_timestamp=accepted2)
+    # user 4, pending and complete
+    uc4 = UserChallenge(user_id=4, challenge_id=1, is_completed=False, accepted_timestamp=accepted )
+    uc5 = UserChallenge(user_id=4, challenge_id=2, is_completed=True, accepted_timestamp=accepted2 , completed_timestamp=completed , lat='', long='', image_path='',)
+    # user 5, one complete
+    uc6 = UserChallenge(user_id=5, challenge_id=2, is_completed=True, accepted_timestamp=accepted , completed_timestamp=completed , lat='', long='', image_path='',)
+    # user 6, many complete
+    uc7 = UserChallenge(user_id=6, challenge_id=1, is_completed=True, accepted_timestamp=accepted , completed_timestamp=completed , lat='', long='', image_path='',)
+    uc8 = UserChallenge(user_id=6, challenge_id=2, is_completed=True, accepted_timestamp=accepted2 , completed_timestamp=completed , lat='', long='', image_path='',)
+
+# Challenges
+
+    c1 = Challenge(title='Existential Crisis', description='Build an unnecessarily complex robot to do a simple task', difficulty=5, image_path='static/images/butter.png')
+    c2 = Challenge(title='Bring Down the Federation', description='Take down the Galactic Federation by changing a 1 to a 0', difficulty=2, image_path='static/images/currency.png')
+
 
 if __name__ == '__main__':
 
-# in terminal: createdb nerves
+# in terminal: createdb nerve
 # run this file in interactive mode and run db.create_all()
 
         init_app()
