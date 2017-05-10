@@ -2,7 +2,6 @@ from jinja2 import StrictUndefined
 
 from flask_debugtoolbar import DebugToolbarExtension
 from flask import Flask, jsonify, render_template, redirect, request, flash, session
-from flask_login import LoginManager
 
 from model import User, UserChallenge, Challenge, connect_to_db, db, example_data
 
@@ -11,8 +10,6 @@ app = Flask(__name__)
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "81CAEB25176HDG36710KSXZ2320"
 
-# Creates a login manager object
-login_manager = LoginManager()
 
 # Raise error for undefined variable in Jinja2
 app.jinja_env.undefined = StrictUndefined
@@ -72,24 +69,49 @@ def load_user_profile(username):
         flash("Not a valid user.")
         return redirect('/')
 
+def check_password(user_id, password):
+    """Checks to see if entered password matches the db password"""
+    is_valid = db.session.query(User.password).filter(User.id==user_id)
+    return (password == is_valid)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def show_login_form():
     """Handles login actions """
-    # if request.method == 'POST':
-    #     username = request.form.get('username')
-    #     password = request.form.get('password')
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        print username, password
 
-    #     get_user_id_by_username(username)
-    #     # Convert password to hashed to check against db
-    # else:
-    #     return render_template('/login_form.html')
-    pass
+        user_id = get_user_id_by_username(username)
 
-@app.route("/logout")
+        if user_id: # user exists
+            if check_password(user_id, password):
+                session['user_id'] = user_id[0] # Add id number to session
+                return redirect('/')
+            else:
+                flash('Incorrect password')
+                return redirect('/login')
+        else:
+            flash('Incorrect Username')
+            return redirect('/login')
+    else:
+        return render_template('/login_form.html', username='')
+
+@app.route('/logout')
 def logout():
     """Logged out users are redirected to the homepage"""
     logout_user()
     return redirect('/')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register_user():
+    """Render new user signup form and post data"""
+    if request.method == 'POST':
+        
+    else:
+        return render_template('register.html')
+
 
 
 if __name__ == "__main__":
@@ -104,8 +126,5 @@ if __name__ == "__main__":
     # Use the DebugToolbar
     DebugToolbarExtension(app)
     db.create_all()
-
-    # Configure app for login
-    login_manager.init_app(app)
 
     app.run(port=5000, host='0.0.0.0')

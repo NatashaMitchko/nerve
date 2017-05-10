@@ -3,31 +3,35 @@
 {% block title %}Log In{% endblock %}
 
 {% block content %}
-<form action="JSON/AJAX" name="login" id="login">
-  <label>Username <input type="text" name="username" id="username"></label>
-  <label>Password <input type="password" name="password" id="password"></label>
-  <input type="submit" value="Submit" id="submit">
+{% for message in get_flashed_messages() %}
+    <span> {{ message }}<a href='/register'><button>Register?</button></a></span>
+{% endfor %}
+<form action="/login" name="login" id="login" method="POST">
+  <label>Username <input type="text" name="username" id="username" value="{{ username }}" required></label>
+  <label>Password <input type="password" name="password" id="password" required></label>
+  <input type="submit" value="Submit" name="submit" id="submit">
 </form>
 
 <script type="text/javascript">
 
-  var username = $('#username').val();
-  var password = $('#password').val();
+  
 
-  function startSession() {
+  // function welcomeMessage() {
+  //   console.log('hi')
+  // };
 
-  }
+  // function sendRequest(e) {
+  //   e.preventDefault();
 
-  function sendRequest(e) {
-      e.preventDefault();
-      login_data = {
-        'username': username,
-        'password': password
-      }
-      $.post("/login", login_data, startSession);
-  }
+  //   var login_data = {
+  //     "username": $("#username").val(),
+  //     "password": $("#password").val()
+  //   };
 
-  $('#login').on('submit', sendRequest)
+  //   $.post('/login', login_data, welcomeMessage);
+  // };
+
+  // $('#login').on('submit', sendRequest);
 
 </script>
 {% endblock %}

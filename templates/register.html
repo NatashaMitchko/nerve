@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+{% for message in get_flashed_messages() %}
+    <span> {{ message }}</span>
+{% endfor %}
+  <form action="/register" name="register" id="register" method="POST">
+    <label>Username <input type="text" name="username" id="username" required></label>
+    <label>Password <input type="password" name="password" id="password" required></label>
+    <label>Phone <input type="tel" name="tel" id="tel" required></label>
+    <label>Email <input type="email" name="email" id="email"></label>
+    <input type="submit" value="Submit" name="submit" id="submit">
+  </form>
+
+
+{% endblock %}
