@@ -5,8 +5,75 @@ from server import app
 
 from model import User, UserChallenge, Challenge, db, example_data, connect_to_db, init_app
 
-class NerveTestsDatabase(unittest.TestCase):
-    """Flask tests that use the database."""
+class NerveTestsServerHelperFunctinos(unittest.TestCase):
+    """Make sure the helper functions in the server work"""
+
+    def setUp(self):
+        """Set testing to true, import functions from server"""
+        from server import get_user_id_by_username, get_profile_page_info
+        self.client = app.test_client()
+        app.config['TESTING'] = True
+        connect_to_db(app, 'postgresql:///test_nerve')
+        db.create_all()
+        example_data()
+
+    def tearDown(self):
+        """Runs at the end of every test."""
+
+        db.session.close()
+        db.drop_all()
+
+    def test_get_user_id_by_username(self):
+        """should return false for non-users, get user_id for users"""
+        not_a_uer = get_user_id_by_username('Jeffry')
+        self.assertFalse(not_a_uer, 'Jeffry is not a user in the db')
+        a_user = get_user_id_by_username('Shmlony')
+        self.assertTrue(a_user, 'Result was a string (String==True)')
+        self.assertEqual(a_user, (1), 'User was ID:1 in db')
+
+class NerveTestsRegistration(unittest.TestCase):
+    """Do post requests to create new users/ accept challenges/ create new challenges
+    sucessfully create records in the db"""
+
+    def setUp(self):
+        """Runs before every test."""
+
+        self.client = app.test_client()
+        app.config['TESTING'] = True
+
+        # test_nerve is the name of the test database
+        # connect_to_db comes from model.py
+
+        connect_to_db(app, 'postgresql:///test_nerve')
+
+        # Create tables and adds sample data
+        db.create_all()
+        example_data()
+
+    def tearDown(self):
+        """Runs at the end of every test."""
+
+        db.session.close()
+        db.drop_all()
+
+    def test_create_user(self):
+        """Does successful registration:
+        - redirect home
+        - add record to users table"""
+        pass
+
+    def test_create_challenge(self):
+        """Does a post request to create a challenge add a record to that table"""
+        pass
+
+    def test_accept_challenge(self):
+        """Does accepting a challenge add the correct record to UserChallenge"""
+        pass
+
+
+class NerveTestsDatabaseQueries(unittest.TestCase):
+    """Flask tests that use the database.
+    TODO: test for pagination when user has many challenges"""
 
     def setUp(self):
         """Runs before every test."""
@@ -75,7 +142,7 @@ class NerveTestsPageData(unittest.TestCase):
 
         with self.client as c:
             with c.session_transaction() as s:
-                s['TODO:Session key for logged in'] = True
+                s['active'] = True
 
         result = self.client.get('/')
         self.assertIn('Log Out', result.data)

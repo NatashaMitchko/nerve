@@ -3,5 +3,8 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+{% for message in get_flashed_messages() %}
+    <span> {{ message }}</span>
+{% endfor %}
 Homepage!
 {% endblock %}
