@@ -6,5 +6,9 @@
 {% for message in get_flashed_messages() %}
     <span> {{ message }}</span>
 {% endfor %}
-Homepage!
+{% if session['active'] == False %}
+<a href="/login"><button>Log In</button></a>
+{% else %}
+<a href="/logout"><button>Log Out</button></a>
+{% endif %}
 {% endblock %}

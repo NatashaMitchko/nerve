@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Challenges{% endblock %}
+
+{% block content %}
+<h1>Challenges</h1>
+<a  href='/create'><button>Create a Challenge</button></a>
+{% for challenge in challenges %}
+<table>
+  <tr>
+    <th>
+      {{ challenge.title }} <a href='/accept'><button>Accept</button></a>
+      <a href='/challenge/{{ challenge.id }}'><button>View</button></a>
+    </th>
+  </tr>
+  <tr>
+    <td>{{ challenge.description }}</td>
+  </tr>
+</table>
+{% endfor %}
+
+{% endblock %}

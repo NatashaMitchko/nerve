@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ challenge.title }}{% endblock %}
+
+{% block content %}
+<h1>{{ challenge.title }}</h1>
+<a href='/challenges'><button>Find a Challenge</button></a>
+<a href='/create'><button>Create a Challenge</button></a>
+
+<p>{{ challenge.description }}</p>
+<img src="{{ challenge.image_path }}">
+
+{% endblock %}
+
+<!-- Can use challenge difficulty in JS on page -->

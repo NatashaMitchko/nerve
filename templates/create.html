@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Create{% endblock %}
+
+{% block content %}
+
+  <form action="/create" name="create" id="create" method="POST">
+    <label>Title <input type="text" name="title" id="title" required></label>
+    <label>Description <textarea rows="10" cols="30" name="description" id="description" required></textarea></label>
+    <label id="difficulty">Difficulty 
+      <select>
+        <option value="1">Easy</option>
+        <option value="2">Medium</option>
+        <option value="3">Difficult</option>
+      </select>
+    </label>
+      {% for message in get_flashed_messages() %}
+      <span> {{ message }}</span>
+      {% endfor %}
+    <label>Image <input type="file" name="file" accept="image/*" value="Upload"></label>
+    <input type="submit" value="Submit" name="submit" id="submit">
+  </form>
+
+{% endblock %}

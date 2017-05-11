@@ -71,7 +71,7 @@ class Challenge(db.Model):
                     nullable=False, 
                     autoincrement=True, 
                     primary_key=True)
-    title = db.Column(db.String(35), nullable=False)
+    title = db.Column(db.String(35), nullable=False, unique=True)
     description = db.Column(db.Text, nullable=False)
     difficulty = db.Column(db.Integer, nullable=False)
     image_path = db.Column(db.String(50))
@@ -171,10 +171,10 @@ def example_data():
 
     c1 = Challenge(title='Existential Crisis', 
             description='Build an unnecessarily complex robot to do a simple task', 
-            difficulty=5, image_path='static/images/butter.png')
+            difficulty=5, image_path='/static/images/butter.png')
     c2 = Challenge(title='Bring Down the Federation', 
             description='Take down the Galactic Federation by changing a 1 to a 0', 
-            difficulty=2, image_path='static/images/currency.png')
+            difficulty=2, image_path='/static/images/currency.png')
 
     db.session.add_all([u1, u2, u3, u4, u5, u6,
                     uc1, uc2, uc3, uc4, uc5, uc6, uc7, uc8,
