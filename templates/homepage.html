@@ -6,9 +6,12 @@
 {% for message in get_flashed_messages() %}
     <span> {{ message }}</span>
 {% endfor %}
+<a href='/challenges'>Find a Challenge</a>
+<a href='/create'>Create a Challenge</a>
 {% if session['active'] == False %}
-<a href="/login"><button>Log In</button></a>
+<a href="/login">Log In</a>
 {% else %}
-<a href="/logout"><button>Log Out</button></a>
+<a href="/logout">Log Out</a>
 {% endif %}
+<a href='/profile/{{ session['user_id'] }}'>Profile</a>
 {% endblock %}

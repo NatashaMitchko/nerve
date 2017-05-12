@@ -4,7 +4,7 @@
 
 {% block content %}
 {% for message in get_flashed_messages() %}
-    <span> {{ message }}<a href='/login'><button>Login?</button></a></span>
+    <span> {{ message }}<a href='/login'>Login?</a></span>
 {% endfor %}
   <form action="/register" name="register" id="register" method="POST">
     <label>Username <input type="text" name="username" id="username" required></label>

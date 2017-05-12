@@ -73,11 +73,24 @@ class NerveTestsRegistration(unittest.TestCase):
         new_user_obj = db.session.query(User).filter(User.username=='Jane').one() # Example data from setup has no Janes
         self.assertEqual(new_user_obj.email, 
                         'jane@jane.com', 
-                        'Record sucessfully created')
+                        'User record was not sucessfully created')
 
     def test_create_challenge(self):
         """Does a post request to create a challenge add a record to that table"""
-        pass
+        result = self.client.post('/create',
+                                  data={'title': 'Cinnamon Challenge',
+                                        'description': 'Eat a whole spoonful of cinnamon',
+                                        'difficulty': '3',
+                                        'file': '/static/image/cinnamon.png'},
+                                  follow_redirects=True)
+        self.assertNotIn('Title', result.data, 'Challenge detail page did not load, still on input form page.')
+        self.assertNotIn('Welcome', result.data, 'Challenge detail page did not load, redirected to homepage.')
+        self.assertIn('Find a Challenge', result.data, 'User not presented with option to navigate to challenge list.')
+        self.assertIn('<img src="/static/image/cinnamon.png"', result.data, 'Image tag did not populate with correct source.')
+        new_challenge_obj = db.session.query(Challenge).filter(Challenge.title=='Cinnamon').one() # Example data from setup has no Cinnamon
+        self.assertEqual(new_challenge_obj.description, 
+                        'Eat a whole spoonful of cinnamon', 
+                        'Challenge record was not sucessfully created')
 
     def test_accept_challenge(self):
         """Does accepting a challenge add the correct record to UserChallenge"""
@@ -112,7 +125,10 @@ class NerveTestsDatabaseQueries(unittest.TestCase):
     def test_profile_page_no_challenges(self):
         """Does profile page for the user in session with no challenges 
         show options to create challenge and/or accept existing challenges"""
-
+        with self.client as c:
+            with c.session_transaction() as s:
+                s['active'] = False
+                s['user_id'] = ''
         result = self.client.get('/profile/Shmlony', follow_redirects=True) # see example_data() in model.py for test user attributes
         self.assertNotIn('Accepted', result.data)
         self.assertNotIn('Completed', result.data)
@@ -122,6 +138,10 @@ class NerveTestsDatabaseQueries(unittest.TestCase):
     def test_profile_page_one_in_progress(self):
         """Tests content for profile page where user in session has only 
         challenges that are in progress"""
+        with self.client as c:
+            with c.session_transaction() as s:
+                s['active'] = False
+                s['user_id'] = ''
 
         result = self.client.get('/profile/Shmlantha', follow_redirects=True) # see example_data() in model.py for test user attributes
         self.assertIn('Accepted', result.data)
@@ -134,6 +154,10 @@ class NerveTestsDatabaseQueries(unittest.TestCase):
         challenges but does have completed challenges. They should see their 
         past completed challenges as well as options to create/ accept 
         challenges"""
+        with self.client as c:
+            with c.session_transaction() as s:
+                s['active'] = False
+                s['user_id'] = ''
 
         result = self.client.get('/profile/Schmlonathan', follow_redirects=True) # see example_data() in model.py for test user attributes
         self.assertIn('Accepted', result.data)
@@ -143,21 +167,52 @@ class NerveTestsDatabaseQueries(unittest.TestCase):
 
     def test_invalid_user_profile(self):
         """User attempted to access a user profile for a user that doesn't exist"""
+        with self.client as c:
+            with c.session_transaction() as s:
+                s['active'] = False
+                s['user_id'] = ''
 
         result = self.client.get('/profile/Henry', follow_redirects=True)
         self.assertNotIn('Henry', result.data, 'Name from URL appeared on page.')
         self.assertIn('Home', result.data, 'Page did not redirect home.')
         self.assertIn('Not a valid user.', result.data, 'Did not flash "Not a valid user."')
 
-    def test_view_all_challenges(self):
-        """Does the challenges page show content"""
+    def test_view_all_challenges_logged_out(self):
+        """Does the challenges page show content for logged out users"""
+        with self.client as c:
+            with c.session_transaction() as s:
+                s['active'] = False
+                s['user_id'] = ''
 
         result = self.client.get('/challenges')
         self.assertIn('<table>', result.data, 'Tables were not generated to display data')
-        self.assertIn('Accept', result.data, 'User not provided option to accept challenge from list')
-        self.assertIn('View', result.data, 'User not provided option to navigate to challenge details')        
+        self.assertIn('Log In', result.data, 'Logged out user not presented with option to log in.')
+        self.assertIn('View', result.data, 'Logged out user not provided option to navigate to challenge details')
+        self.assertNotIn('<a href="" data-challenge_id="{{ challenge.id }}" class="accept-btn">Accept</a>', result.data, 'Logged out user provided option to accept challenge from list')
+        self.assertNotIn('Log Out', result.data, 'Logged out user presented with option to log out.')
+
+
+    def test_view_all_challenges_logged_in(self):
+            """Does the challenges page show content for logged in users"""
+            with self.client as c:
+                with c.session_transaction() as session:
+                    session['active'] = True
+                    session['user_id'] = 1
+
+            result = self.client.get('/challenges')
+            self.assertIn('<table>', result.data, 'Tables were not generated to display data')
+            self.assertIn('Log Out', result.data, 'Logged in user not presented with option to log out.')        
+            self.assertIn('Accept', result.data, 'Logged in user not provided option to accept challenge from list')
+            self.assertIn('View', result.data, 'Logged in user not provided option to navigate to challenge details')        
+            self.assertNotIn('Log In', result.data, 'Logged in user presented with option to log in.')
 
     def test_view_single_challenge(self):
+        """Does the challenge details page show the correct results"""
+        with self.client as c:
+            with c.session_transaction() as s:
+                s['active'] = False
+                s['user_id'] = ''
+                
         result = self.client.get('/challenge/1')
         self.assertIn('Find a Challenge', result.data, 'User not provided option to navigate back to challenge list')
 
@@ -176,7 +231,8 @@ class NerveTestsPageData(unittest.TestCase):
 
         with self.client as c:
             with c.session_transaction() as s:
-                s['active'] = True # 1 is arbitrary: logged-in-ness is tracked by storing the user id
+                s['active'] = True
+                s['user_id'] = 1
 
         result = self.client.get('/')
         self.assertIn('Log Out', result.data, 'Logged in user was not presented with option to log out.')

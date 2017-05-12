@@ -1,5 +1,6 @@
 from jinja2 import StrictUndefined
 import os, sys
+from datetime import datetime
 
 from flask_debugtoolbar import DebugToolbarExtension
 from flask import Flask, jsonify, render_template, redirect, request, flash, session
@@ -13,7 +14,8 @@ app = Flask(__name__)
 app.secret_key = "81CAEB25176HDG36710KSXZ2320"
 
 UPLOAD_FOLDER = '/static/images'
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif', 'bmp', 'raw', 'ico']) # To be compatible with cloudvision
+# To be compatible with cloudvision api:
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif', 'bmp', 'raw', 'ico']) 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Raise error for undefined variable in Jinja2
@@ -25,6 +27,7 @@ def is_session_active():
     if session.has_key('active'):
         return session['active']
     session['active'] = False
+    session['user_id'] = ''
     return session['active']
 
 @app.route('/')
@@ -53,7 +56,8 @@ def get_profile_page_info(user_id):
         >>> get_profile_page_info('Shmlony')
         []
     """
-    info = db.session.query(UserChallenge, Challenge).join(Challenge).filter(UserChallenge.user_id==user_id)
+    info = db.session.query(UserChallenge, 
+            Challenge).join(Challenge).filter(UserChallenge.user_id==user_id)
     return info.all()
 
 
@@ -75,8 +79,8 @@ def load_user_profile(username):
 
 def check_password(user_id, password):
     """Checks to see if entered password matches the db password"""
-    is_valid = db.session.query(User.password).filter(User.id==user_id)
-    return (password == is_valid)
+    is_valid = db.session.query(User.password).filter(User.id==user_id).first()
+    return (password == is_valid[0])
 
 @app.route('/login', methods=['GET', 'POST'])
 def show_login_form():
@@ -91,6 +95,7 @@ def show_login_form():
         if user_id: # user exists
             if check_password(user_id, password):
                 session['active'] = True
+                session['user_id'] = user_id
                 return redirect('/')
             else:
                 flash('Incorrect password')
@@ -104,8 +109,14 @@ def show_login_form():
 @app.route('/logout')
 def logout():
     """Logged out users are redirected to the homepage"""
-    logout_user() #TODO define logout user
+    session.clear()
     return redirect('/')
+
+def post_user(u,p,e,f):
+    """Creates new user and adds user to the db session"""
+    new_user = User(username=u, password=p, email=e, phone=f)
+    db.session.add(new_user)
+    db.session.commit()
 
 @app.route('/register', methods=['GET', 'POST'])
 def register_user():
@@ -126,13 +137,11 @@ def register_user():
         #     return redirect('/logout')
         else:
             # Add new user to the database
-            new_user = User(username=username, password=password, email=email, 
-                phone=phone)
-            db.session.add(new_user)
-            db.session.commit()
+            post_user(username, password, email, phone)
             # Add new user to the session
             user_id = get_user_id_by_username(username)
             session['active'] = True
+            session['user_id'] = user_id
             flash('Welcome')
             return redirect('/')
     else:
@@ -140,27 +149,34 @@ def register_user():
 
 def allowed_file(filename):
     """Makes sure that the uploaded file is valid type"""
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def post_challenge(t, d, l, f):
+    """Creates a new challenge and adds it to the db session"""
+    new_challenge = Challenge(title=t, description=d, difficulty=l, file=f)
+    db.session.add(new_challenge)
+    db.session.commit()
 
 @app.route('/create', methods=['GET', 'POST'])
 def create_challenge():
-    """Render new challenge form and post newly created challenges"""
+    """Render new challenge form and post newly created challenges if valid"""
     if request.method == 'POST':
+
         title = request.form.get('title')
         description = request.form.get('description')
-        difficulty = int(request.form.get('difficulty'))
+        difficulty = request.form.get('difficulty')
         file = request.files.get('file')
 
         if file.filename == '':
             flash('No file selected')
             return redirect('/create')
-        if file and allowed_file(file.filename):
+        elif file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('/details',
-                                    title=title))
-
+            filename = '/static/images' + filename
+            post_challenge(title, description, difficulty, filename)
+            challenge = Challenge.query.filter_by(title==title)
+            return redirect('/challenge/{}'.format(challenge.id))
     else:
         return render_template('create.html')
 
@@ -175,6 +191,19 @@ def challenge_details(id):
     challenge = Challenge.query.get(id)
     return render_template('challenge.html', challenge=challenge)
 
+@app.route('/accept.json', methods=['POST'])
+def accept_challenge():
+    """Called whenever a user clicks 'accept' on a challenge.
+    Also handles non-logged in users."""
+    challenge_id = int(request.form.get('challenge_id'))
+    user_id = int(session['user_id'])
+    accepted_challenge = UserChallenge(user_id=user_id, 
+                                        challenge_id=challenge_id, 
+                                        accepted_timestamp=datetime.now())
+    db.session.add(accepted_challenge)
+    db.session.commit()
+
+    return ''
 
 if __name__ == "__main__":
 

@@ -6,6 +6,16 @@
 <body>
   <div>
     {% block content%}{% endblock %}
+    <script type="text/javascript">
+      function toggleAccept(){
+        
+      };
+
+      $('.accept-btn').on('click', function(e) {
+        e.preventDefault()
+        $.post('/accept.json', {'challenge_id':$(this).attr('data-challenge_id')}, toggleAccept);
+      });
+    </script>
   </div>
 </body>
 </html>

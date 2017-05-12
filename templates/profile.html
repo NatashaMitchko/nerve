@@ -3,9 +3,14 @@
 {% block title %}{{ username }}{% endblock %}
 
 {% block content %}
+{% if session['active'] == False %}
+<a href="/login">Log In</a>
+{% else %}
+<a href="/logout">Log Out</a>
+{% endif %}
 <h1>{{ username }}</h1>
-<a href='/challenges'><button>Find a Challenge</button></a>
-<a href='/create'><button>Create a Challenge</button></a>
+<a href='/challenges'><Find a Challenge</a>
+<a href='/create'>Create a Challenge</a>
 {% for i in info %}
 <ul> 
   <li>{{ i.Challenge.title }}</li>

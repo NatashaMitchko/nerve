@@ -3,12 +3,20 @@
 {% block title %}{{ challenge.title }}{% endblock %}
 
 {% block content %}
+{% if session['active'] == False %}
+<a href="/login">Log In</a>
+{% else %}
+<a href="/logout">Log Out</a>
+{% endif %}
 <h1>{{ challenge.title }}</h1>
-<a href='/challenges'><button>Find a Challenge</button></a>
-<a href='/create'><button>Create a Challenge</button></a>
+  {% if session['active'] %}
+    <a data-challenge_id="{{ challenge.id }}" class="accept-btn">Accept</a>
+  {% endif %}
+<a href='/challenges'>Find a Challenge</a>
+<a href='/create'>Create a Challenge</a>
 
 <p>{{ challenge.description }}</p>
-<img src="{{ challenge.image_path }}">
+<div style="width:50%"><img src="{{ challenge.image_path }}"></div>
 
 {% endblock %}
 
