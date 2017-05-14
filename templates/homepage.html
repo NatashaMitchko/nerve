@@ -8,10 +8,10 @@
 {% endfor %}
 <a href='/challenges'>Find a Challenge</a>
 <a href='/create'>Create a Challenge</a>
-{% if session['active'] == False %}
-<a href="/login">Log In</a>
-{% else %}
+{% if session.get('active') %}
 <a href="/logout">Log Out</a>
+<a href="/profile/id/{{ session.get('user_id')}}">Profile</a>
+{% else %}
+<a href="/login">Log In</a>
 {% endif %}
-<a href='/profile/{{ session['user_id'] }}'>Profile</a>
 {% endblock %}

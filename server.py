@@ -4,6 +4,7 @@ from datetime import datetime
 
 from flask_debugtoolbar import DebugToolbarExtension
 from flask import Flask, jsonify, render_template, redirect, request, flash, session
+from werkzeug.utils import secure_filename
 
 from model import User, UserChallenge, Challenge, connect_to_db, db, example_data
 
@@ -13,7 +14,7 @@ app = Flask(__name__)
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "81CAEB25176HDG36710KSXZ2320"
 
-UPLOAD_FOLDER = '/static/images'
+UPLOAD_FOLDER = 'static/images'
 # To be compatible with cloudvision api:
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif', 'bmp', 'raw', 'ico']) 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -45,8 +46,13 @@ def get_user_id_by_username(name):
         >>> get_user_id_by_username('not a person')
         None
     """
-    user_id = db.session.query(User.id).filter(User.username==name).first()
-    return user_id 
+    user = User.query.filter(User.username==name).first()
+    return user.id
+
+def get_username_bu_user_id(user_id):
+    """Takes user id and returns username"""
+    user = User.query.filter(User.id==user_id).first()
+    return user.username
 
 def get_profile_page_info(user_id):
     """Return relevant data to be displayed on profile page.
@@ -59,6 +65,12 @@ def get_profile_page_info(user_id):
     info = db.session.query(UserChallenge, 
             Challenge).join(Challenge).filter(UserChallenge.user_id==user_id)
     return info.all()
+
+@app.route('/profile/id/<user_id>')
+def to_profile_from_id(user_id):
+    """Redirect to user profile through user id"""
+    username = get_username_bu_user_id(user_id)
+    return redirect('/profile/{}'.format(username))
 
 
 @app.route('/profile/<username>')
@@ -153,7 +165,7 @@ def allowed_file(filename):
 
 def post_challenge(t, d, l, f):
     """Creates a new challenge and adds it to the db session"""
-    new_challenge = Challenge(title=t, description=d, difficulty=l, file=f)
+    new_challenge = Challenge(title=t, description=d, difficulty=l, image_path=f)
     db.session.add(new_challenge)
     db.session.commit()
 
@@ -165,7 +177,7 @@ def create_challenge():
         title = request.form.get('title')
         description = request.form.get('description')
         difficulty = request.form.get('difficulty')
-        file = request.files.get('file')
+        file = request.files['file']
 
         if file.filename == '':
             flash('No file selected')
@@ -173,10 +185,12 @@ def create_challenge():
         elif file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            filename = '/static/images' + filename
+
+            filename = '/static/images/' + filename
             post_challenge(title, description, difficulty, filename)
-            challenge = Challenge.query.filter_by(title==title)
-            return redirect('/challenge/{}'.format(challenge.id))
+            challenge = Challenge.query.filter(Challenge.title==title)
+            challenge_obj = challenge.first()
+            return redirect('/challenge/{}'.format(challenge_obj.id))
     else:
         return render_template('create.html')
 
@@ -196,7 +210,7 @@ def accept_challenge():
     """Called whenever a user clicks 'accept' on a challenge.
     Also handles non-logged in users."""
     challenge_id = int(request.form.get('challenge_id'))
-    user_id = int(session['user_id'])
+    user_id = int(session['user_id'][0])
     accepted_challenge = UserChallenge(user_id=user_id, 
                                         challenge_id=challenge_id, 
                                         accepted_timestamp=datetime.now())
@@ -212,7 +226,7 @@ if __name__ == "__main__":
     # make sure templates, etc. are not cached in debug mode
     app.jinja_env.auto_reload = app.debug
 
-    connect_to_db(app, 'postgres:///test_nerve') 
+    connect_to_db(app, 'postgres:///nerve')
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)

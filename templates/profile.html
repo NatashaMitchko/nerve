@@ -3,10 +3,10 @@
 {% block title %}{{ username }}{% endblock %}
 
 {% block content %}
-{% if session['active'] == False %}
-<a href="/login">Log In</a>
-{% else %}
+{% if session.get('active') %}
 <a href="/logout">Log Out</a>
+{% else %}
+<a href="/login">Log In</a>
 {% endif %}
 <h1>{{ username }}</h1>
 <a href='/challenges'><Find a Challenge</a>

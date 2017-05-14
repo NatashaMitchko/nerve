@@ -3,13 +3,14 @@
 {% block title %}Create{% endblock %}
 
 {% block content %}
-{% if session['active'] == False %}
-<a href="/login">Log In</a>
-{% else %}
+{% if session.get('active') %}
 <a href="/logout">Log Out</a>
+<a href="/profile/id/{{ session.get('user_id')[0]}}">Profile</a>
+{% else %}
+<a href="/login">Log In</a>
 {% endif %}
 
-  <form action="/create" name="create" id="create" method="POST">
+  <form action="/create" name="create" id="create" enctype="multipart/form-data" method="POST">
     <label>Title <input type="text" name="title" id="title" required></label><br>
     <label>Description <textarea rows="10" cols="30" name="description" id="description" required></textarea></label><br>
     <label id="difficulty">Difficulty 

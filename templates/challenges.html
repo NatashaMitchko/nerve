@@ -3,10 +3,11 @@
 {% block title %}Challenges{% endblock %}
 
 {% block content %}
-{% if session['active'] == False %}
-<a href="/login">Log In</a>
-{% else %}
+{% if session.get('active') %}
 <a href="/logout">Log Out</a>
+<a href="/profile/id/{{ session.get('user_id') }}">Profile</a>
+{% else %}
+<a href="/login">Log In</a>
 {% endif %}
 <h1>Challenges</h1>
 <a  href='/create'>Create a Challenge</a>
@@ -16,7 +17,7 @@
     <th>
       {{ challenge.title }}
       {% if session['active'] == True %}
-      <a href="" data-challenge_id="{{ challenge.id }}" class="accept-btn">Accept</a>
+      <a data-challenge_id="{{ challenge.id }}" class="accept-btn">Accept</a>
       {% endif %}
 
       <a href='/challenge/{{ challenge.id }}'>View</a>

@@ -1,8 +1,9 @@
 import unittest
-import sys, os
+import sys, os, io
 
 # uncomment below when ready to test server
-from server import app 
+from server import app
+from StringIO import StringIO 
 
 from model import User, UserChallenge, Challenge, db, example_data, connect_to_db, init_app
 from server import get_user_id_by_username, get_profile_page_info
@@ -77,16 +78,16 @@ class NerveTestsRegistration(unittest.TestCase):
 
     def test_create_challenge(self):
         """Does a post request to create a challenge add a record to that table"""
-        result = self.client.post('/create',
+
+        result = self.client.post('/create', content_type='multipart/form-data',
                                   data={'title': 'Cinnamon Challenge',
                                         'description': 'Eat a whole spoonful of cinnamon',
                                         'difficulty': '3',
-                                        'file': '/static/image/cinnamon.png'},
+                                        'file': (io.BytesIO(b'test'), 'test_file.jpg')},
                                   follow_redirects=True)
         self.assertNotIn('Title', result.data, 'Challenge detail page did not load, still on input form page.')
         self.assertNotIn('Welcome', result.data, 'Challenge detail page did not load, redirected to homepage.')
         self.assertIn('Find a Challenge', result.data, 'User not presented with option to navigate to challenge list.')
-        self.assertIn('<img src="/static/image/cinnamon.png"', result.data, 'Image tag did not populate with correct source.')
         new_challenge_obj = db.session.query(Challenge).filter(Challenge.title=='Cinnamon').one() # Example data from setup has no Cinnamon
         self.assertEqual(new_challenge_obj.description, 
                         'Eat a whole spoonful of cinnamon', 
@@ -212,7 +213,7 @@ class NerveTestsDatabaseQueries(unittest.TestCase):
             with c.session_transaction() as s:
                 s['active'] = False
                 s['user_id'] = ''
-                
+
         result = self.client.get('/challenge/1')
         self.assertIn('Find a Challenge', result.data, 'User not provided option to navigate back to challenge list')
 
