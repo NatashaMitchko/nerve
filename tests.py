@@ -6,7 +6,7 @@ from server import app
 from StringIO import StringIO 
 
 from model import User, UserChallenge, Challenge, db, example_data, connect_to_db, init_app
-from server import get_user_id_by_username, get_profile_page_info
+from server import get_user_by_username, get_profile_page_info
 
 class NerveTestsServerHelperFunctinos(unittest.TestCase):
     """Make sure the helper functions in the server work"""
@@ -26,11 +26,11 @@ class NerveTestsServerHelperFunctinos(unittest.TestCase):
         db.session.close()
         db.drop_all()
 
-    def test_get_user_id_by_username(self):
+    def test_get_user_by_username(self):
         """should return none for non-users, get user_id for users"""
-        not_a_uer = get_user_id_by_username('Jeffry')
+        not_a_uer = get_user_by_username('Jeffry')
         self.assertFalse(not_a_uer, 'Result was of type that did not evaluate to False (not expected user was in db)')
-        a_user = get_user_id_by_username('Shmlony')
+        a_user = get_user_by_username('Shmlony')
         self.assertTrue(a_user, 'Result was of type that did not evaluate to True (expected user was not in db)')
 
 class NerveTestsRegistration(unittest.TestCase):
@@ -122,6 +122,36 @@ class NerveTestsDatabaseQueries(unittest.TestCase):
 
         db.session.close()
         db.drop_all()
+
+    def test_redirect_from_id(self):
+        """ Redirect through /profile/id/<user_id>
+        Does the profile page for the specified user show when redirected
+        through the /profile/id/<user_id> route"""
+
+        with self.client as c:
+            with c.session_transaction() as s:
+                s['active'] = False
+                s['user_id'] = ''
+        result = self.client.get('/profile/id/1', follow_redirects=True) # see example_data() in model.py for test user attributes
+        self.assertNotIn('Accepted', result.data)
+        self.assertNotIn('Completed', result.data)
+        self.assertIn('Create a Challenge', result.data)
+        self.assertIn('Find a Challenge', result.data)
+
+    def test_redirect_from_invalid_id(self):
+        """ Redirect through /profile/id/<user_id> invalid user_id
+        Does the profile page for the specified user show when redirected
+        through the /profile/id/<user_id> route"""
+
+        with self.client as c:
+            with c.session_transaction() as s:
+                s['active'] = False
+                s['user_id'] = ''
+
+        result = self.client.get('/profile/id/100', follow_redirects=True)
+        self.assertNotIn('Henry', result.data, 'Name from URL appeared on page.')
+        self.assertIn('Home', result.data, 'Invalid user profile did not redirect home.')
+        self.assertIn('Not a valid user.', result.data, 'Did not flash "Not a valid user."')
 
     def test_profile_page_no_challenges(self):
         """Does profile page for the user in session with no challenges 

@@ -47,6 +47,11 @@ class UserChallenge(db.Model):
                     primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     challenge_id = db.Column(db.Integer, db.ForeignKey('challenges.id'))
+
+    # In order to user to define a composite primary key in order to have a unique constraint
+    # user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    # challenge_id = db.Column(db.Integer, db.ForeignKey('challenges.id'), primary_key=True)
+
     is_completed = db.Column(db.Boolean, nullable=False, default=False)
     accepted_timestamp = db.Column(db.TIMESTAMP(timezone=True), nullable=False)
     completed_timestamp = db.Column(db.TIMESTAMP(timezone=True), nullable=True)

@@ -38,21 +38,21 @@ def index():
     return render_template('/homepage.html')
 
 
-def get_user_id_by_username(name):
+def get_user_by_username(name):
     """Takes username and returns user_id, else returns None
 
-        >>> get_user_id_by_username('Shmlony')
+        >>> get_user_by_username('Shmlony')
         (1,)
-        >>> get_user_id_by_username('not a person')
+        >>> get_user_by_username('not a person')
         None
     """
     user = User.query.filter(User.username==name).first()
-    return user.id
+    return user
 
-def get_username_bu_user_id(user_id):
-    """Takes user id and returns username"""
+def get_user_by_id(user_id):
+    """Takes user id and returns user object"""
     user = User.query.filter(User.id==user_id).first()
-    return user.username
+    return user
 
 def get_profile_page_info(user_id):
     """Return relevant data to be displayed on profile page.
@@ -69,8 +69,11 @@ def get_profile_page_info(user_id):
 @app.route('/profile/id/<user_id>')
 def to_profile_from_id(user_id):
     """Redirect to user profile through user id"""
-    username = get_username_bu_user_id(user_id)
-    return redirect('/profile/{}'.format(username))
+    user = get_user_by_id(user_id)
+    if user:
+        return redirect('/profile/{}'.format(user.username))
+    flash("Not a valid user.")
+    return redirect('/')
 
 
 @app.route('/profile/<username>')
@@ -79,9 +82,9 @@ def load_user_profile(username):
     If the user clicks their own profile icon they will go to their profile, if
     they click another profile it will load that users profile and challenges.
     """
-    user_id = get_user_id_by_username(username)
-    info = get_profile_page_info(user_id)
-    if user_id:
+    user = get_user_by_username(username)
+    if user:
+        info = get_profile_page_info(user.id)
         return render_template('profile.html', 
                                 username=username, 
                                 info=info)
@@ -102,12 +105,12 @@ def show_login_form():
         password = request.form.get('password')
         # print username, password
 
-        user_id = get_user_id_by_username(username)
+        user = get_user_by_username(username)
 
-        if user_id: # user exists
-            if check_password(user_id, password):
+        if user: # user exists
+            if check_password(user.id, password):
                 session['active'] = True
-                session['user_id'] = user_id
+                session['user_id'] = user.id
                 return redirect('/')
             else:
                 flash('Incorrect password')
@@ -139,9 +142,9 @@ def register_user():
         phone = request.form.get('tel')
         email = request.form.get('email')
 
-        user_id = get_user_id_by_username(username) # None evaluates to False
+        user = get_user_by_username(username) # None evaluates to False
 
-        if user_id:
+        if user:
             flash('Username taken')
             return redirect('/register')
             # TODO: make this make sense:
@@ -151,9 +154,8 @@ def register_user():
             # Add new user to the database
             post_user(username, password, email, phone)
             # Add new user to the session
-            user_id = get_user_id_by_username(username)
             session['active'] = True
-            session['user_id'] = user_id
+            session['user_id'] = user.id
             flash('Welcome')
             return redirect('/')
     else:
@@ -207,8 +209,20 @@ def challenge_details(id):
 
 @app.route('/accept.json', methods=['POST'])
 def accept_challenge():
-    """Called whenever a user clicks 'accept' on a challenge.
-    Also handles non-logged in users."""
+    """Called whenever a user clicks 'accept' on a challenge."""
+    challenge_id = int(request.form.get('challenge_id'))
+    user_id = int(session['user_id'][0])
+    accepted_challenge = UserChallenge(user_id=user_id, 
+                                        challenge_id=challenge_id, 
+                                        accepted_timestamp=datetime.now())
+    db.session.add(accepted_challenge)
+    db.session.commit()
+
+    return ''
+
+@app.route('/remove.json', methods=['DELETE'])
+def remove_challenge():
+    """Called whenever a user clicks 'remove' on a challenge."""
     challenge_id = int(request.form.get('challenge_id'))
     user_id = int(session['user_id'][0])
     accepted_challenge = UserChallenge(user_id=user_id, 
