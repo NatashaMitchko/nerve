@@ -83,6 +83,8 @@ class Challenge(db.Model):
         return '<Challenge title:{title} id:{id}>'.format(title=self.title, 
                                                             id=self.id)
 
+class ChallengeCategory
+
 
 ################################################################################
 

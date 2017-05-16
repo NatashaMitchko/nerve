@@ -19,7 +19,7 @@
   <li> {{ i.Challenge.description }}</li>
   {% endif %}
 </ul>
-<a href="/complete/{{ i.id }}">Complete Challenge</a>
+<a href="/complete/{{ i.UserChallenge.id }}">Complete Challenge</a>
 {% endfor %}
 <h3>Completed Challenges</h3>
 {% for i in info %}

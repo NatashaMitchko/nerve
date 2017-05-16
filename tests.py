@@ -269,6 +269,7 @@ class NerveTestsPageData(unittest.TestCase):
         self.assertIn('Log Out', result.data, 'Logged in user was not presented with option to log out.')
         self.assertNotIn('Log In', result.data, 'Logged out user was not presented with option to log in.')
 
+
 if __name__ == "__main__":
     # Turn debug off in server before testing (redirects)
 

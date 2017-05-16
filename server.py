@@ -6,8 +6,11 @@ from flask import Flask, jsonify, render_template, redirect, request, flash, ses
 from werkzeug.utils import secure_filename
 from model import User, UserChallenge, Challenge, connect_to_db, db, example_data
 from vision import get_labels_for_image, get_logo_for_image, image_is_safe
+from flask.ext.bcrypt import Bcrypt
+
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
 
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "81CAEB25176HDG36710KSXZ2320"
@@ -37,12 +40,7 @@ def index():
 
 
 def get_user_by_username(name):
-    """Takes username and returns user_id, else returns None
-
-        >>> get_user_by_username('Shmlony')
-        (1,)
-        >>> get_user_by_username('not a person')
-        None
+    """Takes username and returns user object, else returns None
     """
     user = User.query.filter(User.username==name).first()
     return user
@@ -92,8 +90,8 @@ def load_user_profile(username):
 
 def check_password(user_id, password):
     """Checks to see if entered password matches the db password"""
-    is_valid = db.session.query(User.password).filter(User.id==user_id).first()
-    return (password == is_valid[0])
+    db_password = db.session.query(User.password).filter(User.id==user_id).first()
+    return bcrypt.check_password_hash(db_password, password)
 
 @app.route('/login', methods=['GET', 'POST'])
 def show_login_form():
@@ -136,7 +134,7 @@ def register_user():
     """Render new user signup form and handles new user post requests"""
     if request.method == 'POST':
         username = request.form.get('username')
-        password = request.form.get('password')
+        password = bcrypt.generate_password_hash(request.form.get('password'))
         phone = request.form.get('tel')
         email = request.form.get('email')
 
@@ -146,8 +144,7 @@ def register_user():
             flash('Username taken')
             return redirect('/register')
             # TODO: make this make sense:
-        # elif is_session_active():
-        #     return redirect('/logout')
+
         else:
             # Add new user to the database
             post_user(username, password, email, phone)
@@ -188,7 +185,8 @@ def create_challenge():
             return redirect('/create')
         elif file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            if file_is_safe(file):
+            # Cant check w/o saving file ?? 
+            if image_is_safe(file):
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 filename = '/static/images/' + filename
                 labels = get_labels_for_image(file, 5)
@@ -250,7 +248,7 @@ def image_match(file):
 
 @app.route('/complete/<id>', methods=['GET','POST'])
 def complete_challenge(id):
-    """Gets UserChallenge page for uncompleted challenge and allows user to post
+    """Gets UserChallenge page for uncompleted challenge and allows user
         to complete"""
     if request.method == 'POST':
         file = request.files['file']
@@ -264,12 +262,15 @@ def complete_challenge(id):
         elif file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
             filename = '/static/images/' + filename
-            post_challenge(title, description, difficulty, filename)
-            challenge = Challenge.query.filter(Challenge.title==title)
-            challenge_obj = challenge.first()
-            return redirect('/challenge/{}'.format(challenge_obj.id))
+            if challenge_passed(filename):
+                post_challenge(title, description, difficulty, filename)
+                challenge = Challenge.query.filter(Challenge.title==title)
+                challenge_obj = challenge.first()
+                return redirect('/challenge/{}'.format(challenge_obj.id))
+            else:
+                os.remove(filename)
+
     else:
         challenge_id = request.form.get('challenge_id')
         to_complete = db.session.query(UserChallenge).filter(UserChallenge.id==challenge_id)
