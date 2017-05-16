@@ -1,3 +1,4 @@
 env
 rescources.txt
 *.pyc
+secret_stuff.json

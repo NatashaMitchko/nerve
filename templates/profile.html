@@ -13,14 +13,23 @@
 <a href='/create'>Create a Challenge</a>
 {% for i in info %}
 <ul> 
+  {% if i.UserChallenge.is_completed == False %}
   <li>{{ i.Challenge.title }}</li>
   <li>Accepted: {{ i.UserChallenge.accepted_timestamp }}</li>
   <li> {{ i.Challenge.description }}</li>
+  {% endif %}
+</ul>
+<a href="/complete/{{ i.id }}">Complete Challenge</a>
+{% endfor %}
+<h3>Completed Challenges</h3>
+{% for i in info %}
+<ul>
   {% if i.UserChallenge.is_completed == True %}
-    {% for x in info %}
-    <li>Completed: {{ i.UserChallenge.completed_timestamp }}</li>
-    <li>Points: {{ i.UserChallenge.points_earned }}</li>
-    {% endfor%}
+  <li>{{ i.Challenge.title }}</li>
+  <li>Accepted: {{ i.UserChallenge.accepted_timestamp }}</li>
+  <li> {{ i.Challenge.description }}</li>
+  <li>Completed: {{ i.UserChallenge.completed_timestamp }}</li>
+  <li>Points: {{ i.UserChallenge.points_earned }}</li>
   {% endif %} 
 </ul>
 {% endfor %}

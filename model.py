@@ -36,7 +36,7 @@ class User(db.Model):
 
 class UserChallenge(db.Model):
     """This table maps users to challenges they've accepted.
-    Related to User through user, to Challenge through challenge.
+    Related to User through .user, to Challenge through .challenge
     """
 
     __tablename__ = 'user_challenges'
@@ -47,12 +47,8 @@ class UserChallenge(db.Model):
                     primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     challenge_id = db.Column(db.Integer, db.ForeignKey('challenges.id'))
-
-    # In order to user to define a composite primary key in order to have a unique constraint
-    # user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    # challenge_id = db.Column(db.Integer, db.ForeignKey('challenges.id'), primary_key=True)
-
     is_completed = db.Column(db.Boolean, nullable=False, default=False)
+    is_removed = db.Column(db.Boolean, nullable=False, default=False)
     accepted_timestamp = db.Column(db.TIMESTAMP(timezone=True), nullable=False)
     completed_timestamp = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
     lat = db.Column(db.String(12)) #+/-###.#######
@@ -80,6 +76,8 @@ class Challenge(db.Model):
     description = db.Column(db.Text, nullable=False)
     difficulty = db.Column(db.Integer, nullable=False)
     image_path = db.Column(db.String(50))
+    # Need to store the image descriptors in the challenge
+    # image_annotation = db.Column(db.JSONB, nullable=False)
 
     def __repr__(self):
         return '<Challenge title:{title} id:{id}>'.format(title=self.title, 

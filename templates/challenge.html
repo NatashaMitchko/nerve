@@ -5,13 +5,13 @@
 {% block content %}
 {% if session.get('active') %}
 <a href="/logout">Log Out</a>
-<a href="/profile/id/{{ session.get('user_id')[0]}}">Profile</a>
+<a href="/profile/id/{{ session.get('user_id')}}">Profile</a>
 {% else %}
 <a href="/login">Log In</a>
 {% endif %}
 <h1>{{ challenge.title }}</h1>
   {% if session.get('active') %}
-    <a data-challenge_id="{{ challenge.id }}" class="accept-btn">Accept</a>
+    <a data-challenge_id="{{ challenge.id }}" data-user_challenge_id="" class="accept-btn">Accept</a>
   {% endif %}
 <a href='/challenges'>Find a Challenge</a>
 <a href='/create'>Create a Challenge</a>
