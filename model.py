@@ -1,13 +1,19 @@
 """Database model for nerve
-V1: three tables will be created: User, UserChallenge and Challenge
+V2: five tables: User, UserChallenge and Challenge, ChallengeCategory, Category
 
 User will store id, username, password, email and phone (for verification)
 
 UserChallenge will store id, challenge_id, user_id, is_completed, 
-accepted_timestamp, completed_timestamp, lat, long, image_path, points_earned.
-Relationships to the other two tables are defined by .user and .challenge
+accepted_timestamp, completed_timestamp, lat, long, image_path, points_earned
+and number of attempts.
+Related to User and Challenge by .user and .challenge
 
 Challenge will store id, title, description, difficulty, image_path 
+
+ChallengeCategory stores id, category_id and challenge_id
+Related to Challenge and Category by .challenge and .category
+
+Category stores categories that were recieved via api at challenge creation
 
 Class names are singular - table names are plural
 """
@@ -55,9 +61,12 @@ class UserChallenge(db.Model):
     long = db.Column(db.String(12)) #+/-###.#######
     image_path = db.Column(db.String(50))
     points_earned = db.Column(db.Integer, default=0, nullable=False)
+    attempts = db.Column(db.Integer, default=0, nullable=False)
 
     user = db.relationship('User', backref=db.backref('user_challenges'))
     challenge = db.relationship('Challenge', backref=db.backref('user_challenges'))
+
+    UC_U_C = db.Index('unique_user_challenge_constraint', user_id, challenge_id, unique=True)
 
     def __repr__(self):
         return '<UserChallenge challenge_id:{challenge_id} id:{id}>'.format(challenge_id=self.challenge_id, 
@@ -76,15 +85,44 @@ class Challenge(db.Model):
     description = db.Column(db.Text, nullable=False)
     difficulty = db.Column(db.Integer, nullable=False)
     image_path = db.Column(db.String(50))
-    # Need to store the image descriptors in the challenge
-    # image_annotation = db.Column(db.JSONB, nullable=False)
 
     def __repr__(self):
         return '<Challenge title:{title} id:{id}>'.format(title=self.title, 
                                                             id=self.id)
 
-class ChallengeCategory
+class ChallengeCategory(db.Model):
+    """Stores the image tags that map back to an individual challenge."""
 
+    __tablename__ = 'challenge_categories'
+
+    id = db.Column(db.Integer, 
+                    nullable=False, 
+                    autoincrement=True, 
+                    primary_key=True)
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
+    challenge_id = db.Column(db.Integer, db.ForeignKey('challenges.id'))
+
+    challenge = db.relationship('Challenge', backref=db.backref('challenge_categories'))
+    category = db.relationship('Category', backref=db.backref('challenge_categories'))
+
+    def __repr__(self):
+        return '<ChallengeCategory title:{title} tag:{tag} id: {id}>'.format(self.challenge.title,
+                                                                            self.category.tag,
+                                                                            self.id)
+
+class Category(db.Model):
+    """Stores all of the categories that map to all of the challenges"""
+
+    __tablename__ = 'categories'
+
+    id = db.Column(db.Integer, 
+                    nullable=False, 
+                    autoincrement=True, 
+                    primary_key=True)
+    tag = db.Column(db.String(50), unique=True, nullable=False)
+
+    def __repr__(self):
+        return '<Category: {tag} id: {id}>'.format(self.tag, self.id)
 
 ################################################################################
 
@@ -118,7 +156,8 @@ def example_data():
     - One with one complete
     - One with many complete
 
-    And their corresponding user_challenges and challenges.
+    And their corresponding user_challenges and challenges and the categories
+    for those challenges.
     """
     import datetime
 
@@ -181,9 +220,38 @@ def example_data():
             description='Take down the Galactic Federation by changing a 1 to a 0', 
             difficulty=2, image_path='/static/images/currency.png')
 
+    # Challenge categories
+
+    cc1 = ChallengeCategory(challenge_id=1, category_id=1)
+    cc2 = ChallengeCategory(challenge_id=1, category_id=2)
+    cc3 = ChallengeCategory(challenge_id=1, category_id=3)
+    cc4 = ChallengeCategory(challenge_id=1, category_id=4)
+    cc5 = ChallengeCategory(challenge_id=2, category_id=6)
+    cc6 = ChallengeCategory(challenge_id=2, category_id=1)
+    cc7 = ChallengeCategory(challenge_id=2, category_id=5)
+    cc8 = ChallengeCategory(challenge_id=2, category_id=7)
+
+    # Categories
+
+    cg1 = Category(tag='cartoon')
+    cg2 = Category(tag='art')
+    cg3 = Category(tag='machine')
+    cg4 = Category(tag='illustration')
+    cg5 = Category(tag='font')
+    cg6 = Category(tag='text')
+    cg7 = Category(tag='games')
+
+
+    [u'cartoon', u'art', u'machine', u'illustration']
+    [u'text', u'cartoon', u'font', u'games',]
+
+
+
+
     db.session.add_all([u1, u2, u3, u4, u5, u6,
                     uc1, uc2, uc3, uc4, uc5, uc6, uc7, uc8,
-                    c1, c2])
+                    c1, c2, cc1, cc2, cc3, cc4, cc5, cc6, cc7, cc8,
+                    cg1, cg2, cg3, cg4, cg5, cg6, cg7])
 
     db.session.commit()
 

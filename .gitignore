@@ -1,5 +1,5 @@
 env
 rescources.txt
 *.pyc
-secret_stuff.json
-secrets.sh
+*secret*
+static/images/*

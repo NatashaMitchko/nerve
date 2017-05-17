@@ -34,16 +34,16 @@ def get_labels_for_image(photo_file, maxResults):
         # [END construct_request]
         # [START parse_response]
         response = service_request.execute()
-        annotation = []
+        tags = []
         for response in response['responses'][0]['labelAnnotations']:
-            annotation.append(response['description'])
-        print annotation
-        return annotation
+            tags.append(response['description'])
+        print tags
+        return tags
         # [END parse_response]
 
 
 def get_logo_for_image(photo_file):
-    """Run a label request on a single image"""
+    """Run a logo request on a single image"""
 
     # [START authenticate]
     service = googleapiclient.discovery.build('vision', 'v1')
@@ -66,11 +66,11 @@ def get_logo_for_image(photo_file):
         # [END construct_request]
         # [START parse_response]
         response = service_request.execute()
-        annotation = []
+        tags = []
         for response in response['responses'][0]['logoAnnotations']:
-            annotation.append(response['description'])
-        print annotation
-        return annotation
+            tags.append(response['description'])
+        print tags
+        return tags
         # [END parse_response]
 
 def image_is_safe(photo_file):
