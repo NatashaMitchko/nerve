@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from flask import Flask, jsonify, render_template, redirect, request, flash, session
 from werkzeug.utils import secure_filename
 from model import User, UserChallenge, Challenge, connect_to_db, db, example_data
-from vision import get_labels_for_image, get_logo_for_image, image_is_safe
+from vision import get_tags_for_image, get_logo_for_image, image_is_safe
 from flask.ext.bcrypt import Bcrypt
 
 
@@ -160,15 +160,27 @@ def allowed_file(filename):
     """Makes sure that the uploaded file is valid type"""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def post_challenge(t, d, l, f, a):
-    """Creates a new challenge and adds it to the db session"""
-    new_challenge = Challenge(title=t, 
-                                description=d, 
-                                difficulty=l, 
-                                image_path=f, 
-                                image_annotation=a)
+
+def post_challenge(t, d, l, f):
+    """Creates a new challenge and adds it to the db"""
+    new_challenge = Challenge(title=t, description=d, difficulty=l, image_path=f)
     db.session.add(new_challenge)
     db.session.commit()
+
+def post_categories(tag_list):
+    """Adds new categories to db and updates ChallengeCategory table"""
+    # Pretty sure I can just write all categories to the db and wait for errors?
+    for tag in tag_list:
+        try:
+            new_category = Category(tag=tag)
+            db.session.add(new_category)
+            db.session.commit()
+        except:
+            continue
+
+def post_challenge_categories():
+    pass
+
 
 @app.route('/create', methods=['GET', 'POST'])
 def create_challenge():
@@ -185,22 +197,26 @@ def create_challenge():
             return redirect('/create')
         elif file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            # Cant check w/o saving file ?? 
-            if image_is_safe(file):
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                filename = '/static/images/' + filename
-                labels = get_labels_for_image(file, 5)
-                logo = get_logo_for_image(file, 2)
-                annotation = {'labels': labels,
-                                'logo': logo }
-                post_challenge(title, 
-                                description, 
-                                difficulty, 
-                                filename, 
-                                annotation)
-                challenge = Challenge.query.filter(Challenge.title==title)
-                challenge_obj = challenge.first()
-                return redirect('/challenge/{}'.format(challenge_obj.id))
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            filename = '/static/images/' + filename
+            if image_is_safe(filename):
+                tag_list = get_tags_for_image(f)
+                if tag_list:
+                    post_challenge(title, description, difficulty, filename)
+                    challenge_id = db.session.query(Challenge.id).filter(Challenge.title==title)
+                    post_categories(tag_list, challenge_id)
+                    
+                    return redirect('/challenge/{}'.format(challenge_id))
+                else:
+                    flash("""We weren't able to analyze your image. Please 
+                        choose another and try again""")
+                    return redirect('/create')
+
+                
+
+
+
+
     else:
         return render_template('create.html')
 

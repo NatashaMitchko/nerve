@@ -9,41 +9,46 @@ import argparse
 import base64
 import googleapiclient.discovery
 
-def get_labels_for_image(photo_file, maxResults):
+def get_tags_for_image(photo_file, maxResults):
     """Run a label request on a single image
-       Takes an image and a result limit. Returns list of descriptors."""
+       Takes an image and a result limit. Returns list of descriptors.
+       If API call returns no descriptors, return False.
 
-    # [START authenticate]
+    >>> get_tags_for_image('static/images/snails.jpg', 10)
+    [u'snails and slugs', u'snail', u'invertebrate', u'fauna', u'insect', u'macro photography', u'molluscs', u'slug']
+    """
+
     service = googleapiclient.discovery.build('vision', 'v1')
-    # [END authenticate]
 
-    # [START construct_request]
-    with open(photo_file, 'rb') as image:
-        image_content = base64.b64encode(image.read())
-        service_request = service.images().annotate(body={
-            'requests': [{
-                'image': {
-                    'content': image_content.decode('UTF-8')
-                },
-                'features': [{
-                    'type': 'LABEL_DETECTION',
-                    'maxResults': maxResults
+    try:
+        with open(photo_file, 'rb') as image:
+            image_content = base64.b64encode(image.read())
+            service_request = service.images().annotate(body={
+                'requests': [{
+                    'image': {
+                        'content': image_content.decode('UTF-8')
+                    },
+                    'features': [{
+                        'type': 'LABEL_DETECTION',
+                        'maxResults': maxResults
+                    }]
                 }]
-            }]
-        })
-        # [END construct_request]
-        # [START parse_response]
-        response = service_request.execute()
-        tags = []
-        for response in response['responses'][0]['labelAnnotations']:
-            tags.append(response['description'])
-        print tags
-        return tags
-        # [END parse_response]
+            })
+            response = service_request.execute()
+
+            tags = []
+            for response in response['responses'][0]['labelAnnotations']:
+                tags.append(response['description'])
+            print tags
+            return tags
+    except:
+        return False
 
 
 def get_logo_for_image(photo_file):
-    """Run a logo request on a single image"""
+    """Run a logo request on a single image
+
+    """
 
     # [START authenticate]
     service = googleapiclient.discovery.build('vision', 'v1')
@@ -76,7 +81,11 @@ def get_logo_for_image(photo_file):
 def image_is_safe(photo_file):
     """Runs SafeSearch request on a single image.
        Returns False for unsafe images. Unsafe images are defined to be those
-       that are LIKELY or VERY_LIKELY to contain adult or violent content."""
+       that are LIKELY or VERY_LIKELY to contain adult or violent content.
+
+       >>> image_is_safe('static/images/snails.jpg')
+       True
+       """
 
     # [START authenticate]
     service = googleapiclient.discovery.build('vision', 'v1')

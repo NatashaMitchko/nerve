@@ -32,9 +32,9 @@ class User(db.Model):
                     autoincrement=True, 
                     primary_key=True)
     username = db.Column(db.String(50), nullable=False, unique=True)
-    password = db.Column(db.String(25), nullable=False) #not encrypted
+    password = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(50), nullable=False)
-    phone = db.Column(db.String(30)) #not stored as phone number type
+    phone = db.Column(db.String(30))
 
     def __repr__(self):
         return '<User username:{username} id:{id}>'.format(username=self.username,
@@ -66,7 +66,7 @@ class UserChallenge(db.Model):
     user = db.relationship('User', backref=db.backref('user_challenges'))
     challenge = db.relationship('Challenge', backref=db.backref('user_challenges'))
 
-    UC_U_C = db.Index('unique_user_challenge_constraint', user_id, challenge_id, unique=True)
+    user_challenges_index = db.Index('unique_user_challenge_constraint', user_id, challenge_id, unique=True)
 
     def __repr__(self):
         return '<UserChallenge challenge_id:{challenge_id} id:{id}>'.format(challenge_id=self.challenge_id, 
@@ -105,10 +105,13 @@ class ChallengeCategory(db.Model):
     challenge = db.relationship('Challenge', backref=db.backref('challenge_categories'))
     category = db.relationship('Category', backref=db.backref('challenge_categories'))
 
+    challenge_categories_index = db.Index('quicksearch', challenge_id)
+
+
     def __repr__(self):
-        return '<ChallengeCategory title:{title} tag:{tag} id: {id}>'.format(self.challenge.title,
-                                                                            self.category.tag,
-                                                                            self.id)
+        return '<ChallengeCategory title:{title} tag:{tag} id: {id}>'.format(title=self.challenge.title,
+                                                                            tag=self.category.tag,
+                                                                            id=self.id)
 
 class Category(db.Model):
     """Stores all of the categories that map to all of the challenges"""
@@ -122,7 +125,7 @@ class Category(db.Model):
     tag = db.Column(db.String(50), unique=True, nullable=False)
 
     def __repr__(self):
-        return '<Category: {tag} id: {id}>'.format(self.tag, self.id)
+        return '<Category: {tag} id: {id}>'.format(tag=self.tag, id=self.id)
 
 ################################################################################
 
@@ -240,12 +243,6 @@ def example_data():
     cg5 = Category(tag='font')
     cg6 = Category(tag='text')
     cg7 = Category(tag='games')
-
-
-    [u'cartoon', u'art', u'machine', u'illustration']
-    [u'text', u'cartoon', u'font', u'games',]
-
-
 
 
     db.session.add_all([u1, u2, u3, u4, u5, u6,
