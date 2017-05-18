@@ -4,9 +4,10 @@ from datetime import datetime
 from flask_debugtoolbar import DebugToolbarExtension
 from flask import Flask, jsonify, render_template, redirect, request, flash, session
 from werkzeug.utils import secure_filename
-from model import User, UserChallenge, Challenge, connect_to_db, db, example_data
-from vision import get_tags_for_image, get_logo_for_image, image_is_safe
+from model import User, UserChallenge, Challenge, ChallengeCategory, Category, connect_to_db, db, example_data
+from vision import get_tags_for_image, image_is_safe
 from flask.ext.bcrypt import Bcrypt
+from sqlalchemy import exc
 
 
 app = Flask(__name__)
@@ -167,20 +168,39 @@ def post_challenge(t, d, l, f):
     db.session.add(new_challenge)
     db.session.commit()
 
-def post_categories(tag_list):
-    """Adds new categories to db and updates ChallengeCategory table"""
-    # Pretty sure I can just write all categories to the db and wait for errors?
-    for tag in tag_list:
-        try:
-            new_category = Category(tag=tag)
-            db.session.add(new_category)
-            db.session.commit()
-        except:
-            continue
+def post_categories(tag):
+    """Adds new categories to db that are unique."""
+    new_category = Category(tag=tag)
+    db.session.add(new_category)
+    print 'post categories'
+    try:
+        db.session.commit()
+    except exc.IntegrityError:
+        db.session.rollback()
+        print "{} already exists.".format(tag)
 
-def post_challenge_categories():
-    pass
-
+def post_challenge_categories(tag_list, challenge_id):
+    """Adds records describing relations between an individual challenge and 
+                multiple categories. If the category doesn't exist in the db it
+                gets added and the relation is created."""
+    i = 0
+    while i < len(tag_list):
+        category = db.session.query(Category).filter(Category.tag==tag_list[i]).first()
+        print category
+        if category:
+            new_challenge_category = ChallengeCategory(category_id=category.id, 
+                                                        challenge_id=challenge_id)
+            db.session.add(new_challenge_category)
+            try:
+                db.session.commit()
+            except exc.IntegrityError:
+                db.session.rollback()
+                print "Relation between {tag} and challenge {id} already exists.".format(tag=tag_list[i], id=challenge_id)
+            i = i + 1
+            print i
+        else:
+            post_categories(tag_list[i])
+            print 'else'
 
 @app.route('/create', methods=['GET', 'POST'])
 def create_challenge():
@@ -198,25 +218,18 @@ def create_challenge():
         elif file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            filename = '/static/images/' + filename
+            filename = 'static/images/' + filename
             if image_is_safe(filename):
-                tag_list = get_tags_for_image(f)
+                tag_list = get_tags_for_image(filename, 10)
                 if tag_list:
                     post_challenge(title, description, difficulty, filename)
-                    challenge_id = db.session.query(Challenge.id).filter(Challenge.title==title)
-                    post_categories(tag_list, challenge_id)
-                    
-                    return redirect('/challenge/{}'.format(challenge_id))
+                    challenge_id = db.session.query(Challenge.id).filter(Challenge.title==title).first()
+                    post_challenge_categories(tag_list, challenge_id[0])
+                    return redirect('/challenge/{}'.format(challenge_id[0]))
                 else:
                     flash("""We weren't able to analyze your image. Please 
                         choose another and try again""")
                     return redirect('/create')
-
-                
-
-
-
-
     else:
         return render_template('create.html')
 

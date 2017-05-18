@@ -1,4 +1,18 @@
 "use strict";
+(function(){
+  var style1 = [
+    'color: #74e3ec',
+    'line-height: 1.8;',
+    'font-weight: bold;',
+    'display: block'].join(';');
+  var style2 = [
+    'color: #07292c',
+    'line-height: 1.8;',
+    'font-weight: bold;',
+    'display: block'].join(';');
+
+  console.log('%c Hiring? %cGet in touch %c--> %ccontactMe() ', style1, style2, style1, style2);
+})();
 
 (function (){
 

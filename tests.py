@@ -5,9 +5,9 @@ import sys, os, io
 from server import app
 from StringIO import StringIO 
 
-from model import User, UserChallenge, Challenge, db, example_data, connect_to_db, init_app
-from server import get_user_by_username, get_profile_page_info, post_categories, post_challenge, post_user, allowed_file
-
+from model import User, UserChallenge, Challenge, ChallengeCategory, Category, db, example_data, connect_to_db, init_app
+# from server import get_user_by_username, get_profile_page_info, post_categories, post_challenge, post_challenge_categories, post_user, allowed_file
+import server
 class NerveTestsServerHelperFunctinos(unittest.TestCase):
     """Make sure the helper functions in the server work"""
 
@@ -28,18 +28,35 @@ class NerveTestsServerHelperFunctinos(unittest.TestCase):
 
     def test_get_user_by_username(self):
         """should return none for non-users, get user_id for users"""
-        not_a_uer = get_user_by_username('Jeffry')
+        not_a_uer = server.get_user_by_username('Jeffry')
         self.assertFalse(not_a_uer, 'Result was of type that did not evaluate to False (not expected user was in db)')
-        a_user = get_user_by_username('Shmlony')
+        a_user = server.get_user_by_username('Shmlony')
         self.assertTrue(a_user, 'Result was of type that did not evaluate to True (expected user was not in db)')
 
-    def test_post_categories(self):
-        """Do categories get added to db, do duplicates get handled correctly"""
-        test_tag_list = [u'snails and slugs', u'snail', u'snail', u'invertebrate', u'molluscs', u'slug']
-        post_categories(test_tag_list)
-        snail_count = int(db.session.query(Category.tag).filter(Category.tag=='snail').count()) # int because .count() returns a long
-        self.assertEqual(1, snail_count, 'Duplicate category was added to database.')
-        self.assertEqual(0, 'California', 'Unexpected database contents.')
+    def test_challenge_categories_duplicate(self):
+        """Does post_challenge_categories add to ChallengeCategory correctly, 
+                                does it handle duplicates correctly"""
+        server.post_challenge_categories('art', 1) # 'art' exists for challenge 1 in db from example_data()
+        cc_count = db.session.query(ChallengeCategory).filter(ChallengeCategory.challenge_id==1).count()
+        self.assertEqual(cc_count, 1, 'Duplicate records were added to ChallengeCategory table.')
+
+    def test_post_challenge_categories_add_to_db(self):
+        """Does post_challenge_categories add challenges that are not in the db
+        and create a ChallengeCategory record for the newly added Category"""
+
+        server.post_challenge_categories(['not in the db'], 1)
+        new_category = db.session.query(Category).filter(Category.tag=='not in the db').first()
+        self.assertEqual(new_category.tag, 'not in the db', 'New category was not added to the categories table.')
+        cc_count = db.session.query(ChallengeCategory).filter((ChallengeCategory.challenge_id==1)&(Category.id==new_category.id)).count()
+        self.assertEqual(cc_count, 1, 'ChallengeCategory record was not created after adding new category to db.')
+
+    def test_post_challenge_categories(self):
+        """Does post_challenge_categories handle invalid challenge_ids correctly"""
+        test_tag_list = [u'dog', u'puppy', u'puppy', u'cute']
+        challenge_id = 100
+        server.post_challenge_categories(test_tag_list, challenge_id)
+        cc_count = db.session.query(ChallengeCategory).filter(ChallengeCategory.challenge_id==100).count()
+        self.assertEqual(cc_count, 0, 'Records for invalid Challenge added to ChallengeCategory table. Violated foreign key constraint.')
 
     def test_post_challenge(self):
         """Does the post challenge function add challenge to the db"""
@@ -47,7 +64,7 @@ class NerveTestsServerHelperFunctinos(unittest.TestCase):
         description = 'Say hello to a person' 
         difficulty = 3 
         image_path = 'static/images/not_a_real_path'
-        post_challenge(title, description, difficulty, image_path)
+        server.post_challenge(title, description, difficulty, image_path)
         new_challenge = db.session.query(Challenge).filter(Challenge.title==title).first()
         self.assertEqual(new_challenge.title, title, 'Title was not properly added to new challenge.')
         self.assertEqual(new_challenge.difficulty, 3, 'Challenge difficulty not properly set.')
@@ -59,17 +76,17 @@ class NerveTestsServerHelperFunctinos(unittest.TestCase):
         password = 'this gets hashed in the route before this function is called'
         email = 'chelsea@email.com'
         phone = '111-222-3333'
-        post_user(username, password, email, phone)
+        server.post_user(username, password, email, phone)
         new_user = db.session.query(User).filter(User.username==username).first()
         self.assertEqual(new_user.username, username, 'Username provided to function does not match username in db.')
         self.assertEqual(new_user.email, email, 'Email provided to function does not match username in db.')
 
     def test_allowed_file(self):
         """Is the file a valid type and is formatted correctly"""
-        self.assertTrue(allowed_file('example.jpeg'), 'Did not recognize example.jpeg as valid.')
-        self.assertFalse(allowed_file('cat.cat.cat.png'), 'Files with multiple . should be considered invalid')
-        self.assertTrue(allowed_file('hi.JPG'), 'File hi.JPG should be recognized as valid.')
-        self.assertFalse(allowed_file('nope.txt'), '.txt files are not valid input.')
+        self.assertTrue(server.allowed_file('example.jpeg'), 'Did not recognize example.jpeg as valid.')
+        self.assertTrue(server.allowed_file('cat.cat.cat.png'), 'Files with multiple . should be considered valid')
+        self.assertTrue(server.allowed_file('hi.JPG'), 'File hi.JPG should be recognized as valid.')
+        self.assertFalse(server.allowed_file('nope.txt'), '.txt files are not valid input.')
 
 
 class NerveTestsRegistration(unittest.TestCase):
@@ -86,6 +103,15 @@ class NerveTestsRegistration(unittest.TestCase):
         # connect_to_db comes from model.py
 
         connect_to_db(app, 'postgresql:///test_nerve')
+
+        def _mock_image_is_safe(photo_file):
+            return True
+
+        def _mock_get_tags_for_image(photo_file, x):
+            return [u'snails and slugs', u'snail', u'invertebrate', u'fauna', u'insect', u'macro photography', u'molluscs', u'slug']
+
+        server.image_is_safe = _mock_image_is_safe
+        server.get_tags_for_image = _mock_get_tags_for_image
 
         # Create tables and adds sample data
         db.create_all()
@@ -116,24 +142,23 @@ class NerveTestsRegistration(unittest.TestCase):
                         'jane@jane.com', 
                         'User record was not sucessfully created')
 
-        # The below will make api calls - commenting out until logic is 100%
 
-    # def test_create_challenge(self):
-    #     """Does a post request to create a challenge route add a record to that table"""
+    def test_create_challenge(self):
+        """Does a post request to create a challenge route add a record to that table"""
 
-    #     result = self.client.post('/create', content_type='multipart/form-data',
-    #                               data={'title': 'Cinnamon Challenge',
-    #                                     'description': 'Eat a whole spoonful of cinnamon',
-    #                                     'difficulty': '3',
-    #                                     'file': (io.BytesIO(b'test'), 'test_file.jpg')},
-    #                               follow_redirects=True)
-    #     self.assertNotIn('Title', result.data, 'Challenge detail page did not load, still on input form page.')
-    #     self.assertNotIn('Welcome', result.data, 'Challenge detail page did not load, redirected to homepage.')
-    #     self.assertIn('Find a Challenge', result.data, 'User not presented with option to navigate to challenge list.')
-    #     new_challenge_obj = db.session.query(Challenge).filter(Challenge.title=='Cinnamon').one() # Example data from setup has no Cinnamon
-    #     self.assertEqual(new_challenge_obj.description, 
-    #                     'Eat a whole spoonful of cinnamon', 
-    #                     'Challenge record was not sucessfully created')
+        result = self.client.post('/create', content_type='multipart/form-data',
+                                  data={'title': 'Cinnamon Challenge',
+                                        'description': 'Eat a whole spoonful of cinnamon',
+                                        'difficulty': '3',
+                                        'file': (io.BytesIO(b'test'), 'test_file.jpg')},
+                                  follow_redirects=True)
+        self.assertNotIn('Title', result.data, 'Challenge detail page did not load, still on input form page.')
+        self.assertNotIn('Welcome', result.data, 'Challenge detail page did not load, redirected to homepage.')
+        self.assertIn('Find a Challenge', result.data, 'User not presented with option to navigate to challenge list.')
+        new_challenge_obj = db.session.query(Challenge).filter(Challenge.title=='Cinnamon').first()
+        self.assertEqual(new_challenge_obj.description, 
+                        'Eat a whole spoonful of cinnamon', 
+                        'Challenge record was not sucessfully created')
 
     def test_accept_challenge(self):
         """Does accepting a challenge add the correct record to UserChallenge"""
@@ -313,7 +338,6 @@ class NerveTestsPageData(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    # Turn debug off in server before testing (redirects)
 
     os.system('dropdb test_nerve')
     os.system('createdb test_nerve')

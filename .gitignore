@@ -3,3 +3,5 @@ rescources.txt
 *.pyc
 *secret*
 static/images/*
+htmlcov/*
+.coverage

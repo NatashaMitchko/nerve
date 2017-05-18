@@ -81,7 +81,7 @@ class Challenge(db.Model):
                     nullable=False, 
                     autoincrement=True, 
                     primary_key=True)
-    title = db.Column(db.String(35), nullable=False, unique=True)
+    title = db.Column(db.String(35), nullable=False)
     description = db.Column(db.Text, nullable=False)
     difficulty = db.Column(db.Integer, nullable=False)
     image_path = db.Column(db.String(50))
@@ -109,9 +109,7 @@ class ChallengeCategory(db.Model):
 
 
     def __repr__(self):
-        return '<ChallengeCategory title:{title} tag:{tag} id: {id}>'.format(title=self.challenge.title,
-                                                                            tag=self.category.tag,
-                                                                            id=self.id)
+        return '<ChallengeCategory id: {id}>'.format(id=self.id)
 
 class Category(db.Model):
     """Stores all of the categories that map to all of the challenges"""
