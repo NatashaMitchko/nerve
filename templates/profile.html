@@ -11,6 +11,7 @@
 <h1>{{ username }}</h1>
 <a href='/challenges'><Find a Challenge</a>
 <a href='/create'>Create a Challenge</a>
+
 {% for i in info %}
 <ul> 
   {% if i.UserChallenge.is_completed == False %}
@@ -19,8 +20,9 @@
   <li> {{ i.Challenge.description }}</li>
   {% endif %}
 </ul>
-<a href="/complete/{{ i.UserChallenge.id }}">Complete Challenge</a>
+<a href="/complete/{{ i.UserChallenge.challenge_id }}">Complete Challenge</a>
 {% endfor %}
+
 <h3>Completed Challenges</h3>
 {% for i in info %}
 <ul>

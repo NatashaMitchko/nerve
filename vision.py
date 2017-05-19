@@ -9,7 +9,7 @@ import argparse
 import base64
 import googleapiclient.discovery
 
-def get_tags_for_image(photo_file, maxResults):
+def get_tags_for_image(photo_file, maxResults=10):
     """Run a label request on a single image
        Takes an image and a result limit. Returns list of descriptors.
        If API call returns no descriptors, return False.

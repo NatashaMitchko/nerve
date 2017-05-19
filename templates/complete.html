@@ -1,17 +1,19 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ challenge.title }}{% endblock %}
+{% block title %}{{ challenge_info.Challenge.title }}{% endblock %}
 
 {% block content %}
 {% if session.get('active') %}
 <a href="/logout">Log Out</a>
 <a href="/profile/id/{{ session.get('user_id')}}">Profile</a>
-<a href='/challenges'>Find a Challenge</a>
+<a href='/user_challenges'>Find a Challenge</a>
 <a href='/create'>Create a Challenge</a>
 
-<h1>{{ challenge.title }}</h1>
-<p>{{ challenge.description }}</p>
-<div style="width:50%"><img src="{{ challenge.image_path }}"></div>
+<h1>{{ challenge_info.Challenge.title }}</h1>
+<p>{{ challenge_info.Challenge.description }}</p>
+<label>Points: <h3>{{ challenge_info.UserChallenge.points_earned }}</h3></label>
+<label>Attempts: <h3>{{ challenge_info.UserChallenge.attempts }}</h3></label>
+<div style="width:50%"><img src="/{{ challenge_info.Challenge.image_path }}"></div>
 
 <form action="/complete" name="create" id="create" enctype="multipart/form-data" method="POST">
   {% for message in get_flashed_messages() %}

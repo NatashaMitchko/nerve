@@ -215,16 +215,22 @@ def create_challenge():
         if file.filename == '':
             flash('No file selected')
             return redirect('/create')
+            print 'file'
         elif file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             filename = 'static/images/' + filename
+            print 'had filename'
             if image_is_safe(filename):
+                print 'tags'
                 tag_list = get_tags_for_image(filename, 10)
+                print 'image safe got tags'
                 if tag_list:
                     post_challenge(title, description, difficulty, filename)
                     challenge_id = db.session.query(Challenge.id).filter(Challenge.title==title).first()
+                    print 'posted challenge'
                     post_challenge_categories(tag_list, challenge_id[0])
+                    print ''
                     return redirect('/challenge/{}'.format(challenge_id[0]))
                 else:
                     flash("""We weren't able to analyze your image. Please 
@@ -241,7 +247,8 @@ def show_all_challenges():
 
 @app.route('/challenge/<id>')
 def challenge_details(id):
-    challenge = Challenge.query.get(id)
+
+    challenge = db.session.query(Challenge, ChallengeCategory).filter(Challenge.id==id).join(ChallengeCategory).all()
     return render_template('challenge.html', challenge=challenge)
 
 @app.route('/accept.json', methods=['POST'])
@@ -267,13 +274,19 @@ def remove_challenge():
     # return the UC primary key
 
     return ''
-def complete_challenge():
+def complete_challenge(hits):
     """Updates the UserChallenge record with additional details"""
-    pass
+    if hits != 0;
+        # set completed to true
+    # update attempts += 1
 
-def image_match(file):
-    """Checks uploaded image against the challenge image"""
-    pass
+def image_match(tag_list, winning_tags):
+    """Checks uploaded image tags against the challenge image"""
+    match_count = 0
+    for tag in tag_list:
+        if tag in winning_tags:
+            match_count += 1
+    return match_count
 
 @app.route('/complete/<id>', methods=['GET','POST'])
 def complete_challenge(id):
@@ -291,19 +304,21 @@ def complete_challenge(id):
         elif file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            filename = '/static/images/' + filename
+            filename = 'static/images/' + filename
+            if image_is_safe(filename):
+                tag_list = get_tags_for_image(filename, 5)
+                categories = ChallengeCategory.query.filter(ChallengeCategory.challenge_id==id).all()
+                winning_tags = [i.category.tag for i in categories]
+                hits = image_match(tag_list, winning_tags)
+
             if challenge_passed(filename):
-                post_challenge(title, description, difficulty, filename)
-                challenge = Challenge.query.filter(Challenge.title==title)
-                challenge_obj = challenge.first()
-                return redirect('/challenge/{}'.format(challenge_obj.id))
+                return null
             else:
                 os.remove(filename)
 
     else:
-        challenge_id = request.form.get('challenge_id')
-        to_complete = db.session.query(UserChallenge).filter(UserChallenge.id==challenge_id)
-        return render_template('complete.html', challenge=to_complete)
+        to_complete = db.session.query(UserChallenge, Challenge).filter(UserChallenge.id==id).join(Challenge).first()
+        return render_template('complete.html', challenge_info=to_complete)
 
 
 if __name__ == "__main__":
@@ -313,7 +328,7 @@ if __name__ == "__main__":
     # make sure templates, etc. are not cached in debug mode
     app.jinja_env.auto_reload = app.debug
 
-    connect_to_db(app, 'postgres:///nerve')
+    connect_to_db(app, 'postgres:///test_nerve')
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)
