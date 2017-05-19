@@ -89,9 +89,8 @@ def load_user_profile(username):
         flash("Not a valid user.")
         return redirect('/')
 
-def check_password(user_id, password):
+def check_password(db_password, password):
     """Checks to see if entered password matches the db password"""
-    db_password = db.session.query(User.password).filter(User.id==user_id).first()
     return bcrypt.check_password_hash(db_password, password)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -105,7 +104,7 @@ def show_login_form():
         user = get_user_by_username(username)
 
         if user: # user exists
-            if check_password(user.id, password):
+            if check_password(user.password, password):
                 session['active'] = True
                 session['user_id'] = user.id
                 return redirect('/')
@@ -215,22 +214,16 @@ def create_challenge():
         if file.filename == '':
             flash('No file selected')
             return redirect('/create')
-            print 'file'
         elif file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             filename = 'static/images/' + filename
-            print 'had filename'
             if image_is_safe(filename):
-                print 'tags'
                 tag_list = get_tags_for_image(filename, 10)
-                print 'image safe got tags'
                 if tag_list:
                     post_challenge(title, description, difficulty, filename)
                     challenge_id = db.session.query(Challenge.id).filter(Challenge.title==title).first()
-                    print 'posted challenge'
                     post_challenge_categories(tag_list, challenge_id[0])
-                    print ''
                     return redirect('/challenge/{}'.format(challenge_id[0]))
                 else:
                     flash("""We weren't able to analyze your image. Please 
@@ -274,19 +267,32 @@ def remove_challenge():
     # return the UC primary key
 
     return ''
-def complete_challenge(hits):
+
+def calculate_score(hits, difficulty):
+    """Calculates the score for a winning image"""
+    score = (10 * difficulty * hits)
+    return score
+
+def attempt_challenge(id, hits):
     """Updates the UserChallenge record with additional details"""
-    if hits != 0;
-        # set completed to true
-    # update attempts += 1
+    user =  session['user_id']
+    update = UserChallenge.query.filter((UserChallenge.user_id==session['user_id'])&(UserChallenge.challenge_id==id)).first()
+    difficulty = Challenge.query.get(id).difficulty
+    if hits:
+        score = calculate_score(hits, difficulty)
+        update.points_earned = score
+        update.is_completed = True
+        update.completed_timestamp = datetime.now()
+    update.attempts += 1
+    db.session.commit()
 
 def image_match(tag_list, winning_tags):
     """Checks uploaded image tags against the challenge image"""
-    match_count = 0
+    hits = 0
     for tag in tag_list:
         if tag in winning_tags:
-            match_count += 1
-    return match_count
+            hits += 1
+    return hits
 
 @app.route('/complete/<id>', methods=['GET','POST'])
 def complete_challenge(id):
@@ -294,13 +300,10 @@ def complete_challenge(id):
         to complete"""
     if request.method == 'POST':
         file = request.files['file']
-        challenge_id = request.form.get('challenge_id')
-
-        image_match()
 
         if file.filename == '':
             flash('No file selected')
-            return redirect('/complete/{}'.format(challenge_id))
+            return redirect('/complete/{}'.format(id))
         elif file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
@@ -310,9 +313,8 @@ def complete_challenge(id):
                 categories = ChallengeCategory.query.filter(ChallengeCategory.challenge_id==id).all()
                 winning_tags = [i.category.tag for i in categories]
                 hits = image_match(tag_list, winning_tags)
-
-            if challenge_passed(filename):
-                return null
+                attempt_challenge(id, hits)
+                return redirect('/complete/{}'.format(id))
             else:
                 os.remove(filename)
 

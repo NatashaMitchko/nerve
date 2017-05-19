@@ -15,7 +15,7 @@
 <label>Attempts: <h3>{{ challenge_info.UserChallenge.attempts }}</h3></label>
 <div style="width:50%"><img src="/{{ challenge_info.Challenge.image_path }}"></div>
 
-<form action="/complete" name="create" id="create" enctype="multipart/form-data" method="POST">
+<form action="/complete/{{ challenge_info.Challenge.id }}" name="create" id="create" enctype="multipart/form-data" method="POST">
   {% for message in get_flashed_messages() %}
   <span> {{ message }}</span>
   {% endfor %}
