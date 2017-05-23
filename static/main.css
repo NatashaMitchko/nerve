@@ -1,22 +1,12 @@
-/* Modal Content/Box */
-.login-content {
-    background-color: #fefefe ;
-    margin: 15% auto; /* 15% from the top and centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 50%; /* Could be more or less, depending on screen size */
-}
 
-/* The Close Button */
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
+.saving-forlater{
+    /*Nice pink/orange gradient*/
+    background: linear-gradient(#fc7279 30%, #ff7b9c 60%, #ffc019 125%);
+    /*Error highlight color for pink/orange*/
+    background-color: #FEEDED; 
+    /*Nice green blue gradient*/
+    background: linear-gradient(top left, #67dbe4, #c7ffe2);
+    /*Box shadow for tasks*/
+    box-shadow: 15px 15px 90px -15px rgba(138,130,138,1);
 
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+}

@@ -13,14 +13,21 @@
 <a href='/create'>Create a Challenge</a>
 
 {% for i in info %}
-<ul> 
   {% if i.UserChallenge.is_completed == False %}
-  <li>{{ i.Challenge.title }}</li>
-  <li>Accepted: {{ i.UserChallenge.accepted_timestamp }}</li>
-  <li> {{ i.Challenge.description }}</li>
+  <table>
+    <tr>
+      <th>{{ i.Challenge.title }}</th>
+    </tr>
+    <tr>
+      <td>Accepted <span class="time" data-timestamp="{{ i.UserChallenge.accepted_timestamp }}"></span></td>
+    </tr>
+    <tr>
+      <td>{{ i.Challenge.description }}</td>
+    </tr>
+  </table>
+
+    <a href="/complete/{{ i.UserChallenge.challenge_id }}">Complete Challenge</a>
   {% endif %}
-</ul>
-<a href="/complete/{{ i.UserChallenge.challenge_id }}">Complete Challenge</a>
 {% endfor %}
 
 <h3>Completed Challenges</h3>

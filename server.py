@@ -8,6 +8,7 @@ from model import User, UserChallenge, Challenge, ChallengeCategory, Category, c
 from vision import get_tags_for_image, image_is_safe
 from flask.ext.bcrypt import Bcrypt
 from sqlalchemy import exc
+import arrow
 
 
 app = Flask(__name__)
@@ -88,6 +89,12 @@ def load_user_profile(username):
     else:
         flash("Not a valid user.")
         return redirect('/')
+
+@app.route('/time.json')
+def humanize_timestamp():
+    datetime_time = request.args.get('ISO_string')
+    arrow_time_object = arrow.get(datetime_time)
+    return arrow_time_object.humanize()
 
 def check_password(db_password, password):
     """Checks to see if entered password matches the db password"""
@@ -206,7 +213,7 @@ def create_challenge():
     """Render new challenge form and post newly created challenges if valid"""
     if request.method == 'POST':
 
-        title = request.form.get('title')
+        title = request.form.get('title').title()
         description = request.form.get('description')
         difficulty = request.form.get('difficulty')
         file = request.files['file']
@@ -321,6 +328,13 @@ def complete_challenge(id):
     else:
         to_complete = db.session.query(UserChallenge, Challenge).filter(UserChallenge.id==id).join(Challenge).first()
         return render_template('complete.html', challenge_info=to_complete)
+
+@app.route('/contact-me')
+def contact_me():
+    """My profile page that shows how to get in contact with me"""
+    return render_template('contact_me.html')
+
+
 
 
 if __name__ == "__main__":

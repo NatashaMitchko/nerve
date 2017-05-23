@@ -57,8 +57,6 @@ class UserChallenge(db.Model):
     is_removed = db.Column(db.Boolean, nullable=False, default=False)
     accepted_timestamp = db.Column(db.TIMESTAMP(timezone=True), nullable=False)
     completed_timestamp = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
-    lat = db.Column(db.String(12)) #+/-###.#######
-    long = db.Column(db.String(12)) #+/-###.#######
     image_path = db.Column(db.String(50))
     points_earned = db.Column(db.Integer, default=0, nullable=False)
     attempts = db.Column(db.Integer, default=0, nullable=False)

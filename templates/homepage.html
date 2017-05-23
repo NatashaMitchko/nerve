@@ -11,21 +11,15 @@
 {% if session.get('active') %}
 <a href="/logout">Log Out</a>
 <a href="/profile/id/{{ session.get('user_id')}}">Profile</a>
+<h1>Pics or it</h1>
+<h1>Didn't Happen.</h1>
+
 {% else %}
 <a href="/login">Log In</a>
 
 
-<button id="login">Log In</button>
-
-<div id="login-popup" class="modal">
-  <!-- Modal content -->
-  <div class="login-content">
-    <span class="close">&times;</span>
-    <form action="/login" name="login" id="login" method="POST">
-      <label>Username <input type="text" name="username" id="username" value="" required></label>
-      <label>Password <input type="password" name="password" id="password" required></label>
-      <input type="submit" value="Submit" name="submit" id="submit">
-    </form>
+<h1>Pics or it</h1>
+<h1>Didn't Happen.</h1>
 
 {% endif %}
 {% endblock %}
