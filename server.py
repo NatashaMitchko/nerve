@@ -92,9 +92,19 @@ def load_user_profile(username):
 
 @app.route('/time.json')
 def humanize_timestamp():
+    """Takes ISO string passed from challenge object and converts it to
+    a humanized timestamp"""
     datetime_time = request.args.get('ISO_string')
     arrow_time_object = arrow.get(datetime_time)
     return arrow_time_object.humanize()
+
+@app.route('/num-players.json')
+def num_players():
+    """Counts how many users are participating in each challenge"""
+    challenge_id = request.args.get('challenge_id')
+    query = UserChallenge.query.filter(UserChallenge.challenge_id==challenge_id)
+    print query.count()
+    return str(query.count())
 
 def check_password(db_password, password):
     """Checks to see if entered password matches the db password"""

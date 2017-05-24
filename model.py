@@ -192,22 +192,18 @@ def example_data():
     uc4 = UserChallenge(user_id=4, challenge_id=1, is_completed=False, 
                                                     accepted_timestamp=accepted )
     uc5 = UserChallenge(user_id=4, challenge_id=2, is_completed=True, 
-                        accepted_timestamp=accepted2, completed_timestamp=completed,
-                        lat='51.507351', long='-0.127758', 
+                        accepted_timestamp=accepted2, completed_timestamp=completed, 
                         image_path='static/images/currency.png')
     # user 5, one complete
     uc6 = UserChallenge(user_id=5, challenge_id=2, is_completed=True, 
                         accepted_timestamp=accepted, completed_timestamp=completed, 
-                        lat='40.712784', long='-74.005941', 
                         image_path='static/images/currency.png')
     # user 6, many complete
     uc7 = UserChallenge(user_id=6, challenge_id=1, is_completed=True, 
                         accepted_timestamp=accepted, completed_timestamp=completed, 
-                        lat='-33.868820', long='151.209296', 
                         image_path='static/images/butter.png')
     uc8 = UserChallenge(user_id=6, challenge_id=2, is_completed=True, 
                         accepted_timestamp=accepted2, completed_timestamp=completed,
-                        lat='35.689487', long='139.691706', 
                         image_path='static/images/currency.png')
 
     # Challenges

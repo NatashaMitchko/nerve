@@ -13,8 +13,8 @@
 </div>
 <div class="row">
   <h1>Challenges</h1>
-  <a  href='/create'>Create a Challenge</a>
 </div>
+
 {% for challenge in challenges %}
 <div class="row">
   <table>
@@ -31,14 +31,13 @@
     <tr>
       <td>{{ challenge.description }}</td>
     </tr>
+    <tr>
+      <td>Participants <span class="num-players" data-challenge_id="{{ challenge.id }}"></span></td>
+    </tr>
   </table>
 </div>
 {% endfor %}
-<button id="add-btn">Add</button>
-<div id="overlay">
-  <div>
-    
-  </div>
-</div>
+
+<a href="/add_challenge.json" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">+</a>
 
 {% endblock %}

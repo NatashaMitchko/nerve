@@ -9,8 +9,6 @@
 <a href="/login">Log In</a>
 {% endif %}
 <h1>{{ username }}</h1>
-<a href='/challenges'><Find a Challenge</a>
-<a href='/create'>Create a Challenge</a>
 
 {% for i in info %}
   {% if i.UserChallenge.is_completed == False %}
@@ -24,9 +22,10 @@
     <tr>
       <td>{{ i.Challenge.description }}</td>
     </tr>
+    <tr>
+      <td><a href="/complete/{{ i.UserChallenge.challenge_id }}">Complete Challenge</a></td>
+    </tr>
   </table>
-
-    <a href="/complete/{{ i.UserChallenge.challenge_id }}">Complete Challenge</a>
   {% endif %}
 {% endfor %}
 
@@ -42,4 +41,6 @@
   {% endif %} 
 </ul>
 {% endfor %}
+
+<a href="/challenges" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">+</a>
 {% endblock %}
