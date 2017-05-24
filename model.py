@@ -103,7 +103,7 @@ class ChallengeCategory(db.Model):
     challenge = db.relationship('Challenge', backref=db.backref('challenge_categories'))
     category = db.relationship('Category', backref=db.backref('challenge_categories'))
 
-    challenge_categories_index = db.Index('quicksearch', challenge_id)
+    challenge_categories_index = db.Index('quicksearchCC', challenge_id)
 
 
     def __repr__(self):
@@ -122,6 +122,28 @@ class Category(db.Model):
 
     def __repr__(self):
         return '<Category: {tag} id: {id}>'.format(tag=self.tag, id=self.id)
+
+class UserChallengeCategory(db.Model):
+    """Stores all of the categories that led to a user winning a challenge"""
+
+    __tablename__ = 'user_challenge_categories'
+
+    id = db.Column(db.Integer, 
+                    nullable=False, 
+                    autoincrement=True, 
+                    primary_key=True)
+    user_challenge_id = db.Column(db.Integer, db.ForeignKey('user_challenges.id'))
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
+
+    user_challenge = db.relationship('UserChallenge', backref=db.backref('user_challenge_categories'))
+    category = db.relationship('Category', backref=db.backref('user_challenge_categories'))
+
+    user_challenge_categories_index = db.Index('quicksearchUCC', user_challenge_id, category_id, unique=True)
+
+    def __repr__(self):
+        return '<UserChallengeCategory UC: {UCID} C: {CID}>'.format(UCID=self.user_challenge_id,
+                                                                    CID=self.category_id)
+
 
 ################################################################################
 

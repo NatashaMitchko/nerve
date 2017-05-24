@@ -2,17 +2,21 @@ from jinja2 import StrictUndefined
 import os, sys
 from datetime import datetime
 from flask_debugtoolbar import DebugToolbarExtension
-from flask import Flask, jsonify, render_template, redirect, request, flash, session
+from flask import Flask, jsonify, render_template, redirect, request, flash, session, Blueprint
 from werkzeug.utils import secure_filename
 from model import User, UserChallenge, Challenge, ChallengeCategory, Category, connect_to_db, db, example_data
 from vision import get_tags_for_image, image_is_safe
 from flask.ext.bcrypt import Bcrypt
 from sqlalchemy import exc
 import arrow
+from controllers import auth
 
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
+
+app.register_blueprint(auth, url_prefix='/')
+
 
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "81CAEB25176HDG36710KSXZ2320"
@@ -103,36 +107,42 @@ def num_players():
     """Counts how many users are participating in each challenge"""
     challenge_id = request.args.get('challenge_id')
     query = UserChallenge.query.filter(UserChallenge.challenge_id==challenge_id)
-    print query.count()
     return str(query.count())
+
+@app.route('/matched_attributes.json')
+def matched_attributes():
+    """Using challenge id and user_id from the session, get all attributes that
+    matched for that user to complete the challenge"""
+    challenge_id = request.args.get('challenge_id')
+    user_id = session['user_id']
+    ##########################################################################################################
 
 def check_password(db_password, password):
     """Checks to see if entered password matches the db password"""
     return bcrypt.check_password_hash(db_password, password)
 
-@app.route('/login', methods=['GET', 'POST'])
-def show_login_form():
-    """Handles login actions """
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        # print username, password
+# @app.route('/login', methods=['GET', 'POST'])
+# def show_login_form():
+#     """Handles login actions """
+#     if request.method == 'POST':
+#         username = request.form.get('username')
+#         password = request.form.get('password')
 
-        user = get_user_by_username(username)
+#         user = get_user_by_username(username)
 
-        if user: # user exists
-            if check_password(user.password, password):
-                session['active'] = True
-                session['user_id'] = user.id
-                return redirect('/')
-            else:
-                flash('Incorrect password')
-                return redirect('/login')
-        else:
-            flash('Incorrect Username')
-            return redirect('/login')
-    else:
-        return render_template('/login.html', username='')
+#         if user: # user exists
+#             if check_password(user.password, password):
+#                 session['active'] = True
+#                 session['user_id'] = user.id
+#                 return redirect('/')
+#             else:
+#                 flash('Incorrect password')
+#                 return redirect('/login')
+#         else:
+#             flash('Incorrect Username')
+#             return redirect('/login')
+#     else:
+#         return render_template('/login.html', username='')
 
 @app.route('/logout')
 def logout():
@@ -285,26 +295,33 @@ def remove_challenge():
 
     return ''
 
-def calculate_score(hits, difficulty):
+def calculate_score(hits, difficulty, attempts):
     """Calculates the score for a winning image"""
-    score = (10 * difficulty * hits)
+    score = (10 * difficulty/attempts)*hits
     return score
 
 def attempt_challenge(id, hits):
     """Updates the UserChallenge record with additional details"""
     user =  session['user_id']
-    update = UserChallenge.query.filter((UserChallenge.user_id==session['user_id'])&(UserChallenge.challenge_id==id)).first()
+    update, attempts = db.session.query(UserChallenge, UserChallenge.attempts).filter((UserChallenge.user_id==session['user_id'])&(UserChallenge.challenge_id==id)).first()
     difficulty = Challenge.query.get(id).difficulty
     if hits:
-        score = calculate_score(hits, difficulty)
+        score = calculate_score(hits, difficulty, attempts)
         update.points_earned = score
         update.is_completed = True
         update.completed_timestamp = datetime.now()
+        #adds matched hits to the UserChallengeCategory association table
+        for hit in hits:
+            category_id = db.session.query(Category.id).filter(Category.tag==hit).first()
+            new_user_challenge_category = UserChallengeCategory(user_challenge_id=update.id,
+                                                                category_id=category_id)
+            db.session.add(new_user_challenge_category)
     update.attempts += 1
     db.session.commit()
 
-def image_match(tag_list, winning_tags):
-    """Checks uploaded image tags against the challenge image"""
+def image_match(tag_list, winning_tags, challenge_id):
+    """Checks uploaded image tags against the challenge image, adds hits to
+    UserChallengeCategory table."""
     hits = 0
     for tag in tag_list:
         if tag in winning_tags:

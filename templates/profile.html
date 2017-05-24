@@ -12,34 +12,57 @@
 
 {% for i in info %}
   {% if i.UserChallenge.is_completed == False %}
-  <table>
-    <tr>
-      <th>{{ i.Challenge.title }}</th>
-    </tr>
-    <tr>
-      <td>Accepted <span class="time" data-timestamp="{{ i.UserChallenge.accepted_timestamp }}"></span></td>
-    </tr>
-    <tr>
-      <td>{{ i.Challenge.description }}</td>
-    </tr>
-    <tr>
-      <td><a href="/complete/{{ i.UserChallenge.challenge_id }}">Complete Challenge</a></td>
-    </tr>
-  </table>
+  <div class="row">
+    <table>
+      <tr>
+        <th>{{ i.Challenge.title }}</th>
+      </tr>
+      <tr>
+        <td>Accepted <span class="time" data-timestamp="{{ i.UserChallenge.accepted_timestamp }}"></span></td>
+      </tr>
+      <tr>
+        <td>Participants: <span class="num-players" data-challenge_id="{{ i.Challenge.id }}"></span></td>
+      </tr>
+      <tr>
+        <td>{{ i.Challenge.description }}</td>
+      </tr>
+      <tr>
+        <td><a href="/complete/{{ i.UserChallenge.challenge_id }}">Complete Challenge</a></td>
+      </tr>
+    </table>
+  </div>
   {% endif %}
 {% endfor %}
 
 <h3>Completed Challenges</h3>
 {% for i in info %}
-<ul>
   {% if i.UserChallenge.is_completed == True %}
-  <li>{{ i.Challenge.title }}</li>
-  <li>Accepted: {{ i.UserChallenge.accepted_timestamp }}</li>
-  <li> {{ i.Challenge.description }}</li>
-  <li>Completed: {{ i.UserChallenge.completed_timestamp }}</li>
-  <li>Points: {{ i.UserChallenge.points_earned }}</li>
-  {% endif %} 
-</ul>
+  <div class="row">
+    <table>
+      <tr>
+        <th>{{ i.Challenge.title }}</th>
+      </tr>
+      <tr>
+        <td>Completed <span class="time" data-timestamp="{{ i.UserChallenge.completed_timestamp }}"></span></td>
+      </tr>
+      <tr>
+        <td>Points: {{ i.UserChallenge.points_earned }}</td>
+      </tr>
+      <tr>
+        <td>Participants: <span class="num-players" data-challenge_id="{{ i.Challenge.id }}"></span></td>
+      </tr>
+      <tr>
+        <td>{{ i.Challenge.description }}</td>
+      </tr>
+      <tr>
+        <td><img src="/{{ i.Challenge.image_path }}"></td>
+      </tr>
+      <tr>
+        <td>Matched attributes: <ul class="matched_attributes" data-challenge_id="{{ i.Challenge.id }}"></ul></td>
+      </tr>
+    </table>
+  </div>
+  {% endif %}
 {% endfor %}
 
 <a href="/challenges" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">+</a>

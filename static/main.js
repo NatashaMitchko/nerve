@@ -33,6 +33,24 @@
   $('.time').each(humanizeTime);
 })();
 
+// Get matched tags (profile view)
+(function(){
+  function showAttributes(){
+    var that = this;
+    $.get('/matched_attributes.json', {'challenge_id':$(this).attr('data-challenge_id')},
+      function(result){
+        for (var i = 0; i<result.length; i++){
+          var attribute = $("<li>"+result[i]+"/li");
+          $(that).append(attribute);
+        };
+      }
+    );
+  };
+  $('.matched_attributes').each(showAttributes);
+
+})();
+
+
 
 // Count users IIFE
 (function(){
