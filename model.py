@@ -55,8 +55,8 @@ class UserChallenge(db.Model):
     challenge_id = db.Column(db.Integer, db.ForeignKey('challenges.id'))
     is_completed = db.Column(db.Boolean, nullable=False, default=False)
     is_removed = db.Column(db.Boolean, nullable=False, default=False)
-    accepted_timestamp = db.Column(db.TIMESTAMP(timezone=True), nullable=False)
-    completed_timestamp = db.Column(db.TIMESTAMP(timezone=True), nullable=True)
+    accepted_timestamp = db.Column(db.TIMESTAMP, nullable=False)
+    completed_timestamp = db.Column(db.TIMESTAMP, nullable=True)
     image_path = db.Column(db.String(50))
     points_earned = db.Column(db.Integer, default=0, nullable=False)
     attempts = db.Column(db.Integer, default=0, nullable=False)
@@ -122,6 +122,28 @@ class Category(db.Model):
 
     def __repr__(self):
         return '<Category: {tag} id: {id}>'.format(tag=self.tag, id=self.id)
+
+
+class UserChallengeCategory(db.Model):
+    """Stores all of the categories that led to a user winning a challenge"""
+
+    __tablename__ = 'user_challenge_categories'
+
+    id = db.Column(db.Integer, 
+                    nullable=False, 
+                    autoincrement=True, 
+                    primary_key=True)
+    user_challenge_id = db.Column(db.Integer, db.ForeignKey('user_challenges.id'))
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
+
+    user_challenge = db.relationship('UserChallenge', backref=db.backref('user_challenge_categories'))
+    category = db.relationship('Category', backref=db.backref('user_challenge_categories'))
+
+    user_challenge_categories_index = db.Index('quicksearchUCC', user_challenge_id, category_id, unique=True)
+
+    def __repr__(self):
+        return '<UserChallengeCategory UC: {UCID} C: {CID}>'.format(UCID=self.user_challenge_id,
+                                                                    CID=self.category_id)
 
 ################################################################################
 

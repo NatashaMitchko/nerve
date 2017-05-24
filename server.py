@@ -4,7 +4,7 @@ from datetime import datetime
 from flask_debugtoolbar import DebugToolbarExtension
 from flask import Flask, jsonify, render_template, redirect, request, flash, session
 from werkzeug.utils import secure_filename
-from model import User, UserChallenge, Challenge, ChallengeCategory, Category, connect_to_db, db, example_data
+from model import User, UserChallenge, Challenge, ChallengeCategory, Category, UserChallengeCategory, connect_to_db, db, example_data
 from vision import get_tags_for_image, image_is_safe
 from flask.ext.bcrypt import Bcrypt
 from sqlalchemy import exc
@@ -285,9 +285,9 @@ def remove_challenge():
 
     return ''
 
-def calculate_score(hits, difficulty):
+def calculate_score(hits, difficulty, attempts):
     """Calculates the score for a winning image"""
-    score = (10 * difficulty * hits)
+    score = (10 * difficulty/attempts)*hits
     return score
 
 def attempt_challenge(id, hits):
@@ -296,13 +296,13 @@ def attempt_challenge(id, hits):
     update = UserChallenge.query.filter((UserChallenge.user_id==session['user_id'])&(UserChallenge.challenge_id==id)).first()
     difficulty = Challenge.query.get(id).difficulty
     if hits:
-        score = calculate_score(hits, difficulty)
+        score = calculate_score(hits, difficulty, update.attempts)
         update.points_earned = score
         update.is_completed = True
         update.completed_timestamp = datetime.now()
-        save_winning_hits(hits, id)
     update.attempts += 1
     db.session.commit()
+    return update
 
 def image_match(tag_list, winning_tags):
     """Checks uploaded image tags against the challenge image"""
@@ -312,9 +312,15 @@ def image_match(tag_list, winning_tags):
             hits += 1
     return hits
 
-def save_winning_hits(tag_list, challenge_id):
-    """Adds information relating UserChallenge to Category
-    db.commit() in attempt_challenge()"""
+def save_winning_hits(tag_list, user_challenge_id):
+    """Adds information relating UserChallenge to Category"""
+    for tag in tag_list:
+        # Get category id for hit
+        category = Category.query.filter(Category.tag==tag).first()
+        new_user_challenge_category = UserChallengeCategory(user_challenge_id=user_challenge_id,
+                                                            category_id=category.id)
+        db.session.add(new_user_challenge_category)
+        db.session.commit()
 
 
 @app.route('/complete/<id>', methods=['GET','POST'])
@@ -335,8 +341,12 @@ def complete_challenge(id):
                 tag_list = get_tags_for_image(filename, 5)
                 categories = ChallengeCategory.query.filter(ChallengeCategory.challenge_id==id).all()
                 winning_tags = [i.category.tag for i in categories]
+                print winning_tags
+                print tag_list
                 hits = image_match(tag_list, winning_tags)
-                attempt_challenge(id, hits)
+                if hits != 0:
+                    user_challenge = attempt_challenge(id, hits)
+                    save_winning_hits(tag_list, user_challenge.id)
                 return redirect('/complete/{}'.format(id))
             else:
                 os.remove(filename)
@@ -356,6 +366,7 @@ def contact_me():
 if __name__ == "__main__":
 
     app.debug = True
+    app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
     # make sure templates, etc. are not cached in debug mode
     app.jinja_env.auto_reload = app.debug
