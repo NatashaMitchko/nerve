@@ -300,6 +300,7 @@ def attempt_challenge(id, hits):
         update.points_earned = score
         update.is_completed = True
         update.completed_timestamp = datetime.now()
+        save_winning_hits(hits, id)
     update.attempts += 1
     db.session.commit()
 
@@ -310,6 +311,11 @@ def image_match(tag_list, winning_tags):
         if tag in winning_tags:
             hits += 1
     return hits
+
+def save_winning_hits(tag_list, challenge_id):
+    """Adds information relating UserChallenge to Category
+    db.commit() in attempt_challenge()"""
+
 
 @app.route('/complete/<id>', methods=['GET','POST'])
 def complete_challenge(id):
@@ -336,7 +342,7 @@ def complete_challenge(id):
                 os.remove(filename)
 
     else:
-        to_complete = db.session.query(UserChallenge, Challenge).filter(UserChallenge.id==id).join(Challenge).first()
+        to_complete = db.session.query(UserChallenge, Challenge).filter(UserChallenge.challenge_id==id).join(Challenge).first()
         return render_template('complete.html', challenge_info=to_complete)
 
 @app.route('/contact-me')
