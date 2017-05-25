@@ -286,11 +286,12 @@ def remove_challenge():
     return ''
 
 def calculate_score(hits, difficulty, attempts):
-    """Calculates the score for a winning image"""
-    score = (10 * difficulty/attempts)*hits
+    """Calculates the score for a winning image
+    attempts +1 because this is called before attempt increment comitted to db"""
+    score = (10 * difficulty/(attempts+1))*hits
     return score
 
-def attempt_challenge(id, hits):
+def attempt_challenge(id, hits, filename):
     """Updates the UserChallenge record with additional details"""
     user =  session['user_id']
     update = UserChallenge.query.filter((UserChallenge.user_id==session['user_id'])&(UserChallenge.challenge_id==id)).first()
@@ -299,6 +300,8 @@ def attempt_challenge(id, hits):
         score = calculate_score(hits, difficulty, update.attempts)
         update.points_earned = score
         update.is_completed = True
+        update.image_path = filename
+        print filename +  ':filename'
         update.completed_timestamp = datetime.now()
     update.attempts += 1
     db.session.commit()
@@ -345,7 +348,7 @@ def complete_challenge(id):
                 print tag_list
                 hits = image_match(tag_list, winning_tags)
                 if hits != 0:
-                    user_challenge = attempt_challenge(id, hits)
+                    user_challenge = attempt_challenge(id, hits, filename)
                     save_winning_hits(tag_list, user_challenge.id)
                 return redirect('/complete/{}'.format(id))
             else:
@@ -355,12 +358,22 @@ def complete_challenge(id):
         to_complete = db.session.query(UserChallenge, Challenge).filter(UserChallenge.challenge_id==id).join(Challenge).first()
         return render_template('complete.html', challenge_info=to_complete)
 
+@app.route('/matched_attributes.json')
+def matched_attributes():
+    """Using challenge id and user_id from the session, get all attributes that
+    matched for that user to complete the challenge"""
+    user_challenge_id = request.args.get('user_challenge_id')
+    categories = UserChallengeCategory.query.filter(UserChallengeCategory.user_challenge_id==user_challenge_id).all()
+    winning_tags_to_display = [i.category.tag for i in categories]
+    dict = {}
+    for tag in winning_tags_to_display:
+        dict.setdefault(tag, 0)
+    return jsonify(dict)
+
 @app.route('/contact-me')
 def contact_me():
     """My profile page that shows how to get in contact with me"""
     return render_template('contact_me.html')
-
-
 
 
 if __name__ == "__main__":

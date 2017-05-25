@@ -34,6 +34,26 @@
 })();
 
 
+// Get matched tags (profile view)
+(function(){
+  function showAttributes(){
+    var that = this;
+    $.get('/matched_attributes.json', {'user_challenge_id':$(this).attr('data-challenge_id')},
+      function(result){
+        console.log(result);
+        $.each(result, function(key) {
+          console.log(key);
+          $(that).append('<li>' + key + '</li>');
+      });
+
+      }
+    );
+  };
+  $('.matched_attributes').each(showAttributes);
+
+})();
+
+
 // Count users IIFE
 (function(){
 
