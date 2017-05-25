@@ -1,10 +1,33 @@
-{% extends 'base.html' %}
-
-{% block title %}Analytics{% endblock %}
-{% block content %}
+<!DOCTYPE html>
 <svg width="960" height="600"></svg>
+<meta charset="utf-8">
+<style>
+
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.link {
+  fill: none;
+  stroke: #bbb;
+}
+
+</style>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
+
+console.log('START');
+
+var JSONstring;
+
+// function createJSONstring(result){
+//     JSONstring = result;
+// }
+
+// console.log(JSONstring);
+
+// $.get('/challenge_analytics.json', createJSONstring)
 
 var svg = d3.select("svg"),
     width = +svg.attr("width"),

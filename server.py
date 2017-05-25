@@ -381,8 +381,8 @@ def make_d3_nodes():
     nodes_list = []
     i = 0
     for challenge in challenges:
-        node = {}
-        node.setdefault(challenge.title, i+1)
+        node = {"id": challenge.title, "group": i+1}
+        # node.setdefault(challenge.title, i+1)
         nodes_list.append(node)
         i += 1
     return nodes_list
@@ -394,7 +394,7 @@ def make_d3_links():
     # get all challenge categories in order of challenge id
     challege_categories = db.session.query(ChallengeCategory).order_by(ChallengeCategory.category_id).all()
     links_list = []
-    for i in len(challege_categories) - 1;
+    for i in range(len(challege_categories) - 1):
         if challege_categories[i].category_id == challege_categories[i + 1].category_id:
             link = {"source": challege_categories[i].challenge.title,
                     "target": challege_categories[i + 1].challenge.title,
@@ -402,6 +402,7 @@ def make_d3_links():
                     }
             links_list.append(link)
         i += 1
+    return links_list
 
 
 @app.route('/challenge_analytics.json')
@@ -409,9 +410,19 @@ def challenge_analytics():
     """Returns information to resolve D3 diagram that shows the relationship
                 between challenges by keywords they have in common"""
     node_values = make_d3_nodes()
+    link_values = make_d3_links()
 
+    d3_dict = {"nodes": node_values, "links": link_values}
 
+    print d3_dict
 
+    return jsonify(d3_dict)
+
+@app.route('/leaderboard')
+def leaderboard():
+    """Shows various data visualizations and statictics about challenges and 
+    users"""
+    return render_template('analytics.html')
 
 @app.route('/contact-me')
 def contact_me():
