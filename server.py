@@ -370,6 +370,49 @@ def matched_attributes():
         dict.setdefault(tag, 0)
     return jsonify(dict)
 
+def make_d3_nodes():
+    """Create individual dictionaries for each challenge
+        >>> make_d3_nodes()
+        [{u'Bridge': 1}, {u'Bird': 2}]
+    """
+    # get all challenge objects
+    challenges = Challenge.query.all()
+    # make the challenge nodes
+    nodes_list = []
+    i = 0
+    for challenge in challenges:
+        node = {}
+        node.setdefault(challenge.title, i+1)
+        nodes_list.append(node)
+        i += 1
+    return nodes_list
+
+def make_d3_links():
+    """create the individual dictionaries for each link betweek categories
+
+    """
+    # get all challenge categories in order of challenge id
+    challege_categories = db.session.query(ChallengeCategory).order_by(ChallengeCategory.category_id).all()
+    links_list = []
+    for i in len(challege_categories) - 1;
+        if challege_categories[i].category_id == challege_categories[i + 1].category_id:
+            link = {"source": challege_categories[i].challenge.title,
+                    "target": challege_categories[i + 1].challenge.title,
+                    "value": challege_categories[i].category.tag
+                    }
+            links_list.append(link)
+        i += 1
+
+
+@app.route('/challenge_analytics.json')
+def challenge_analytics():
+    """Returns information to resolve D3 diagram that shows the relationship
+                between challenges by keywords they have in common"""
+    node_values = make_d3_nodes()
+
+
+
+
 @app.route('/contact-me')
 def contact_me():
     """My profile page that shows how to get in contact with me"""
