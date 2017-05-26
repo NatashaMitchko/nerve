@@ -438,10 +438,8 @@ if __name__ == "__main__":
     # make sure templates, etc. are not cached in debug mode
     app.jinja_env.auto_reload = app.debug
 
-    connect_to_db(app, 'postgres:///test_nerve')
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)
-    db.create_all()
 
     app.run(port=5000, host='0.0.0.0')
