@@ -110,29 +110,41 @@ def check_password(db_password, password):
     """Checks to see if entered password matches the db password"""
     return bcrypt.check_password_hash(db_password, password)
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login')
+def show_entry_forms():
+    """Render login/register form"""
+    return render_template('login-register.html')
+
+@app.route('/username_taken.json')
+def is_username_taken():
+    """Checks if username exists in Users table, returns T/F"""
+    username = request.args.get('username')
+    print username
+    user = get_user_by_username(username)
+    print bool(user)
+    is_user = {'username-taken': bool(user)}
+    return jsonify(is_user)
+
+@app.route('/login1', methods=['POST'])
 def show_login_form():
     """Handles login actions """
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        # print username, password
+    username = request.form.get('username')
+    password = request.form.get('password')
+    # print username, password
 
-        user = get_user_by_username(username)
+    user = get_user_by_username(username)
 
-        if user: # user exists
-            if check_password(user.password, password):
-                session['active'] = True
-                session['user_id'] = user.id
-                return redirect('/')
-            else:
-                flash('Incorrect password')
-                return redirect('/login')
+    if user: # user exists
+        if check_password(user.password, password):
+            session['active'] = True
+            session['user_id'] = user.id
+            return redirect('/')
         else:
-            flash('Incorrect Username')
+            flash('Incorrect password')
             return redirect('/login')
     else:
-        return render_template('/login.html', username='')
+        flash('Incorrect Username')
+        return redirect('/login')
 
 @app.route('/logout')
 def logout():
@@ -146,32 +158,29 @@ def post_user(u,p,e,f):
     db.session.add(new_user)
     db.session.commit()
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['POST'])
 def register_user():
     """Render new user signup form and handles new user post requests"""
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = bcrypt.generate_password_hash(request.form.get('password'))
-        phone = request.form.get('tel')
-        email = request.form.get('email')
+    username = request.form.get('username')
+    password = bcrypt.generate_password_hash(request.form.get('password'))
+    phone = request.form.get('tel')
+    email = request.form.get('email')
 
-        user = get_user_by_username(username) # None evaluates to False
+    user = get_user_by_username(username) # None evaluates to False
 
-        if user:
-            flash('Username taken')
-            return redirect('/register')
-            # TODO: make this make sense:
+    if user:
+        flash('Username taken')
+        return redirect('/register')
+        # TODO: make this make sense:
 
-        else:
-            # Add new user to the database
-            post_user(username, password, email, phone)
-            # Add newly created user to the session
-            session['active'] = True
-            session['user_id'] = User.query.filter(username==username).first().id
-            flash('Welcome')
-            return redirect('/')
     else:
-        return render_template('register.html')
+        # Add new user to the database
+        post_user(username, password, email, phone)
+        # Add newly created user to the session
+        session['active'] = True
+        session['user_id'] = User.query.filter(username==username).first().id
+        flash('Welcome')
+        return redirect('/')
 
 def allowed_file(filename):
     """Makes sure that the uploaded file is valid type"""

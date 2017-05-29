@@ -16,6 +16,11 @@ html, body {
     margin-top: 1em;
 }
 
+.color-page p b:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 h1 {
     font-family: 'Raleway', sans-serif;    
 }
@@ -23,6 +28,8 @@ h1 {
 .color-page h1.title {
     color: white;
     text-align: center;
+    margin-top: 1em;
+    margin-bottom: 1em;
 }
 
 .color-page h1.name {
@@ -35,12 +42,14 @@ h1 {
     box-shadow: 6px 6px 10px 0px rgba(138,130,138,.5);
     height: 65%;
 }
+
+
 /*END COLORED BACKGROUND PAGE STYLING*/
 /*FORM STYLING*/
 
 form{
   width: auto;
-  margin: 10%;
+  margin: 6%;
   background:white;
 }
 
@@ -115,6 +124,11 @@ input[type=submit]:hover{
 input[type=submit]:focus {
     outline: #67dbe4;
     color: #67dbe4;
+}
+
+#register-message, #login-message{
+    color: #67dbe4;
+    height: 1em;
 }
 
 /*END FORM STYLING*/

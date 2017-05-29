@@ -8,11 +8,15 @@
     <h1 class="title">SCAVENGERHUNT</h1>
   </div>
   <div class="row">
-    <div class="col-xs-4 col-xs-offset-4 main">
+    <div class="col-xs-6 col-xs-offset-3 main">
       <h1 class="text-center">Register</h1>
+      {% for message in get_flashed_messages() %}
+        <div class="text-center"> {{ message }} </div>
+      {% endfor %}
+      <div class="text-center" id="register-message"></div>
       <form action="/register" name="register" id="register" method="POST">
         <div class="floating-placeholder">
-          <input type="text" name="username" id="username" required>
+          <input type="text" name="username" id="register-username" required>
           <label for="username">Username</label>
         </div>
         <div class="floating-placeholder">
@@ -30,11 +34,15 @@
         <input type="submit" value="Submit" name="submit" id="submit">
       </form>
     </div>
-    <div class="col-xs-4 col-xs-offset-4 main hidden">
+    <div class="col-xs-6 col-xs-offset-3 main hidden">
       <h1 class="text-center">Login</h1>
+      {% for message in get_flashed_messages() %}
+        <div class="text-center"> {{ message }} </div>
+      {% endfor %}
+      <div class="text-center" id="login-message"></div>
       <form action="/login" name="login" id="login" method="POST">
         <div class="floating-placeholder">
-          <input type="text" name="username" id="username" required>
+          <input type="text" name="username" id="login-username" required>
           <label for="username">Username</label>
         </div>
         <div class="floating-placeholder">
@@ -45,13 +53,10 @@
       </form>
     </div>
   </div>
-  <div class="col-xs-4 col-xs-offset-4">
+  <div class="col-xs-6 col-xs-offset-3">
     <p class="text-right toggle-form hidden">Don't have an account? <b>Register</b></p>
     <p class="text-right toggle-form">Have an account? <b>Log In</b></p>
   </div>
 </div>
-<!-- {% for message in get_flashed_messages() %}
-    <span> {{ message }}<a href='/login'>Login?</a></span>
-{% endfor %} -->
 
 {% endblock %}

@@ -18,15 +18,56 @@
 })();
 
 
-// Toggle between the login and regiter forms
+// Login/Register functions
 (function(){
-
+  // Toggle between login and register forms
   function toggleForm (){
     $('.main').toggleClass('hidden');
     $('.toggle-form').toggleClass('hidden');    
   }
 
   $('.toggle-form').on('click', toggleForm);
+
+  // Form validation:
+  // Check if username is taken
+  // Make a request to server to check if username is taken
+  function registerUsernameCheck(){
+    var username = $('#register-username').val();
+    $.get('/username_taken.json', {'username': username}, function(result){
+      console.log(result);
+      if (result['username-taken']){
+        $('#register-message').text('Username is already taken');
+      }
+      else{
+        $('#register-message').text('');
+      }
+    });
+  }
+  function loginUsernameCheck (){
+    var username = $('#login-username').val();
+    $.get('/username_taken.json', {'username': username}, function(result){
+      if (!(result['username-taken'])){
+        $('#login-message').text('User not found');
+      }
+      else{
+        $('#login-message').text('');
+      }
+    });
+  }
+  $('#register-username').on('change', registerUsernameCheck);
+  $('#login-username').on('change', loginUsernameCheck);
+
+  // Check if a phone number is a real phone number
+  var re = /(?:\d{3}|\(\d{3}\))([-\/\.])\d{3}\1\d{4}/;  
+  function checkPhone() {  
+    var entered_phone = $('#tel').val()
+    var OK = re.exec(entered_phone);
+    console.log(OK);  
+    if (!OK){
+      $('#register-message').text('Invalid phone number');  
+    }  
+  }
+  $('#tel').on('change', checkPhone);
 
 })();
 
