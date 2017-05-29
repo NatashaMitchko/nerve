@@ -23,9 +23,10 @@
 
   function toggleForm (){
     $('.main').toggleClass('hidden');
+    $('.toggle-form').toggleClass('hidden');    
   }
 
-  $('#toggle-form').on('click', toggleForm);
+  $('.toggle-form').on('click', toggleForm);
 
 })();
 
