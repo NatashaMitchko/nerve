@@ -1,8 +1,48 @@
 {% extends 'base.html' %}
 
 {% block title %}{{ username }}{% endblock %}
-
 {% block content %}
+
+<div class="container-fluid grey-page">
+  <div class="row">
+    <span class="col-xs-12 col-md-3">
+      <h1 class="title home text-center">SCAVENGERHUNT</h1>
+    </span>
+    <span class="col-xs-12 col-md-6">
+      <h1 class="title text-center">PROFILE</h1>
+    </span>
+    <span class="col-xs-12 col-md-3">
+      {% if session.get('active') %}
+      <h1 class="title text-center text-uppercase">{{ username }} <img src="/static/images/_caret.png"></h1>
+      {% endif %}
+    </span>
+  </div>
+  <div class="row in-progress">
+    <div class="col-xs-12 col-md-8 col-md-offset-2">
+      {% for i in info %}
+        {% if i.UserChallenge.is_completed == False %}
+        <div class="col-xs-6 col-md-4 main challenge">
+          <p class="text-right"><span class="time" data-timestamp="{{ i.UserChallenge.accepted_timestamp }}"></span></p>
+          <p class="challenge-title">{{ i.Challenge.title }}</p>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  <div class="row complete">
+    <div class="col-xs-12 col-md-8 col-md-offset-2">
+      {% for i in info %}
+        {% if i.UserChallenge.is_completed == True %}
+        <div class="col-xs-6 col-md-4 main challenge">
+          <p class="text-right"><span class="time" data-timestamp="{{ i.UserChallenge.accepted_timestamp }}"></span></p>
+          <p class="challenge-title">{{ i.Challenge.title }}</p>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
 {% if session.get('active') %}
 <a href="/logout">Log Out</a>
 {% else %}

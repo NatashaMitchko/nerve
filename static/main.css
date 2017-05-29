@@ -6,6 +6,17 @@ html, body {
     height: 100%;
 }
 
+.main {
+    background: #FFF;
+    border-radius: 4px;
+    box-shadow: 6px 6px 10px 0px rgba(138,130,138,.5);
+}
+
+.home:hover, .home:focus {
+    text-decoration: none;
+    cursor: pointer;
+}
+
 /*COLORED BACKGROUND PAGE STYLING*/
 .color-page {
     background: linear-gradient(to top right, #67dbe4, #c7ffe2);
@@ -36,15 +47,56 @@ h1 {
     color: #D3D3D3;
 }
 
-.main {
-    background: #FFF;
-    border-radius: 4px;
-    box-shadow: 6px 6px 10px 0px rgba(138,130,138,.5);
+.color-page .main {
     height: 65%;
 }
 
-
 /*END COLORED BACKGROUND PAGE STYLING*/
+/*GREY BACKGROUND PAGE STYLING*/
+.grey-page {
+    background: #E8E8EE;
+}
+
+.grey-page .main{
+    /*sizing info here*/
+    height: 10%;
+}
+
+.grey-page h1.title {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.5em;
+}
+
+.grey-page h1 img {
+    width: 1em;
+    height: auto;
+    transform: translateY(-10%);
+}
+
+.in-progress, .complete {
+    margin-top: 1em;
+}
+
+.in-progress p, .complete p {
+    margin-top: .5em;
+}
+
+.in-progress .time {
+    color:#67dbe4;
+}
+
+.complete .time {
+    color: #ccc;
+}
+.challenge {
+    margin: .5em;
+}
+
+.challenge-title {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.5em;
+}
+/* END GREY BACKGROUND PAGE STYLING*/
 /*FORM STYLING*/
 
 form{
