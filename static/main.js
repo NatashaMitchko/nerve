@@ -18,6 +18,17 @@
 })();
 
 
+// Toggle between the login and regiter forms
+(function(){
+
+  function toggleForm (){
+    $('.main').toggleClass('hidden');
+  }
+
+  $('#toggle-form').on('click', toggleForm);
+
+})();
+
 // Timestamp button IIFE
 (function (){
 

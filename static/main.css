@@ -1,3 +1,124 @@
+html, body {
+    height:100vh;
+}
+
+.container-fluid {
+    height: 100%;
+}
+
+/*COLORED BACKGROUND PAGE STYLING*/
+.color-page {
+    background: linear-gradient(to top right, #67dbe4, #c7ffe2);
+}
+
+.color-page p {
+    color: white;
+    margin-top: 1em;
+}
+
+h1 {
+    font-family: 'Raleway', sans-serif;    
+}
+
+.color-page h1.title {
+    color: white;
+    text-align: center;
+}
+
+.color-page h1.name {
+    color: #D3D3D3;
+}
+
+.main {
+    background: #FFF;
+    border-radius: 4px;
+    box-shadow: 6px 6px 10px 0px rgba(138,130,138,.5);
+    height: 65%;
+}
+/*END COLORED BACKGROUND PAGE STYLING*/
+/*FORM STYLING*/
+
+form{
+  width: auto;
+  margin: 10%;
+  background:white;
+}
+
+input, .floating-placeholder{
+  font-family:'Roboto', sans-serif;
+  font-size:20pt;
+  line-height:2.6em;
+  height:2.6em;
+  margin:0;
+  padding:0;
+  width:100%;
+}
+.floating-placeholder input{
+  line-height:2.4em;
+}
+.floating-placeholder input:focus+label{
+  color:#67dbe4;
+}
+.floating-placeholder input[value]+label{
+  color:red;
+}
+.floating-placeholder{
+  position:relative;
+}
+
+.floating-placeholder input{
+  font-size:20pt;
+  border:none;
+  outline:none;
+  position:absolute;
+  top:0;
+  left:0;
+  display:block;
+  background:transparent;
+  z-index:2;
+  border-bottom:1px solid #ccc;
+}
+
+.floating-placeholder:last-child input{
+  border-bottom:none;
+}
+
+.floating-placeholder label{
+  display:block;
+  position:absolute;
+  top:0;
+  font-size:20pt;
+  z-index:1;
+  transform-origin:left;
+  transition:transform 160ms, color 200ms;
+  transform: scale(1,1) rotateY(0);
+  color:#999;
+}
+
+.floating-placeholder input:valid~label{
+  transform:scale(0.55,0.55) translateY(-1.2em);
+}
+
+.floating-placeholder input:valid{
+  line-height:3.4em;
+}
+
+input[type=submit] {
+    background: transparent;
+    border: white;
+}
+
+input[type=submit]:hover{
+    color: #67dbe4;
+}
+
+input[type=submit]:focus {
+    outline: #67dbe4;
+    color: #67dbe4;
+}
+
+/*END FORM STYLING*/
+
 
 .saving-forlater{
     /*Nice pink/orange gradient*/
@@ -10,6 +131,7 @@
     box-shadow: 15px 15px 90px -15px rgba(138,130,138,1);
 }
 
+
 /*Styling for D3 relationship diagram*/
 .links line {
   stroke: #999;
@@ -19,4 +141,9 @@
 .nodes circle {
   stroke: #fff;
   stroke-width: 0.5px;
+}
+
+.logged-in {
+    fill:linear-gradient(#fc7279 30%, #ff7b9c 60%, #ffc019 125%);
+    stroke-width:0px;
 }

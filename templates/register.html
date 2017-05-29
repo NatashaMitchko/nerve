@@ -3,15 +3,54 @@
 {% block title %}Register{% endblock %}
 
 {% block content %}
-{% for message in get_flashed_messages() %}
+<div class="container-fluid color-page">
+  <div class="row">
+    <h1 class="title">SCAVENGERHUNT</h1>
+  </div>
+  <div class="row">
+    <div class="col-xs-4 col-xs-offset-4 main">
+      <h1 class="text-center">Register</h1>
+      <form action="/register" name="register" id="register" method="POST">
+        <div class="floating-placeholder">
+          <input type="text" name="username" id="username" required>
+          <label for="username">Username</label>
+        </div>
+        <div class="floating-placeholder">
+          <input type="password" name="password" id="password" required>
+          <label for="password">Password</label>
+        </div>
+        <div class="floating-placeholder">
+          <input type="tel" name="tel" id="tel" required>
+          <label for="tel">Phone</label>
+        </div>
+        <div class="floating-placeholder">
+          <input type="email" name="email" id="email" required>
+          <label for="email">Email</label>
+        </div>
+        <input type="submit" value="Submit" name="submit" id="submit">
+      </form>
+    </div>
+    <div class="col-xs-4 col-xs-offset-4 main hidden">
+      <h1 class="text-center">Login</h1>
+      <form action="/login" name="login" id="login" method="POST">
+        <div class="floating-placeholder">
+          <input type="text" name="username" id="username" required>
+          <label for="username">Username</label>
+        </div>
+        <div class="floating-placeholder">
+          <input type="password" name="password" id="password" required>
+          <label for="password">Password</label>
+        </div>
+        <input type="submit" value="Submit" name="submit" id="submit">
+      </form>
+    </div>
+  </div>
+  <div class="col-xs-4 col-xs-offset-4">
+    <p class="text-right"><span id="toggle-form">Testing</span></p>
+  </div>
+</div>
+<!-- {% for message in get_flashed_messages() %}
     <span> {{ message }}<a href='/login'>Login?</a></span>
-{% endfor %}
-  <form action="/register" name="register" id="register" method="POST">
-    <label>Username <input type="text" name="username" id="username" required></label>
-    <label>Password <input type="password" name="password" id="password" required></label>
-    <label>Phone <input type="tel" name="tel" id="tel" required></label>
-    <label>Email <input type="email" name="email" id="email"></label>
-    <input type="submit" value="Submit" name="submit" id="submit">
-  </form>
+{% endfor %} -->
 
 {% endblock %}

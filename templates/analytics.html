@@ -1,39 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Leaderboard</title>
-<meta charset="utf-8">
-<style>
+{% extends 'base.html' %}
 
-.node {
-  stroke: #fff;
-  stroke-width: 1.5px;
-}
+{% block title %}Leaderboard{% endblock %}
 
-.link {
-  fill: none;
-  stroke: #bbb;
-}
-
-</style>
-</head>
-<body>
-
+{% block content %}
 <svg width="960" height="600"></svg>
-<script src="https://d3js.org/d3.v4.min.js"></script>
+<!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
 <script>
 
 console.log('START');
 
 var JSONstring;
 
-// function createJSONstring(result){
-//     JSONstring = result;
-// }
+function createJSONstring(result){
+    JSONstring = result;
+}
 
-// console.log(JSONstring);
 
-// $.get('/challenge_analytics.json', createJSONstring)
+$.get('/challenge_analytics.json', createJSONstring)
+
+console.log(JSONstring);
 
 var svg = d3.select("svg"),
     width = +svg.attr("width"),
@@ -46,7 +31,7 @@ var simulation = d3.forceSimulation()
     .force("charge", d3.forceManyBody())
     .force("center", d3.forceCenter(width / 2, height / 2));
 
-d3.json("miserables.json", function(error, graph) {
+d3.json(JSONstring, function(error, graph) {
   if (error) throw error;
 
   var nodes = graph.nodes,
@@ -120,5 +105,4 @@ function dragended(d) {
 }
 
 </script>
-</body>
-</html>
+{% endblock %}
