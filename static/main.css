@@ -59,7 +59,7 @@ h1 {
 
 .grey-page .main{
     /*sizing info here*/
-    height: 10%;
+    height: auto;
 }
 
 .grey-page h1.title {
@@ -67,10 +67,22 @@ h1 {
     font-size: 1.5em;
 }
 
+.grey-page .top {
+    height: auto;
+}
+
+#profile:hover, #profile:focus {
+    cursor: pointer;
+}
+
+.rotate {
+    transform: rotate(180deg);
+    transition: transform 160ms;
+}
+
 .grey-page h1 img {
     width: 1em;
     height: auto;
-    transform: translateY(-10%);
 }
 
 .in-progress, .complete {
@@ -96,6 +108,18 @@ h1 {
     font-family: 'Raleway', sans-serif;
     font-size: 1.5em;
 }
+
+.description {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1em;
+}
+
+.challenge img {
+    border: 0;
+    margin-bottom: 1em;
+    border-radius: 4px;
+}
+
 /* END GREY BACKGROUND PAGE STYLING*/
 /*FORM STYLING*/
 
@@ -157,7 +181,7 @@ input, .floating-placeholder{
 }
 
 .floating-placeholder input:valid~label{
-  transform:scale(0.55,0.55) translateY(-1.2em);
+  transform:scale(0.55,0.55) translateY(-1.6em);
 }
 
 .floating-placeholder input:valid{

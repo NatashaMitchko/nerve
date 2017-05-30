@@ -17,6 +17,15 @@
 
 })();
 
+// Log Out functions
+(function(){
+  function showLogout() {
+    $('#logout').toggleClass('hidden');
+      $('#caret').toggleClass('rotate');
+  }
+  $('#profile').on('click', showLogout);
+})();
+
 
 // Login/Register functions
 (function(){
@@ -56,18 +65,6 @@
   }
   $('#register-username').on('change', registerUsernameCheck);
   $('#login-username').on('change', loginUsernameCheck);
-
-  // Check if a phone number is a real phone number
-  var re = /(?:\d{3}|\(\d{3}\))([-\/\.])\d{3}\1\d{4}/;  
-  function checkPhone() {  
-    var entered_phone = $('#tel').val()
-    var OK = re.exec(entered_phone);
-    console.log(OK);  
-    if (!OK){
-      $('#register-message').text('Invalid phone number');  
-    }  
-  }
-  $('#tel').on('change', checkPhone);
 
 })();
 

@@ -8,7 +8,7 @@
     <h1 class="title home">SCAVENGERHUNT</h1>
   </div>
   <div class="row">
-    <div class="col-xs-6 col-xs-offset-3 main">
+    <div class="col-xs-6 col-xs-offset-3 main hidden">
       <h1 class="text-center">Register</h1>
       {% for message in get_flashed_messages() %}
         <div class="text-center"> {{ message }} </div>
@@ -34,7 +34,7 @@
         <input type="submit" value="Submit" name="submit" id="submit">
       </form>
     </div>
-    <div class="col-xs-6 col-xs-offset-3 main hidden">
+    <div class="col-xs-6 col-xs-offset-3 main">
       <h1 class="text-center">Login</h1>
       {% for message in get_flashed_messages() %}
         <div class="text-center"> {{ message }} </div>
@@ -54,8 +54,8 @@
     </div>
   </div>
   <div class="col-xs-6 col-xs-offset-3">
-    <p class="text-right toggle-form hidden">Don't have an account? <b>Register</b></p>
-    <p class="text-right toggle-form">Have an account? <b>Log In</b></p>
+    <p class="text-right toggle-form">Don't have an account? <b>Register</b></p>
+    <p class="text-right toggle-form hidden">Have an account? <b>Log In</b></p>
   </div>
 </div>
 

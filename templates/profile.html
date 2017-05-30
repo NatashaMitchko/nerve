@@ -5,37 +5,45 @@
 
 <div class="container-fluid grey-page">
   <div class="row">
-    <span class="col-xs-12 col-md-3">
+    <div class="col-xs-12 col-md-3 top">
       <h1 class="title home text-center">SCAVENGERHUNT</h1>
-    </span>
-    <span class="col-xs-12 col-md-6">
-      <h1 class="title text-center">PROFILE</h1>
-    </span>
-    <span class="col-xs-12 col-md-3">
+    </div>
+    <div class="col-xs-12 col-md-3 col-md-offset-6 top">
       {% if session.get('active') %}
-      <h1 class="title text-center text-uppercase">{{ username }} <img src="/static/images/_caret.png"></h1>
+      <h1 class="title text-center text-uppercase" id="profile">{{ username }} <img id="caret" src="/static/images/_caret.png"></h1>
+      <h1><a href='/logout' class="text-center hidden" id="logout">LOG OUT</a></h1>
       {% endif %}
-    </span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-md-4 col-md-offset-4 top">
+      <h1 class="title text-center">PROFILE</h1>
+    </div>
   </div>
   <div class="row in-progress">
-    <div class="col-xs-12 col-md-8 col-md-offset-2">
+    <div class="col-xs-12 col-md-10 col-md-offset-2">
       {% for i in info %}
         {% if i.UserChallenge.is_completed == False %}
-        <div class="col-xs-6 col-md-4 main challenge">
-          <p class="text-right"><span class="time" data-timestamp="{{ i.UserChallenge.accepted_timestamp }}"></span></p>
+        <div class="col-xs-6 col-md-5 main challenge">
+          <p class="text-right">in progress <span class="time" data-timestamp="{{ i.UserChallenge.accepted_timestamp }}"></span></p>
           <p class="challenge-title">{{ i.Challenge.title }}</p>
+          <p class="description">{{ i.Challenge.description }}</p>
         </div>
         {% endif %}
       {% endfor %}
     </div>
   </div>
   <div class="row complete">
-    <div class="col-xs-12 col-md-8 col-md-offset-2">
+    <div class="col-xs-12 col-md-10 col-md-offset-2">
       {% for i in info %}
         {% if i.UserChallenge.is_completed == True %}
-        <div class="col-xs-6 col-md-4 main challenge">
-          <p class="text-right"><span class="time" data-timestamp="{{ i.UserChallenge.accepted_timestamp }}"></span></p>
+        <div class="col-xs-6 col-md-5 main challenge">
+          <p class="text-right">completed <span class="time" data-timestamp="{{ i.UserChallenge.accepted_timestamp }}"></span></p>
           <p class="challenge-title">{{ i.Challenge.title }}</p>
+          <p class="description">{{ i.Challenge.description }}</p>
+          <p class="stats">Points: {{ i.UserChallenge.points_earned }}</p>
+          <p class="stats">Participants: <span class="num-players" data-challenge_id="{{ i.UserChallenge.id }}"></span></p>
+          <img src="/{{ i.UserChallenge.image_path }}">
         </div>
         {% endif %}
       {% endfor %}

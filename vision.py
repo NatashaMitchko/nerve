@@ -36,10 +36,7 @@ def get_tags_for_image(photo_file, maxResults=10):
             })
             response = service_request.execute()
 
-            tags = []
-            for response in response['responses'][0]['labelAnnotations']:
-                tags.append(response['description'])
-            print tags
+            tags = {tag['description'] for tag in response['responses'][0]['labelAnnotations']}
             return tags
     except:
         return False

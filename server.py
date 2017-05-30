@@ -125,7 +125,7 @@ def is_username_taken():
     is_user = {'username-taken': bool(user)}
     return jsonify(is_user)
 
-@app.route('/login1', methods=['POST'])
+@app.route('/login', methods=['POST'])
 def show_login_form():
     """Handles login actions """
     username = request.form.get('username')
@@ -138,7 +138,7 @@ def show_login_form():
         if check_password(user.password, password):
             session['active'] = True
             session['user_id'] = user.id
-            return redirect('/')
+            return redirect('/challenges')
         else:
             flash('Incorrect password')
             return redirect('/login')
@@ -150,7 +150,7 @@ def show_login_form():
 def logout():
     """Logged out users are redirected to the homepage"""
     session.clear()
-    return redirect('/')
+    return redirect('/challenges')
 
 def post_user(u,p,e,f):
     """Creates new user and adds user to the db session"""
@@ -261,8 +261,13 @@ def create_challenge():
 @app.route('/challenges')
 def show_all_challenges():
     """Shows a list of all available challenges"""
+    if session['active']:
+        user = get_user_by_id(session['user_id'])
+        username = user.username
+    else:
+        username = ''
     challenges = Challenge.query.order_by(Challenge.difficulty).all()
-    return render_template('challenges.html', challenges=challenges)
+    return render_template('challenges.html', challenges=challenges, username=username)
 
 @app.route('/challenge/<id>')
 def challenge_details(id):
@@ -297,14 +302,18 @@ def remove_challenge():
 def calculate_score(hits, difficulty, attempts):
     """Calculates the score for a winning image
     attempts +1 because this is called before attempt increment comitted to db"""
-    score = (10 * difficulty/(attempts+1))*hits
+    score = (10 * difficulty/(attempts+1))*len(hits)
     return score
 
 def attempt_challenge(id, hits, filename):
-    """Updates the UserChallenge record with additional details"""
+    """Updates the UserChallenge record with details of attempt 
+    returns UserChallenge object"""
+
     user =  session['user_id']
     update = UserChallenge.query.filter((UserChallenge.user_id==session['user_id'])&(UserChallenge.challenge_id==id)).first()
     difficulty = Challenge.query.get(id).difficulty
+
+    # empty set is false
     if hits:
         score = calculate_score(hits, difficulty, update.attempts)
         update.points_earned = score
@@ -316,17 +325,9 @@ def attempt_challenge(id, hits, filename):
     db.session.commit()
     return update
 
-def image_match(tag_list, winning_tags):
-    """Checks uploaded image tags against the challenge image"""
-    hits = 0
-    for tag in tag_list:
-        if tag in winning_tags:
-            hits += 1
-    return hits
-
-def save_winning_hits(tag_list, user_challenge_id):
+def save_winning_hits(tag_set, user_challenge_id):
     """Adds information relating UserChallenge to Category"""
-    for tag in tag_list:
+    for tag in tag_set:
         # Get category id for hit
         category = Category.query.filter(Category.tag==tag).first()
         new_user_challenge_category = UserChallengeCategory(user_challenge_id=user_challenge_id,
@@ -334,14 +335,14 @@ def save_winning_hits(tag_list, user_challenge_id):
         db.session.add(new_user_challenge_category)
         db.session.commit()
 
-
 @app.route('/complete/<id>', methods=['GET','POST'])
 def complete_challenge(id):
     """Gets UserChallenge page for uncompleted challenge and allows user
         to complete"""
     if request.method == 'POST':
-        file = request.files['file']
 
+
+        file = request.files['file']
         if file.filename == '':
             flash('No file selected')
             return redirect('/complete/{}'.format(id))
@@ -349,19 +350,25 @@ def complete_challenge(id):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             filename = 'static/images/' + filename
+
+
+
             if image_is_safe(filename):
-                tag_list = get_tags_for_image(filename, 5)
+                tag_set = get_tags_for_image(filename, 5)
                 categories = ChallengeCategory.query.filter(ChallengeCategory.challenge_id==id).all()
-                winning_tags = [i.category.tag for i in categories]
-                print winning_tags
-                print tag_list
-                hits = image_match(tag_list, winning_tags)
-                if hits != 0:
-                    user_challenge = attempt_challenge(id, hits, filename)
-                    save_winning_hits(tag_list, user_challenge.id)
+                winning_tags = {i.category.tag for i in categories}
+                
+                hits = winning_tags.intersection(tag_set)
+
+                user_challenge = attempt_challenge(id, hits, filename)
+
+                if len(hits) != 0:
+                    save_winning_hits(tag_set, user_challenge.id)
                 return redirect('/complete/{}'.format(id))
             else:
                 os.remove(filename)
+                flash('Try another image')
+                return redirect('/complete/{}'.format(id))
 
     else:
         to_complete = db.session.query(UserChallenge, Challenge).filter(UserChallenge.challenge_id==id).join(Challenge).first()
@@ -412,7 +419,6 @@ def make_d3_links():
             links_list.append(link)
         i += 1
     return links_list
-
 
 @app.route('/challenge_analytics.json')
 def challenge_analytics():

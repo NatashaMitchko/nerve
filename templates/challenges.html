@@ -3,14 +3,44 @@
 {% block title %}Challenges{% endblock %}
 
 {% block content %}
-<div class="row">
-  {% if session.get('active') %}
-  <a href="/logout">Log Out</a>
-  <a href="/profile/id/{{ session.get('user_id') }}">Profile</a>
-  {% else %}
-  <a href="/login">Log In</a>
-  {% endif %}
+<div class="container-fluid grey-page">
+  <div class="row">
+    <div class="col-xs-12 col-md-3 top">
+      <h1 class="title home text-center">SCAVENGERHUNT</h1>
+    </div>
+    <div class="col-xs-12 col-md-3 col-md-offset-6 top">
+      {% if session.get('active') %}
+      <h1 class="title text-center text-uppercase" id="profile">{{ username }} <img id="caret" src="/static/images/_caret.png"></h1>
+      <h1><a href='/logout' class="text-center hidden" id="logout">LOG OUT</a></h1>
+      {% endif %}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-md-4 col-md-offset-4 top">
+      <h1 class="title text-center">CHALLENGES</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-md-10 col-md-offset-2">
+      {% for challenge in challenges %}
+      <div class="col-xs-6 col-md-5 main challenge">
+        <div class="text-right">
+          {% if session['active'] == True %}
+          <a data-challenge_id="{{ challenge.id }}" class="accept-btn">Accept</a>
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          {% endif %}
+        </div>
+        <p class="challenge-title">{{ challenge.title }}</p>
+        <p class="description">{{ challenge.description }}</p>
+        <p class="stats">Participants: <span class="num-players" data-challenge_id="{{ challenge.id }}"></span></span></p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+
 </div>
+
 <div class="row">
   <h1>Challenges</h1>
 </div>
