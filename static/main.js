@@ -119,6 +119,23 @@
   $('.num-players').each(getNumPlayers);
 })();
 
+// Count participants and check how many are completed for doughnut graph
+(function(){
+  var data = // something jsonified by the server
+
+  var options = {
+    animation.animateRotate: true,
+    animation.animateScale: true,
+    hoverBorderColor, '#ccc',
+    hoverBorderWidth, 1px
+  }
+
+  var myDoughnutChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: data,
+    options: options
+});
+})
 
 // So the user can only upload one file!
 // $('.fileinput').change(function(){

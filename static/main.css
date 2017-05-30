@@ -208,7 +208,25 @@ input[type=submit]:focus {
 }
 
 /*END FORM STYLING*/
+/*ANALYTICS AND D3 STYLING*/
+#d3 {
+  size:960px 600px;
+}
 
+.node {
+  stroke: none;
+  stroke-width: 1.5px;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+}
+/*END ANALYTICS AND D3 STYLING*/
+.logged-in {
+    fill:linear-gradient(#fc7279 30%, #ff7b9c 60%, #ffc019 125%);
+    stroke-width:0px;
+}
 
 .saving-forlater{
     /*Nice pink/orange gradient*/
@@ -219,21 +237,4 @@ input[type=submit]:focus {
     background: linear-gradient(top left, #67dbe4, #c7ffe2);
     /*Box shadow for tasks*/
     box-shadow: 15px 15px 90px -15px rgba(138,130,138,1);
-}
-
-
-/*Styling for D3 relationship diagram*/
-.links line {
-  stroke: #999;
-  stroke-opacity: 0.6;
-}
-
-.nodes circle {
-  stroke: #fff;
-  stroke-width: 0.5px;
-}
-
-.logged-in {
-    fill:linear-gradient(#fc7279 30%, #ff7b9c 60%, #ffc019 125%);
-    stroke-width:0px;
 }

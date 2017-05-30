@@ -103,8 +103,7 @@ class ChallengeCategory(db.Model):
     challenge = db.relationship('Challenge', backref=db.backref('challenge_categories'))
     category = db.relationship('Category', backref=db.backref('challenge_categories'))
 
-    challenge_categories_index = db.Index('quicksearch', challenge_id)
-
+    challenge_categories_index = db.Index('quicksearchCC', challenge_id, category_id, unique=True)
 
     def __repr__(self):
         return '<ChallengeCategory id: {id}>'.format(id=self.id)

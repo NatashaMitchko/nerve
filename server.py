@@ -127,7 +127,7 @@ def is_username_taken():
 
 @app.route('/login', methods=['POST'])
 def show_login_form():
-    """Handles login actions """
+    """Handles login attempts"""
     username = request.form.get('username')
     password = request.form.get('password')
     # print username, password
@@ -160,7 +160,8 @@ def post_user(u,p,e,f):
 
 @app.route('/register', methods=['POST'])
 def register_user():
-    """Render new user signup form and handles new user post requests"""
+    """Handles user creation requests"""
+
     username = request.form.get('username')
     password = bcrypt.generate_password_hash(request.form.get('password'))
     phone = request.form.get('tel')
@@ -171,10 +172,7 @@ def register_user():
     if user:
         flash('Username taken')
         return redirect('/register')
-        # TODO: make this make sense:
-
     else:
-        # Add new user to the database
         post_user(username, password, email, phone)
         # Add newly created user to the session
         session['active'] = True
@@ -197,22 +195,24 @@ def post_categories(tag):
     """Adds new categories to db that are unique."""
     new_category = Category(tag=tag)
     db.session.add(new_category)
-    print 'post categories'
+    print 'posted', tag
     try:
         db.session.commit()
+        return new_category
     except exc.IntegrityError:
         db.session.rollback()
-        print "{} already exists.".format(tag)
+        print "{} already exists in the Category table.".format(tag)
 
-def post_challenge_categories(tag_list, challenge_id):
+def post_challenge_categories(tag_set, challenge_id):
     """Adds records describing relations between an individual challenge and 
                 multiple categories. If the category doesn't exist in the db it
-                gets added and the relation is created."""
-    i = 0
-    while i < len(tag_list):
-        category = db.session.query(Category).filter(Category.tag==tag_list[i]).first()
-        print category
+                gets added and the relation is created. Does not create 
+                duplicate records in ChallengeCategory table either. """
+  
+    for tag in tag_set:
+        category = db.session.query(Category).filter(Category.tag==tag).first()
         if category:
+            print category, 'is in the Categories table and is ready to be added as a ChallengeCategory'
             new_challenge_category = ChallengeCategory(category_id=category.id, 
                                                         challenge_id=challenge_id)
             db.session.add(new_challenge_category)
@@ -220,12 +220,23 @@ def post_challenge_categories(tag_list, challenge_id):
                 db.session.commit()
             except exc.IntegrityError:
                 db.session.rollback()
-                print "Relation between {tag} and challenge {id} already exists.".format(tag=tag_list[i], id=challenge_id)
-            i = i + 1
-            print i
+                print "Relation between {tag} and challenge {id} already exists.".format(tag=tag, id=challenge_id)
         else:
-            post_categories(tag_list[i])
-            print 'else'
+            print tag, 'was not in the Categories table and needs to be added'
+            # commits new category
+            category = post_categories(tag)
+            # new transaction
+            new_challenge_category = ChallengeCategory(category_id=category.id, 
+                                                        challenge_id=challenge_id)
+            db.session.add(new_challenge_category)
+            # Following try/except block catches exceptions that may arise from
+            # the category&challenge unique constraint via the composite index
+            try:
+                db.session.commit()
+            except exc.IntegrityError:
+                db.session.rollback()
+                print "Relation between {tag} and challenge {id} already exists.".format(tag=tag, id=challenge_id)
+
 
 @app.route('/create', methods=['GET', 'POST'])
 def create_challenge():
@@ -271,9 +282,9 @@ def show_all_challenges():
 
 @app.route('/challenge/<id>')
 def challenge_details(id):
-
+    username = get_user_by_id(session['user_id']).username
     challenge = db.session.query(Challenge, ChallengeCategory).filter(Challenge.id==id).join(ChallengeCategory).all()
-    return render_template('challenge.html', challenge=challenge)
+    return render_template('challenge.html', challenge=challenge, username=username)
 
 @app.route('/accept.json', methods=['POST'])
 def accept_challenge():
@@ -439,6 +450,12 @@ def leaderboard():
     users"""
     return render_template('analytics.html')
 
+@app.route('/m.json')
+def m ():
+    import json
+    m = open('m.json').read()
+    return jsonify(json.loads(m))
+
 @app.route('/contact-me')
 def contact_me():
     """My profile page that shows how to get in contact with me"""
@@ -449,7 +466,8 @@ if __name__ == "__main__":
 
     app.debug = True
     app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
-    connect_to_db(app, 'postgres:///test_nerve')
+    connect_to_db(app, 'postgres:///nerve')
+    db.create_all()
 
     # make sure templates, etc. are not cached in debug mode
     app.jinja_env.auto_reload = app.debug
