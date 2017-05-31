@@ -6,7 +6,7 @@
 <div class="container-fluid grey-page">
   <div class="row">
     <div class="col-xs-4 col-md-3 top">
-      <h1 class="title home text-center">SCAVENGERHUNT</h1>
+      <h1 class="title home text-center"><a href="/challenges">SCAVENGERHUNT</a></h1>
     </div>
     <div class="col-xs-12 col-md-3 col-md-offset-6 top">
       {% if session.get('active') %}
@@ -16,13 +16,13 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-xs-12 col-md-4 col-md-offset-4 top">
+    <div class="col-xs-12 col-md-4 col-md-offset-4">
       <h1 class="title text-center">Challenge Analytics</h1>
     </div>
   </div>
 
 
-  <div class="col-xs-10 col-xs-offset-1 main" id="d3">
+  <div class="col-xs-10 col-xs-offset-1 main top" id="d3">
     <div class="row">
       <div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-0 section">
         <h1 class="title">{{ challenge[0][0].title }}</h1>
@@ -40,10 +40,23 @@
         <svg width="300" height="300"></svg>
       </div>
       <div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-0 section">
-        <h1>Participants: <span class="num-players" data-challenge_id="{{ challenge[0][0].id }}"></span></h1>
+        <h1 class="title text-center">Participants: <span class="num-players" data-challenge_id="{{ challenge[0][0].id }}"></span></h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-10 col-xs-offset-1 section">
+        <h1 class="title">Images</h1>
+        <img src="/{{ challenge[0][0].image_path }}">
       </div>
     </div>
   </div>
+  {% if session.get('active') %}
+  <div id="bottom-button" class="col-xs-1 col-xs-offset-11 text-center">
+    <a data-challenge_id="{{ challenge[0][0].id }}" data-user_challenge_id="" class="accept-btn">
+      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+    </a>
+  </div>
+  {% endif %}
 </div>
 
 
@@ -89,7 +102,7 @@
         .data(nodes.filter(function(d) { return d.id; }))
         .enter().append("circle")
           .attr("class", "node")
-          .attr("r", 5)
+          .attr("r", 6)
           .attr("fill", function(d) { return color; })
           .call(d3.drag()
               .on("start", dragstarted)
@@ -139,8 +152,9 @@
     }
 </script>
 
+{% endblock %}
 <!-- ####################################################################### -->
-{% if session.get('active') %}
+<!-- {% if session.get('active') %}
 <a href="/logout">Log Out</a>
 <a href="/profile/id/{{ session.get('user_id')}}">Profile</a>
 {% else %}
@@ -159,5 +173,4 @@
 </ul>
 <p>{{ challenge[0][0].description }}</p>
 <div style="width:50%"><img src="/{{ challenge[0][0].image_path }}"></div>
-
-{% endblock %}
+ -->

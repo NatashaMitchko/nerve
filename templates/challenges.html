@@ -6,7 +6,7 @@
 <div class="container-fluid grey-page">
   <div class="row">
     <div class="col-xs-12 col-md-3 top">
-      <h1 class="title home text-center">SCAVENGERHUNT</h1>
+      <h1 class="title home text-center"><a href="/challenges">SCAVENGERHUNT</a></h1>
     </div>
     <div class="col-xs-12 col-md-3 col-md-offset-6 top">
       {% if session.get('active') %}
@@ -24,23 +24,32 @@
     <div class="col-xs-12 col-md-10 col-md-offset-2">
       {% for challenge in challenges %}
       <div class="col-xs-6 col-md-5 main challenge">
-        <div class="text-right">
+        <div class="list-accept">
           {% if session['active'] == True %}
-          <a data-challenge_id="{{ challenge.id }}" class="accept-btn">Accept</a>
+          <a data-challenge_id="{{ challenge.id }}" class="accept-btn">
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          </a>
           {% endif %}
         </div>
-        <p class="challenge-title">{{ challenge.title }}</p>
+        <p class="challenge-title"><a href="/challenge/{{ challenge.id }}">{{ challenge.title }}</a></p>
         <p class="description">{{ challenge.description }}</p>
         <p class="stats">Participants: <span class="num-players" data-challenge_id="{{ challenge.id }}"></span></span></p>
       </div>
       {% endfor %}
     </div>
   </div>
-
-
+{% if session.get('active') %}
+<div id="bottom-button" class="col-xs-1 col-xs-offset-11 text-center">
+  <a class="create-new-btn">
+    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+  </a>
 </div>
+{% endif %}
+</div>
+{% endblock %}
 
+
+<!-- 
 <div class="row">
   <h1>Challenges</h1>
 </div>
@@ -68,6 +77,4 @@
 </div>
 {% endfor %}
 
-<a href="/add_challenge.json" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">+</a>
-
-{% endblock %}
+<a href="/add_challenge.json" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">+</a> -->

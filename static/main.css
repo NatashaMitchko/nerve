@@ -12,9 +12,14 @@ html, body {
     box-shadow: 6px 6px 10px 0px rgba(138,130,138,.5);
 }
 
-.home:hover, .home:focus {
+.home a {
+  color:black;
+}
+
+.home a:hover, .home a:focus {
     text-decoration: none;
     cursor: pointer;
+    color:#67dbe4;
 }
 
 /*COLORED BACKGROUND PAGE STYLING*/
@@ -54,12 +59,14 @@ h1 {
 /*END COLORED BACKGROUND PAGE STYLING*/
 /*GREY BACKGROUND PAGE STYLING*/
 .grey-page {
+    height: auto;
     background: #E8E8EE;
 }
 
 .grey-page .main{
     /*sizing info here*/
     height: auto;
+    margin-bottom: 1em;
 }
 
 .grey-page h1.title {
@@ -102,11 +109,18 @@ h1 {
 }
 .challenge {
     margin: .5em;
+    padding: 2em;
 }
 
-.challenge-title {
+.challenge-title a {
     font-family: 'Raleway', sans-serif;
     font-size: 1.5em;
+    color: black;
+}
+
+.challenge-title a:hover {
+    text-decoration: none;
+    color:#67dbe4;
 }
 
 .description {
@@ -124,6 +138,51 @@ h1 {
   padding: 2em;
 
 }
+
+.section svg {
+  display: block;
+  margin: auto;
+}
+
+.section img {
+  width:inherit;
+  border-radius: 4px;
+  margin: auto;
+}
+
+#bottom-button {
+  position:fixed;
+  height: 5em;
+  bottom:0;
+  right:0;
+}
+
+.list-accept {
+  position: absolute;
+  margin-top: 1em;
+  height: 1em;
+  bottom: 2em;
+  right: 1em;
+}
+
+#bottom-button a , .list-accept a{
+  color: #636363;
+}
+
+#bottom-button a:hover, .list-accept a:hover{
+  color: #67dbe4;
+  cursor: pointer;
+  text-shadow: 2px 2px 4px rgba(138,130,138,.5);
+}
+
+#bottom-button span.glyphicon {
+  font-size: 3em;
+}
+
+.list-accept span.glyphicon {
+  font-size: 2em;
+}
+
 
 /* END GREY BACKGROUND PAGE STYLING*/
 /*FORM STYLING*/

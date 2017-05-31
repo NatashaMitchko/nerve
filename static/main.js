@@ -137,14 +137,6 @@
 
   $.get('/completion-stats.json', {'challenge_id':challenge_id}, makeChart);
 
-  // var myDoughnutChart = new Chart(document.getElementById('chartjs-completed'), {
-  //   'type': 'doughnut',
-  //   'data': [50,100],
-  //   'backgroundColor': ['#ccc','rgb(103,219,228)'],
-  //   'hoverBorderColor': '#ccc',
-  //   'hoverBorderWidth': '1'
-  //   });
-
 })();
 
 // So the user can only upload one file!
