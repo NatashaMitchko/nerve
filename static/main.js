@@ -119,23 +119,33 @@
   $('.num-players').each(getNumPlayers);
 })();
 
-// Count participants and check how many are completed for doughnut graph
+// Participants/ completed for doughnut graph
 (function(){
-  var data = // something jsonified by the server
+  function makeChart(result){
 
-  var options = {
-    animation.animateRotate: true,
-    animation.animateScale: true,
-    hoverBorderColor, '#ccc',
-    hoverBorderWidth, 1px
+  var myChart = new Chart(document.getElementById("chartjs-completed"),
+    {"type":"doughnut",
+    "data":{
+      "labels":["Finished", "In Progress"],
+      "datasets":[{
+        "label":"Progress",
+        "data":[result['finished'], result['unfinished']],
+        "backgroundColor":["rgb(232, 232, 238)","rgb(103,219,228)"]}]
+          }
+      });
   }
 
-  var myDoughnutChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: data,
-    options: options
-});
-})
+  $.get('/completion-stats.json', {'challenge_id':challenge_id}, makeChart);
+
+  // var myDoughnutChart = new Chart(document.getElementById('chartjs-completed'), {
+  //   'type': 'doughnut',
+  //   'data': [50,100],
+  //   'backgroundColor': ['#ccc','rgb(103,219,228)'],
+  //   'hoverBorderColor': '#ccc',
+  //   'hoverBorderWidth': '1'
+  //   });
+
+})();
 
 // So the user can only upload one file!
 // $('.fileinput').change(function(){

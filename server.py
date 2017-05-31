@@ -282,9 +282,23 @@ def show_all_challenges():
 
 @app.route('/challenge/<id>')
 def challenge_details(id):
+    """Renders that challenge details and analytics page"""
     username = get_user_by_id(session['user_id']).username
     challenge = db.session.query(Challenge, ChallengeCategory).filter(Challenge.id==id).join(ChallengeCategory).all()
     return render_template('challenge.html', challenge=challenge, username=username)
+
+@app.route('/completion-stats.json')
+def get_completion_stats():
+    """Generates a dictionary of data to be used by chart.js on challenge analytics
+        page"""
+    challenge_id = request.args.get('challenge_id')
+    query = UserChallenge.query.filter(UserChallenge.challenge_id==challenge_id)
+    finished = query.filter(UserChallenge.is_completed==True).count()
+    unfinished = query.filter(UserChallenge.is_completed==False).count()
+
+    data = {'finished':int(finished), 'unfinished':int(unfinished)}
+    print data
+    return jsonify(data)
 
 @app.route('/accept.json', methods=['POST'])
 def accept_challenge():

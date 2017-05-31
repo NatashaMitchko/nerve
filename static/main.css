@@ -120,6 +120,11 @@ h1 {
     border-radius: 4px;
 }
 
+.section {
+  padding: 2em;
+
+}
+
 /* END GREY BACKGROUND PAGE STYLING*/
 /*FORM STYLING*/
 
