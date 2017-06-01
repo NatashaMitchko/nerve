@@ -309,7 +309,12 @@ def accept_challenge():
                                         challenge_id=challenge_id, 
                                         accepted_timestamp=datetime.now())
     db.session.add(accepted_challenge)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except exc.IntegrityError:
+        db.session.rollback()
+        print 'User has already accepted this challenge.'
+        return ''
 
     accepted_challenge = UserChallenge.query.filter(user_id==user_id, challenge_id==challenge_id)
     return str(accepted_challenge.first().id)

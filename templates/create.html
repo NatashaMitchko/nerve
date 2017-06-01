@@ -11,18 +11,20 @@
 {% endif %}
 
   <form action="/create" name="create" id="create" enctype="multipart/form-data" method="POST">
-    <label>Title <input type="text" name="title" id="title" required></label><br>
-    <label>Description <textarea rows="10" cols="30" name="description" id="description" required></textarea></label><br>
+    <div class="floating-placeholder">
+      <input type="text" name="title" id="title" required>
+      <label for="title">Title</label>
+    </div>
+    <div class="floating-placeholder">
+      <textarea rows="10" cols="30" name="description" id="description" required></textarea>
+      <label for="decsription">Description</label>
+    </div>
     <label id="difficulty">Difficulty 
       <select name="difficulty">
         <option value="1">Easy</option>
         <option value="2">Medium</option>
         <option value="3">Difficult</option>
       </select>
-    </label><br>
-      {% for message in get_flashed_messages() %}
-      <span> {{ message }}</span>
-      {% endfor %}
     <label>Image <input type="file" name="file" accept="image/*"></label><br>
     <input type="submit" value="Submit" name="submit" id="submit">
   </form>

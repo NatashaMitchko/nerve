@@ -3,16 +3,22 @@
 
 (function (){
 
-  function toggleAccept(){
-    // change the value to the ID of the UserChallenge (passed from server)
-    console.log("post called sucess fn")
-    // $('.accept-btn').text('Remove');
+  function toggleAccept(button){
+    // accept-btn > span
+    console.log(button);
+    $(button).prop('disabled', true);
+    $(button).children().removeClass('glyphicon-plus');
+    $(button).children().addClass('glyphicon-ok');
+    $(button).children().addClass('ok-accepted');
 
+    console.log("post called sucess fn");
   };
 
   $('.accept-btn').on('click', function(e) {
-    e.preventDefault()
-    $.post('/accept.json', {'challenge_id':$(this).attr('data-challenge_id')}, toggleAccept);
+    e.preventDefault();
+
+    var btn = $(this);
+    $.post('/accept.json', {'challenge_id':btn.attr('data-challenge_id')}, function (results){ toggleAccept(btn); } );
   });
 
 })();
@@ -139,16 +145,16 @@
 
 })();
 
-// So the user can only upload one file!
-// $('.fileinput').change(function(){
-//     if(this.files.length>10)
-//         alert('to many files')
-// });
-// // Prevent submission if limit is exceeded.
-// $('form').submit(function(){
-//     if(this.files.length>10)
-//         return false;
-// });
+// Insert form at the top of the challenges page when + is clicked
+(function(){
+
+  function toggleCreateForm(){
+    //////////////////////////////////////////////////////////////////////////////////// make form styled and hidden then toggle back and forth w/ + button
+  }
+
+  $('#create-new-btn').on('click', toggleCreateForm);
+
+})();
 
 
 // Secret 

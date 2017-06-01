@@ -169,6 +169,14 @@ h1 {
   color: #636363;
 }
 
+.ok-accepted {
+   color: #67dbe4;
+}
+
+.ok-finished {
+  color: #636363;
+}
+
 #bottom-button a:hover, .list-accept a:hover{
   color: #67dbe4;
   cursor: pointer;

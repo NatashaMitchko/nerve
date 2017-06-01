@@ -22,6 +22,7 @@
   </div>
   <div class="row">
     <div class="col-xs-12 col-md-10 col-md-offset-2">
+      <span id="create-new-form"></span>
       {% for challenge in challenges %}
       <div class="col-xs-6 col-md-5 main challenge">
         <div class="list-accept">
@@ -40,7 +41,7 @@
   </div>
 {% if session.get('active') %}
 <div id="bottom-button" class="col-xs-1 col-xs-offset-11 text-center">
-  <a class="create-new-btn">
+  <a id="create-new-btn">
     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
   </a>
 </div>
