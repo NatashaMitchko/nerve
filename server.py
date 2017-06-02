@@ -290,7 +290,8 @@ def is_challenge_completed():
         user_id = session['user_id']
         query = db.session.query(UserChallenge.is_completed).filter(UserChallenge.challenge_id==challenge_id)
         result = query.filter(UserChallenge.user_id==user_id).first()
-        # result is a tuple
+        # result is a tuple OR none - ugh
+        # 'NoneType' object has no attribute '__getitem__'
         if result[0]:
             return jsonify({'status': 'completed'})
         elif result[0] == False:
