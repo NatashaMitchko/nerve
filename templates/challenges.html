@@ -22,7 +22,36 @@
   </div>
   <div class="row">
     <div class="col-xs-12 col-md-10 col-md-offset-2">
-      <span id="create-new-form"></span>
+      <div id="create-new-form" class="col-xs-6 col-md-5 main"> <!-- hidden -->
+        <form action="/create" name="create" id="create" enctype="multipart/form-data" method="POST">
+          <div class="floating-placeholder">
+            <input type="text" name="title" id="title" autocomplete="off" required>
+            <label for="title">Title</label>
+          </div>
+          <div class="textarea">
+            <textarea rows="5" cols="30" name="description" class="description" autocomplete="off" required></textarea>
+            <label for="decsription" class="description">Description</label>
+          </div>
+          <div class="radio-btn">
+            <span class="text-center">
+              <input type="radio" name="difficulty" id="easy" value="1">
+              <label for="easy">Easy</label>
+            </span>
+            <span class="text-center">
+              <input type="radio" name="difficulty" id="medium" value="2">
+              <label for="medium">Medium</label>
+            </span>
+            <span class="text-center">
+              <input type="radio" name="difficulty" id="hard" value="3">
+              <label for="hard">Hard</label>
+            </span>
+          </div>
+          <div class="file-container">
+            <label class="text-center">Upload Image <input id="file-input" type="file" name="file" accept="image/*"></label>
+          </div>
+          <input type="submit" value="Submit" name="submit" id="submit">
+        </form>
+      </div>
       {% for challenge in challenges %}
       <div class="col-xs-6 col-md-5 main challenge">
         <div class="list-accept">

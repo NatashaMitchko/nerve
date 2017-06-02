@@ -280,6 +280,26 @@ def show_all_challenges():
     challenges = Challenge.query.order_by(Challenge.difficulty).all()
     return render_template('challenges.html', challenges=challenges, username=username)
 
+@app.route('/is_completed.json')
+def is_challenge_completed():
+    """Returns accepted or copmleted (not accepted is default - empty string 
+        returned to JS) for each challenge on the page 
+    depending on the state of the challenge in the context of the requesting user""" 
+    if is_session_active():
+        challenge_id = request.args.get('challenge_id')
+        user_id = session['user_id']
+        query = db.session.query(UserChallenge.is_completed).filter(UserChallenge.challenge_id==challenge_id)
+        result = query.filter(UserChallenge.user_id==user_id).first()
+        # result is a tuple
+        if result[0]:
+            return jsonify({'status': 'completed'})
+        elif result[0] == False:
+            # Need to specity because result may also be none
+            return jsonify({'status': 'accepted'})
+        return ''
+    else:
+        return ''
+
 @app.route('/challenge/<id>')
 def challenge_details(id):
     """Renders that challenge details and analytics page"""
@@ -462,18 +482,6 @@ def challenge_analytics():
     print d3_dict
 
     return jsonify(d3_dict)
-
-@app.route('/leaderboard')
-def leaderboard():
-    """Shows various data visualizations and statictics about challenges and 
-    users"""
-    return render_template('analytics.html')
-
-@app.route('/m.json')
-def m ():
-    import json
-    m = open('m.json').read()
-    return jsonify(json.loads(m))
 
 @app.route('/contact-me')
 def contact_me():

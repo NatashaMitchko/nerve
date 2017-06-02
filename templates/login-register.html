@@ -16,7 +16,7 @@
       <div class="text-center" id="register-message"></div>
       <form action="/register" name="register" id="register" method="POST">
         <div class="floating-placeholder">
-          <input type="text" name="username" id="register-username" required>
+          <input type="text" name="username" id="register-username" autocomplete="off" required>
           <label for="username">Username</label>
         </div>
         <div class="floating-placeholder">
@@ -24,11 +24,11 @@
           <label for="password">Password</label>
         </div>
         <div class="floating-placeholder">
-          <input type="tel" name="tel" id="tel" required>
+          <input type="tel" name="tel" id="tel" autocomplete="off" required>
           <label for="tel">Phone</label>
         </div>
         <div class="floating-placeholder">
-          <input type="text" name="email" id="email" required>
+          <input type="text" name="email" id="email" autocomplete="off" required>
           <label for="email">Email</label>
         </div>
         <input type="submit" value="Submit" name="submit" id="submit">
@@ -42,7 +42,7 @@
       <div class="text-center" id="login-message"></div>
       <form action="/login" name="login" id="login" method="POST">
         <div class="floating-placeholder">
-          <input type="text" name="username" id="login-username" required>
+          <input type="text" name="username" id="login-username" autocomplete="off" required>
           <label for="username">Username</label>
         </div>
         <div class="floating-placeholder">

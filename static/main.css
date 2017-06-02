@@ -192,8 +192,84 @@ h1 {
 }
 
 
-/* END GREY BACKGROUND PAGE STYLING*/
-/*FORM STYLING*/
+/* END GREY BACKGROUND PAGE STYLING */
+/* GREY BACKGROUND FORM STYLING */
+
+.grey-page input[type=text], .grey-page .floating-placeholder {
+  font-family: 'Raleway', sans-serif;
+  font-size: 1.2em;
+  color: black;
+}
+
+.grey-page .textarea {
+  height: auto;
+}
+
+.grey-page textarea {
+  width: auto;
+  height: 3em;
+  border: none;
+  font-family: 'Roboto', sans-serif;
+  background: transparent;
+}
+
+.grey-page input {
+  width: 100%;
+}
+
+.grey-page .radio-btn {
+  height: 2em;
+}
+
+.grey-page .radio-btn input {
+  width: auto;
+  display: none;
+}
+
+.grey-page .radio-btn input[type="radio"] + label {
+  font-weight: normal;
+  height: 2em;
+}
+
+.grey-page .radio-btn span {
+  display: inline-block;
+  width: 30%;
+}
+
+.grey-page .radio-btn input[type="radio"]:checked + label {
+  color: #67dbe4;
+}
+
+.grey-page .floating-placeholder textarea label{
+  width: auto;
+  height: 2em;
+  border: none;
+  font-family: 'Roboto', sans-serif;
+}
+
+.file-container {
+  background: transparent;
+  height: 2em;
+  font-family: 'Roboto', sans-serif;
+}
+
+.file-container input#file-input {
+    opacity: 0;
+    height: 0;
+}
+
+.file-container:hover{
+    color: #67dbe4;
+}
+
+.file-container:focus {
+    outline: #67dbe4;
+    color: #67dbe4;
+}
+
+
+/* END GREY BACKGROUND FORM STYLING */
+/* FORM STYLING */
 
 form{
   width: auto;
@@ -201,7 +277,7 @@ form{
   background:white;
 }
 
-input, .floating-placeholder{
+.color-page input, .floating-placeholder{
   font-family:'Roboto', sans-serif;
   font-size:20pt;
   line-height:2.6em;
@@ -214,7 +290,7 @@ input, .floating-placeholder{
   line-height:2.4em;
 }
 .floating-placeholder input:focus+label{
-  color:#67dbe4;
+  color: #67dbe4;
 }
 .floating-placeholder input[value]+label{
   color:red;

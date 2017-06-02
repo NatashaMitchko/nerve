@@ -49,6 +49,13 @@
       {% endfor %}
     </div>
   </div>
+  {% if session.get('active') %}
+  <div id="bottom-button" class="col-xs-1 col-xs-offset-11 text-center">
+  <a id="create-new-btn" href="/challenges">
+    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+  </a>
+  </div>
+  {% endif %}
 </div>
 
 {% if session.get('active') %}

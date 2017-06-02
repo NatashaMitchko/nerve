@@ -1,9 +1,9 @@
 "use strict";
-// Accept button IIFE
+// Accept button IIFE (Works both on challenge list and challenge details page)
 
 (function (){
 
-  function toggleAccept(button){
+  function toggleAccepted(button){
     // accept-btn > span
     console.log(button);
     $(button).prop('disabled', true);
@@ -11,14 +11,42 @@
     $(button).children().addClass('glyphicon-ok');
     $(button).children().addClass('ok-accepted');
 
-    console.log("post called sucess fn");
-  };
+    console.log("called toggleAccepted");
+  }
 
+  function toggleCompleted(button){
+    console.log(button);
+    $(button).prop('disabled', true);
+    $(button).children().removeClass('glyphicon-plus');
+    $(button).children().addClass('glyphicon-ok');
+    $(button).children().addClass('ok-finished');
+    console.log("called toggleCompleted");
+
+  }
+
+  function isCompleted(){
+    var that = this;
+    $.get('/is_completed.json', {'challenge_id':$(this).attr('data-challenge_id')},
+      function (results){
+        console.log(results);
+        console.log($(this).attr('data-challenge_id'));
+        if (results['status'] == 'accepted'){
+          toggleAccepted(that); 
+        }
+        else if (results['status'] == 'completed'){
+          toggleCompleted(that);
+        }
+
+      } );
+  }
+
+  $('.accept-btn').each(isCompleted);
   $('.accept-btn').on('click', function(e) {
     e.preventDefault();
 
     var btn = $(this);
-    $.post('/accept.json', {'challenge_id':btn.attr('data-challenge_id')}, function (results){ toggleAccept(btn); } );
+    $.post('/accept.json', {'challenge_id':btn.attr('data-challenge_id')}, 
+      function (results){ toggleAccepted(btn); } );
   });
 
 })();
