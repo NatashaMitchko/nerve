@@ -51,11 +51,30 @@
 
 })();
 
+// Add new challenge button
+(function(){
+  function toggleForm (){
+    var form = $('#create-new-form');
+    if (form.hasClass('hidden')){
+      console.log('has class hidden');
+      form.removeClass('hidden');
+    }
+    else {
+            console.log('does not have class hidden');
+      form.addClass('hidden');
+    }
+    // $('#create-new-form').toggleClass('hidden');
+    $('#create-new-btn').toggleClass('rotate45');
+  }
+
+  $('#create-new-btn').on('click', toggleForm);
+})();
+
 // Log Out functions
 (function(){
   function showLogout() {
     $('#logout').toggleClass('hidden');
-      $('#caret').toggleClass('rotate');
+      $('#caret').toggleClass('rotate180');
   }
   $('#profile').on('click', showLogout);
 })();

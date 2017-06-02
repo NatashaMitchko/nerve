@@ -82,8 +82,13 @@ h1 {
     cursor: pointer;
 }
 
-.rotate {
+.rotate180 {
     transform: rotate(180deg);
+    transition: transform 160ms;
+}
+
+.rotate45 {
+  transform: rotate(45deg);
     transition: transform 160ms;
 }
 

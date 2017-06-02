@@ -29,14 +29,14 @@ def get_tags_for_image(photo_file, maxResults=10):
                         'content': image_content.decode('UTF-8')
                     },
                     'features': [{
-                        'type': 'LABEL_DETECTION',
+                        'type': 'WEB_DETECTION',
                         'maxResults': maxResults
                     }]
                 }]
             })
             response = service_request.execute()
 
-            tags = {tag['description'] for tag in response['responses'][0]['labelAnnotations']}
+            tags = {tag['description'] for tag in response['responses'][0]['webDetection']['webEntities']}
             return tags
     except:
         return False
