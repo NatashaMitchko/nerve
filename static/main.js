@@ -156,6 +156,21 @@
 
 })();
 
+// get tags for challenge (challenge view)
+(function(){
+
+$.get('/challenge_attributes.json', {'challenge_id':$('.challenge-attributes').attr('data-challenge_id')}, 
+  function(results){
+    console.log(results, "challenge_attributes");
+    $.each(results, function(key){
+      console.log(key);
+      $('.challenge-attributes').append('<li>' + key + '</li>');
+      
+    });
+  });
+
+})();
+
 
 // Count users IIFE
 (function(){
@@ -189,17 +204,6 @@
   }
 
   $.get('/completion-stats.json', {'challenge_id':challenge_id}, makeChart);
-
-})();
-
-// Insert form at the top of the challenges page when + is clicked
-(function(){
-
-  function toggleCreateForm(){
-    //////////////////////////////////////////////////////////////////////////////////// make form styled and hidden then toggle back and forth w/ + button
-  }
-
-  $('#create-new-btn').on('click', toggleCreateForm);
 
 })();
 

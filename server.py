@@ -149,8 +149,9 @@ def show_login_form():
 @app.route('/logout')
 def logout():
     """Logged out users are redirected to the homepage"""
-    session.clear()
-    return redirect('/challenges')
+    session['active'] = False
+    session['user_id'] = ''
+    return redirect('/login')
 
 def post_user(u,p,e,f):
     """Creates new user and adds user to the db session"""
@@ -304,7 +305,7 @@ def is_challenge_completed():
 def leaderboard(challenge_id):
     """Given a challenge id return list of tuples ordered by highest score that
         contain username and score"""
-    query = UserChallenge.query.filter((UserChallenge.challenge_id==4)&(UserChallenge.is_completed==True)).order_by(UserChallenge.points_earned)
+    query = UserChallenge.query.filter((UserChallenge.challenge_id==challenge_id)&(UserChallenge.is_completed==True)).order_by(UserChallenge.points_earned)
     winners_list = query.limit(6).all()
     print "hello ", winners_list
     return winners_list
@@ -441,10 +442,24 @@ def matched_attributes():
     matched for that user to complete the challenge"""
     user_challenge_id = request.args.get('user_challenge_id')
     categories = UserChallengeCategory.query.filter(UserChallengeCategory.user_challenge_id==user_challenge_id).all()
-    winning_tags_to_display = [i.category.tag for i in categories]
+    winning_tags_to_display = {i.category.tag for i in categories}
     dict = {}
     for tag in winning_tags_to_display:
         dict.setdefault(tag, 0)
+    return jsonify(dict)
+
+@app.route('/challenge_attributes.json')
+def challenge_attributes():
+    """Returns a dict of all challenge attributes for analytics page"""
+    challenge_id = request.args.get('challenge_id')
+    print challenge_id
+    categories = ChallengeCategory.query.filter(ChallengeCategory.challenge_id==challenge_id).all()
+    tags_to_display = {i.category.tag for i in categories}
+    print tags_to_display
+    dict = {}
+    for tag in tags_to_display:
+        dict.setdefault(tag, 0)
+    print dict
     return jsonify(dict)
 
 def make_d3_nodes():
