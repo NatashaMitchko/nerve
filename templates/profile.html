@@ -43,6 +43,7 @@
           <p class="description">{{ i.Challenge.description }}</p>
           <p class="stats">Points: {{ i.UserChallenge.points_earned }}</p>
           <p class="stats">Participants: <span class="num-players" data-challenge_id="{{ i.UserChallenge.id }}"></span></p>
+          <ul class="matched-attributes" data-challenge_id="{{ i.Challenge.id }}"></ul>
           <img src="/{{ i.UserChallenge.image_path }}">
         </div>
         {% endif %}

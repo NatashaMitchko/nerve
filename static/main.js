@@ -5,22 +5,22 @@
 
   function toggleAccepted(button){
     // accept-btn > span
-    console.log(button);
+    // console.log(button);
     $(button).prop('disabled', true);
     $(button).children().removeClass('glyphicon-plus');
     $(button).children().addClass('glyphicon-ok');
     $(button).children().addClass('ok-accepted');
 
-    console.log("called toggleAccepted");
+    // console.log("called toggleAccepted");
   }
 
   function toggleCompleted(button){
-    console.log(button);
+    // console.log(button);
     $(button).prop('disabled', true);
     $(button).children().removeClass('glyphicon-plus');
     $(button).children().addClass('glyphicon-ok');
     $(button).children().addClass('ok-finished');
-    console.log("called toggleCompleted");
+    // console.log("called toggleCompleted");
 
   }
 
@@ -28,8 +28,8 @@
     var that = this;
     $.get('/is_completed.json', {'challenge_id':$(this).attr('data-challenge_id')},
       function (results){
-        console.log(results);
-        console.log($(this).attr('data-challenge_id'));
+        // console.log(results);
+        // console.log($(this).attr('data-challenge_id'));
         if (results['status'] == 'accepted'){
           toggleAccepted(that); 
         }
@@ -152,7 +152,7 @@
       }
     );
   };
-  $('.matched_attributes').each(showAttributes);
+  $('.matched-attributes').each(showAttributes);
 
 })();
 

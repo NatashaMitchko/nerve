@@ -292,21 +292,31 @@ def is_challenge_completed():
         result = query.filter(UserChallenge.user_id==user_id).first()
         # result is a tuple OR none - ugh
         # 'NoneType' object has no attribute '__getitem__'
-        if result[0]:
+        if not result:
+            return ''
+        elif result[0]:
             return jsonify({'status': 'completed'})
-        elif result[0] == False:
-            # Need to specity because result may also be none
+        elif not result[0]:
             return jsonify({'status': 'accepted'})
-        return ''
     else:
         return ''
+
+def leaderboard(challenge_id):
+    """Given a challenge id return list of tuples ordered by highest score that
+        contain username and score"""
+    query = UserChallenge.query.filter((UserChallenge.challenge_id==4)&(UserChallenge.is_completed==True)).order_by(UserChallenge.points_earned)
+    winners_list = query.limit(6).all()
+    print "hello ", winners_list
+    return winners_list
 
 @app.route('/challenge/<id>')
 def challenge_details(id):
     """Renders that challenge details and analytics page"""
     username = get_user_by_id(session['user_id']).username
     challenge = db.session.query(Challenge, ChallengeCategory).filter(Challenge.id==id).join(ChallengeCategory).all()
-    return render_template('challenge.html', challenge=challenge, username=username)
+    winners = leaderboard(id)
+    print winners, "route print"
+    return render_template('challenge.html', challenge=challenge, username=username, winners=winners)
 
 @app.route('/completion-stats.json')
 def get_completion_stats():

@@ -152,7 +152,7 @@ def init_app():
     from flask import Flask
     app = Flask(__name__)
 
-    connect_to_db(app, 'postgres:///test_nerve') # the actual db is specified in the server
+    connect_to_db(app, 'postgres:///nerve') # the actual db is specified in the server
     print "Connected to DB."
 
 

@@ -366,6 +366,10 @@ input[type=submit]:focus {
   size:960px 600px;
 }
 
+.this-node {
+  fill: #67dbe4;
+}
+
 .node {
   stroke: none;
   stroke-width: 1.5px;
@@ -375,6 +379,25 @@ input[type=submit]:focus {
   fill: none;
   stroke: #ccc;
 }
+
+.grey-page th {
+  font-family: 'Raleway', sans-serif;
+}
+
+.grey-page td {
+  font-family: 'Roboto', sans-serif;
+}
+
+.grey-page .highlight {
+  color: #67dbe4;
+  font-weight: bolder;
+}
+
+.grey-page table {
+  width: 80%;
+  margin: 1em;
+}
+
 /*END ANALYTICS AND D3 STYLING*/
 .logged-in {
     fill:linear-gradient(#fc7279 30%, #ff7b9c 60%, #ffc019 125%);

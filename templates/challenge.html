@@ -3,7 +3,7 @@
 {% block title %}{{ challenge[0][0].title }}{% endblock %}
 
 {% block content %}
-<div class="container-fluid grey-page">
+<div class="container-fluid grey-page analytics">
   <div class="row">
     <div class="col-xs-4 col-md-3 top">
       <h1 class="title home text-center"><a href="/challenges">SCAVENGERHUNT</a></h1>
@@ -27,6 +27,7 @@
       <div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-0 section">
         <h1 class="title">{{ challenge[0][0].title }}</h1>
         <p class="description">{{ challenge[0][0].description }}</p>
+        <ul class="matched-attributes" data-challenge_id="{{ challenge[0][0].id }}"></ul>
       </div>
       <div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-0 section">
         <h1 class="text-center title">Popularity</h1>
@@ -36,11 +37,30 @@
     <div class="row">
       <div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-0 section">
         <h1 class="title">Relationships</h1>
-        <p class="description">Explore the relationships between challenges. Each node represents an individual challenge and the lines represent the relationships between them.</p>
+        <p class="description">Explore the relationships between challenges. Each node represents an individual challenge and the lines represent the relationships between them. This challenge is highlighted in blue.</p>
         <svg width="300" height="300"></svg>
       </div>
       <div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-0 section">
-        <h1 class="title text-center">Participants: <span class="num-players" data-challenge_id="{{ challenge[0][0].id }}"></span></h1>
+        <h1 class="title text-center">Leaderboard</h1>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Username</th>
+              <th>Points</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for winner in winners %}
+            <tr>
+              <th scope="row">{{ loop.index }}</th>
+              <td>{{ winner.user.username }}</td>
+              <td>{{ winner.points_earned }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <h1 class="title text-left">Total Participants: <span class="num-players" data-challenge_id="{{ challenge[0][0].id }}"></span></h1>
       </div>
     </div>
     <div class="row">
@@ -69,7 +89,7 @@
         width = +svg.attr("width"),
         height = +svg.attr("height");
 
-    var color = d3.rgb(103,219,228);
+    var color = d3.rgb(211, 211, 211);
 
     var simulation = d3.forceSimulation()
         .force("link", d3.forceLink().distance(10).strength(0.5))
@@ -150,6 +170,16 @@
       if (!d3.event.active) simulation.alphaTarget(0);
       d.fx = null, d.fy = null;
     }
+
+    $(document).ready(function() {
+        var this_node = $('.node').children(':contains({{ challenge[0][0].title }})').parent();
+        this_node.addClass('this-node');
+
+        {% if session.get('active') %}
+        console.log('user');
+        $('td:contains({{ username }})').parent().addClass('highlight');
+        {% endif %}
+    });
 </script>
 
 {% endblock %}
