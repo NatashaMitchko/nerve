@@ -26,8 +26,18 @@
         {% if i.UserChallenge.is_completed == False %}
         <div class="col-xs-6 col-md-5 main challenge">
           <p class="text-right">in progress <span class="time" data-timestamp="{{ i.UserChallenge.accepted_timestamp }}"></span></p>
-          <p class="challenge-title">{{ i.Challenge.title }}</p>
+          <p class="challenge-title"><a href="/challenge/{{ i.Challenge.id }}">{{ i.Challenge.title }}</a></p>
+          <p class="stats">Participants: <span class="num-players" data-challenge_id="{{ i.UserChallenge.id }}"></span></p>
           <p class="description">{{ i.Challenge.description }}</p>
+
+          <form action="/complete/{{ i.Challenge.id }}" name="create" id="create" enctype="multipart/form-data" method="POST">
+          <div class="file-container">
+            <label class="text-center">Upload Image <input id="file-input" type="file" name="file" accept="image/*"></label>
+          </div>
+          <input type="submit" value="Submit" name="submit" id="submit">
+        </form>
+
+
         </div>
         {% endif %}
       {% endfor %}
@@ -39,10 +49,9 @@
         {% if i.UserChallenge.is_completed == True %}
         <div class="col-xs-6 col-md-5 main challenge">
           <p class="text-right">completed <span class="time" data-timestamp="{{ i.UserChallenge.accepted_timestamp }}"></span></p>
-          <p class="challenge-title">{{ i.Challenge.title }}</p>
+          <p class="challenge-title"><a href="/challenge/{{ i.Challenge.id }}">{{ i.Challenge.title }}</a></p>
           <p class="description">{{ i.Challenge.description }}</p>
           <p class="stats">Points: {{ i.UserChallenge.points_earned }}</p>
-          <p class="stats">Participants: <span class="num-players" data-challenge_id="{{ i.UserChallenge.id }}"></span></p>
           <ul class="matched-attributes" data-challenge_id="{{ i.Challenge.id }}"></ul>
           <img src="/{{ i.UserChallenge.image_path }}">
         </div>

@@ -203,6 +203,16 @@ $.get('/challenge_attributes.json', {'challenge_id':$('.challenge-attributes').a
       });
   }
 
+//   function makeCategoriesChart(result){
+//     var myBarChart = new Chart(document.getElementById("chartjs-categories"), 
+//     {"type": 'horizontalBar',
+//     "data": data,
+//     "options": options
+// });
+
+//   }
+
+//   $.get('/challenge_attributes.json', {'challenge_id':challenge_id}, makeCategoriesChart);
   $.get('/completion-stats.json', {'challenge_id':challenge_id}, makeChart);
 
 })();

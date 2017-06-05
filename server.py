@@ -178,8 +178,7 @@ def register_user():
         # Add newly created user to the session
         session['active'] = True
         session['user_id'] = User.query.filter(username==username).first().id
-        flash('Welcome')
-        return redirect('/')
+        return redirect('/challenges')
 
 def allowed_file(filename):
     """Makes sure that the uploaded file is valid type"""
@@ -454,7 +453,7 @@ def challenge_attributes():
     challenge_id = request.args.get('challenge_id')
     print challenge_id
     categories = ChallengeCategory.query.filter(ChallengeCategory.challenge_id==challenge_id).all()
-    tags_to_display = {i.category.tag for i in categories}
+    tags_to_display = [i.category.tag for i in categories]
     print tags_to_display
     dict = {}
     for tag in tags_to_display:
