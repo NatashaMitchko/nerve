@@ -105,7 +105,7 @@ h1 {
     margin-top: .5em;
 }
 
-.in-progress .time {
+.in-progress .timestamp {
     color:#67dbe4;
 }
 
@@ -135,7 +135,6 @@ h1 {
 
 .challenge img {
     border: 0;
-    margin-bottom: 1em;
     border-radius: 4px;
 }
 
@@ -269,6 +268,10 @@ h1 {
 .file-container:focus {
     outline: #67dbe4;
     color: #67dbe4;
+}
+
+.default-image img{
+  width: 100%;
 }
 
 
