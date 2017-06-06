@@ -10,8 +10,11 @@
     </div>
     <div class="col-xs-12 col-md-3 col-md-offset-6 top">
       {% if session.get('active') %}
-      <h1 class="title text-center text-uppercase" id="profile">{{ username }} <img id="caret" class="rotate" src="/static/images/_caret.png"></h1>
-      <h1><a href='/logout' class="text-center hidden" id="logout">LOG OUT</a></h1>
+      <h1 class="text-center text-uppercase" id="profile">{{ username }} <img id="caret" class="rotate" src="/static/images/_caret.png"></h1>
+<!--       <div id="logout hidden">
+        <p><a href="/profile/{{ username }}">Your Profile</a></p>
+        <p><a href='/logout' class="text-center">Log Out</a></p>
+      </div> -->
       {% endif %}
     </div>
   </div>
@@ -21,18 +24,18 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-xs-12 col-md-10 col-md-offset-2">
-      <div id="create-new-form" class="col-xs-6 col-md-5 main hidden"> <!-- hidden -->
+    <div class="col-xs-12 col-md-11 col-md-offset-2">
+      <div id="create-new-form" class="col-xs-12 col-md-4 main challenge hidden"> <!-- hidden -->
         <form action="/create" name="create" id="create" enctype="multipart/form-data" method="POST">
-          <div class="floating-placeholder">
-            <input type="text" name="title" id="title" autocomplete="off" required>
-            <label for="title">Title</label>
-          </div>
-          <div class="textarea">
-            <textarea rows="5" cols="30" name="description" class="description" autocomplete="off" required></textarea>
-            <label for="decsription" class="description">Description</label>
-          </div>
-          <div class="radio-btn">
+          <fieldset>
+            <!-- <label for="title">Title</label> -->
+            <input type="text" name="title" id="title" placeholder="Title" autocomplete="off" required>
+          </fieldset><br>
+          <fieldset class="textarea">
+            <!-- <label for="decsription" class="description">Description</label> -->
+            <textarea rows="5" cols="30" name="description" class="description" placeholder="Description" autocomplete="off" required></textarea>
+          </fieldset><br>
+          <fieldset class="radio-btn">
             <span class="text-center">
               <input type="radio" name="difficulty" id="easy" value="1" checked>
               <label for="easy">Easy</label>
@@ -45,15 +48,16 @@
               <input type="radio" name="difficulty" id="hard" value="3">
               <label for="hard">Hard</label>
             </span>
-          </div>
-          <div class="file-container">
-            <label class="text-center">Upload Image <input id="file-input" type="file" name="file" accept="image/*"></label>
-          </div>
+          </fieldset>
+          <fieldset class="file-container text-center">
+            <input id="file-input" type="file" name="file" accept="image/*" required>
+            <label for="file-input">Upload Image</label>
+          </fieldset>
           <input type="submit" value="Submit" name="submit" id="submit">
         </form>
       </div>
       {% for challenge in challenges %}
-      <div class="col-xs-6 col-md-5 main challenge">
+      <div class="col-xs-12 col-md-4 main challenge">
         <div class="list-accept">
           {% if session['active'] == True %}
           <a data-challenge_id="{{ challenge.id }}" class="accept-btn">

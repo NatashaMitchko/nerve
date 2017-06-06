@@ -400,7 +400,6 @@ def save_winning_hits(tag_set, user_challenge_id):
 def complete_challenge(id):
     """Gets UserChallenge page for uncompleted challenge and allows user
         to complete"""
-
     file = request.files['file']
     if file.filename == '':
         flash('No file selected')

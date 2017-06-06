@@ -3,9 +3,12 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-{% for message in get_flashed_messages() %}
-    <span> {{ message }}</span>
-{% endfor %}
+
+<div class="container-fluid color-page">
+  <div class="row">
+    <h1 class="title home">SCAVENGERHUNT</h1>
+  </div>
+</div>
 <a href='/challenges'>Find a Challenge</a>
 <a href='/create'>Create a Challenge</a>
 {% if session.get('active') %}

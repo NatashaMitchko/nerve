@@ -3,6 +3,17 @@
 
 (function (){
 
+    function getNumPlayers(){
+    var that = this;
+    $.get('/num-players.json', {'challenge_id':$(this).attr('data-challenge_id')},
+      function(result){
+        $(that).text(result);
+      }
+    );
+  };
+
+  $('.num-players').each(getNumPlayers);
+
   function toggleAccepted(button){
     // accept-btn > span
     // console.log(button);
@@ -46,7 +57,10 @@
 
     var btn = $(this);
     $.post('/accept.json', {'challenge_id':btn.attr('data-challenge_id')}, 
-      function (results){ toggleAccepted(btn); } );
+      function (results){ 
+        toggleAccepted(btn);
+        $('.num-players').each(getNumPlayers); 
+      } );
   });
 
 })();
@@ -161,30 +175,14 @@
 
 $.get('/challenge_attributes.json', {'challenge_id':$('.challenge-attributes').attr('data-challenge_id')}, 
   function(results){
-    console.log(results, "challenge_attributes");
+    // console.log(results, "challenge_attributes");
     $.each(results, function(key){
-      console.log(key);
+      // console.log(key);
       $('.challenge-attributes').append('<li>' + key + '</li>');
       
     });
   });
 
-})();
-
-
-// Count users IIFE
-(function(){
-
-  function getNumPlayers(){
-    var that = this;
-    $.get('/num-players.json', {'challenge_id':$(this).attr('data-challenge_id')},
-      function(result){
-        $(that).text(result);
-      }
-    );
-  };
-
-  $('.num-players').each(getNumPlayers);
 })();
 
 // Participants/ completed for doughnut graph

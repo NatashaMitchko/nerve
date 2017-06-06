@@ -23,6 +23,10 @@ html, body {
     color:#67dbe4;
 }
 
+#profile {
+  font-size: 1.2em;
+}
+
 /*COLORED BACKGROUND PAGE STYLING*/
 .color-page {
     background: linear-gradient(to top right, #67dbe4, #c7ffe2);
@@ -209,39 +213,41 @@ h1 {
   font-size: 2em;
 }
 
-.button {
-  display: inline-block;
-  padding: 1em;
-}
 
 /* END GREY BACKGROUND PAGE STYLING */
 /* GREY BACKGROUND FORM STYLING */
 
-.grey-page input[type=text], 
-.grey-page .floating-placeholder {
+.grey-page input[type=text],
+ .grey-page input[type=text]::placeholder {
   font-family: 'Raleway', sans-serif;
   font-size: 1.2em;
   color: black;
+  border:none;
+  outline:none;
 }
 
 .grey-page .textarea {
   height: auto;
 }
 
-.grey-page textarea {
-  width: auto;
-  height: 3em;
+.grey-page textarea,
+.grey-page textarea::placeholder {
+  width: 100%;
+  height: 5em;
   border: none;
   font-family: 'Roboto', sans-serif;
-  background: transparent;
+  border:none;
+  outline:none;
 }
 
 .grey-page input {
   width: 100%;
+  border: none;
 }
 
 .grey-page .radio-btn {
-  height: 2em;
+  height: 3em;
+  font-size: 1.2em;
 }
 
 .grey-page .radio-btn input {
@@ -252,11 +258,14 @@ h1 {
 .grey-page .radio-btn input[type="radio"] + label {
   font-weight: normal;
   height: 2em;
+  margin-bottom: 0;
+  vertical-align: middle;
 }
 
 .grey-page .radio-btn span {
   display: inline-block;
   width: 30%;
+  margin-top: .8em;
 }
 
 .grey-page .radio-btn input[type="radio"]:checked + label {
@@ -270,10 +279,19 @@ h1 {
   font-family: 'Roboto', sans-serif;
 }
 
-.file-container {
+.file-container label {
   background: transparent;
   height: 2em;
+  width: 100%;
+  padding-top: .3em;
   font-family: 'Roboto', sans-serif;
+  font-size: 1.2em;
+}
+
+input[type="file"]:valid ~ label{
+  background: rgba(103, 219, 228, .5);
+  border-radius: 4px;
+  color: white;
 }
 
 .file-container input#file-input {
@@ -285,9 +303,9 @@ h1 {
     color: #67dbe4;
 }
 
-.file-container:focus {
-    outline: #67dbe4;
-    color: #67dbe4;
+.grey-page input[type="submit"] {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.2em;
 }
 
 .default-image img{
@@ -401,7 +419,6 @@ input[type=submit]:focus {
   fill: none;
   stroke: #ccc;
 }
-
 .grey-page th {
   font-family: 'Raleway', sans-serif;
 }
@@ -410,7 +427,12 @@ input[type=submit]:focus {
   font-family: 'Roboto', sans-serif;
 }
 
-.grey-page .highlight {
+.grey-page td a {
+  color: black;
+}
+
+.grey-page .highlight,
+.grey-page .highlight a{
   color: #67dbe4;
   font-weight: bolder;
 }
@@ -418,6 +440,13 @@ input[type=submit]:focus {
 .grey-page table {
   width: 80%;
   margin: 1em;
+  height: 40%
+}
+
+.grey-page ul,
+.grey-page p {
+  font-family: 'Raleway', sans-serif;
+  font-size: 1.2em;
 }
 
 /*END ANALYTICS AND D3 STYLING*/

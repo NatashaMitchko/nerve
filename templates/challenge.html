@@ -10,7 +10,7 @@
     </div>
     <div class="col-xs-12 col-md-3 col-md-offset-6 top">
       {% if session.get('active') %}
-      <h1 class="title text-center text-uppercase" id="profile">{{ username }} <img id="caret" class="rotate" src="/static/images/_caret.png"></h1>
+      <h1 class="text-center text-uppercase" id="profile">{{ username }} <img id="caret" class="rotate" src="/static/images/_caret.png"></h1>
       <h1><a href='/logout' class="text-center hidden" id="logout">LOG OUT</a></h1>
       {% endif %}
     </div>
@@ -55,18 +55,18 @@
             {% for winner in winners %}
             <tr>
               <th scope="row">{{ loop.index }}</th>
-              <td>{{ winner.user.username }}</td>
+              <td><a href="/profile/{{ winner.user.username }}">{{ winner.user.username }}</a></td>
               <td>{{ winner.points_earned }}</td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
-        <h1 class="title text-left">Total Participants: <span class="num-players" data-challenge_id="{{ challenge[0][0].id }}"></span></h1>
+        <p class="text-left">Total Participants: <span class="num-players" data-challenge_id="{{ challenge[0][0].id }}"></span></p>
       </div>
     </div>
     <div class="row">
       <div class="col-xs-10 col-xs-offset-1 section">
-        <h1 class="title">Images</h1>
+        <h1 class="title text-center">Images</h1>
         <div class="text-center default-image">
           <img src="/{{ challenge[0][0].image_path }}">
         </div>
@@ -179,7 +179,6 @@
         this_node.addClass('this-node');
 
         {% if session.get('active') %}
-        console.log('user');
         $('td:contains({{ username }})').parent().addClass('highlight');
         {% endif %}
     });

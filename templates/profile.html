@@ -10,7 +10,7 @@
     </div>
     <div class="col-xs-12 col-md-3 col-md-offset-6 top">
       {% if session.get('active') %}
-      <h1 class="title text-center text-uppercase" id="profile">{{ username }} <img id="caret" class="rotate" src="/static/images/_caret.png"></h1>
+      <h1 class="text-center text-uppercase" id="profile">{{ username }} <img id="caret" class="rotate" src="/static/images/_caret.png"></h1>
       <h1><a href='/logout' class="text-center hidden" id="logout">Log Out</a></h1>
       {% endif %}
     </div>
@@ -31,9 +31,10 @@
           <p class="description">{{ i.Challenge.description }}</p>
 
           <form action="/complete/{{ i.Challenge.id }}" name="create" id="create" enctype="multipart/form-data" method="POST">
-          <div class="file-container text-center">
-            <label class="text-center">Upload Image <input id="file-input" type="file" name="file" accept="image/*"></label>
-          </div>
+          <fieldset class="file-container text-center">
+            <input id="file-input" type="file" name="file" accept="image/*" required>
+            <label for="file-input">Upload Image</label>
+          </fieldset>
           <input type="submit" value="Submit" name="submit" id="submit">
         </form>
 
