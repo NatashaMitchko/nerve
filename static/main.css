@@ -32,6 +32,22 @@ html, body {
     background: linear-gradient(to top right, #67dbe4, #c7ffe2);
 }
 
+.color-page .scavengerhunt a {
+  font-family: 'Raleway', sans-serif;
+  font-size: 3em;
+  color: white;
+}
+
+.scavengerhunt {
+  position: fixed;
+  top: 40%;
+  left: 10%;
+}
+
+.homepage {
+  height: 100%;
+}
+
 .color-page p {
     color: white;
     margin-top: 1em;
@@ -92,7 +108,7 @@ h1 {
 }
 
 .rotate180 {
-    transform: rotate(180deg);
+    transform: rotate(-180deg);
 }
 
 .rotate45 {

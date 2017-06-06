@@ -400,7 +400,7 @@ def complete_challenge(id):
     file = request.files['file']
     if file.filename == '':
         flash('No file selected')
-        return redirect('/complete/{}'.format(id))
+        return redirect('/challenge/id/{}'.format(id))
     elif file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
@@ -417,11 +417,11 @@ def complete_challenge(id):
 
             if len(hits) != 0:
                 save_winning_hits(tag_set, user_challenge.id)
-            return redirect('/complete/{}'.format(id))
+            return redirect('/challenge/id/{}'.format(id))
         else:
             os.remove(filename)
             flash('Try another image')
-            return redirect('/complete/{}'.format(id))
+            return redirect('/challenge/id/{}'.format(id))
 
 @app.route('/matched_attributes.json')
 def matched_attributes():
@@ -439,14 +439,12 @@ def matched_attributes():
 def challenge_attributes():
     """Returns a dict of all challenge attributes for analytics page"""
     challenge_id = request.args.get('challenge_id')
-    print challenge_id
     categories = ChallengeCategory.query.filter(ChallengeCategory.challenge_id==challenge_id).all()
     tags_to_display = [i.category.tag for i in categories]
     print tags_to_display
     dict = {}
     for tag in tags_to_display:
         dict.setdefault(tag, 0)
-    print dict
     return jsonify(dict)
 
 def make_d3_nodes():

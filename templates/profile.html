@@ -21,10 +21,10 @@
     </div>
   </div>
   <div class="row in-progress">
-    <div class="col-xs-12 col-md-10 col-md-offset-2">
+    <div class="col-xs-12 col-xs-offset-1 col-md-10 col-md-offset-2">
       {% for i in info %}
         {% if i.UserChallenge.is_completed == False %}
-        <div class="col-xs-6 col-md-5 main challenge">
+        <div class="col-xs-10 col-md-5 main challenge">
           <p class="text-right timestamp">accepted <span class="time" data-timestamp="{{ i.UserChallenge.accepted_timestamp }}"></span></p>
           <p class="challenge-title"><a href="/challenge/{{ i.Challenge.id }}">{{ i.Challenge.title }}</a></p>
           <p class="stats">Active participants: <span class="num-players" data-challenge_id="{{ i.UserChallenge.id }}"></span></p>
@@ -45,10 +45,10 @@
     </div>
   </div>
   <div class="row complete">
-    <div class="col-xs-12 col-md-10 col-md-offset-2">
+    <div class="col-xs-12 col-xs-offset-1 col-md-10 col-md-offset-2">
       {% for i in info %}
         {% if i.UserChallenge.is_completed == True %}
-        <div class="col-xs-6 col-md-5 main challenge">
+        <div class="col-xs-10 col-md-5 main challenge">
           <p class="text-right timestamp">completed <span class="time" data-timestamp="{{ i.UserChallenge.accepted_timestamp }}"></span></p>
           <p class="challenge-title"><a href="/challenge/{{ i.Challenge.id }}">{{ i.Challenge.title }}</a></p>
           <p class="description">{{ i.Challenge.description }}</p>

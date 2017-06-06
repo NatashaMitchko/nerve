@@ -5,24 +5,9 @@
 {% block content %}
 
 <div class="container-fluid color-page">
-  <div class="row">
-    <h1 class="title home">SCAVENGERHUNT</h1>
+  <div class="row align-middle homepage">
+    <h1 class="scavengerhunt text-center home"><a href="/login">SCAVENGERHUNT</a></h1>
   </div>
 </div>
-<a href='/challenges'>Find a Challenge</a>
-<a href='/create'>Create a Challenge</a>
-{% if session.get('active') %}
-<a href="/logout">Log Out</a>
-<a href="/profile/id/{{ session.get('user_id')}}">Profile</a>
-<h1>Pics or it</h1>
-<h1>Didn't Happen.</h1>
 
-{% else %}
-<a href="/login">Log In</a>
-
-
-<h1>Pics or it</h1>
-<h1>Didn't Happen.</h1>
-
-{% endif %}
 {% endblock %}
