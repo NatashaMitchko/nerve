@@ -242,7 +242,6 @@ def post_challenge_categories(tag_set, challenge_id):
 def create_challenge():
     """Render new challenge form and post newly created challenges if valid"""
     if request.method == 'POST':
-
         title = request.form.get('title').title()
         description = request.form.get('description')
         difficulty = request.form.get('difficulty')
@@ -250,7 +249,7 @@ def create_challenge():
 
         if file.filename == '':
             flash('No file selected')
-            return redirect('/create')
+            return redirect('/challenges')
         elif file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
@@ -265,9 +264,7 @@ def create_challenge():
                 else:
                     flash("""We weren't able to analyze your image. Please 
                         choose another and try again""")
-                    return redirect('/create')
-    else:
-        return render_template('create.html')
+                    return redirect('/challenges')
 
 @app.route('/challenges')
 def show_all_challenges():
