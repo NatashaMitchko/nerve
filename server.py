@@ -396,44 +396,36 @@ def save_winning_hits(tag_set, user_challenge_id):
         db.session.add(new_user_challenge_category)
         db.session.commit()
 
-@app.route('/complete/<id>', methods=['GET','POST'])
+@app.route('/complete/<id>', methods=['POST'])
 def complete_challenge(id):
     """Gets UserChallenge page for uncompleted challenge and allows user
         to complete"""
-    if request.method == 'POST':
 
+    file = request.files['file']
+    if file.filename == '':
+        flash('No file selected')
+        return redirect('/complete/{}'.format(id))
+    elif file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        filename = 'static/images/' + filename
 
-        file = request.files['file']
-        if file.filename == '':
-            flash('No file selected')
+        if image_is_safe(filename):
+            tag_set = get_tags_for_image(filename, 5)
+            categories = ChallengeCategory.query.filter(ChallengeCategory.challenge_id==id).all()
+            winning_tags = {i.category.tag for i in categories}
+            
+            hits = winning_tags.intersection(tag_set)
+
+            user_challenge = attempt_challenge(id, hits, filename)
+
+            if len(hits) != 0:
+                save_winning_hits(tag_set, user_challenge.id)
             return redirect('/complete/{}'.format(id))
-        elif file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            filename = 'static/images/' + filename
-
-
-
-            if image_is_safe(filename):
-                tag_set = get_tags_for_image(filename, 5)
-                categories = ChallengeCategory.query.filter(ChallengeCategory.challenge_id==id).all()
-                winning_tags = {i.category.tag for i in categories}
-                
-                hits = winning_tags.intersection(tag_set)
-
-                user_challenge = attempt_challenge(id, hits, filename)
-
-                if len(hits) != 0:
-                    save_winning_hits(tag_set, user_challenge.id)
-                return redirect('/complete/{}'.format(id))
-            else:
-                os.remove(filename)
-                flash('Try another image')
-                return redirect('/complete/{}'.format(id))
-
-    else:
-        to_complete = db.session.query(UserChallenge, Challenge).filter(UserChallenge.challenge_id==id).join(Challenge).first()
-        return render_template('complete.html', challenge_info=to_complete)
+        else:
+            os.remove(filename)
+            flash('Try another image')
+            return redirect('/complete/{}'.format(id))
 
 @app.route('/matched_attributes.json')
 def matched_attributes():

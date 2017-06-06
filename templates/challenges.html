@@ -10,7 +10,7 @@
     </div>
     <div class="col-xs-12 col-md-3 col-md-offset-6 top">
       {% if session.get('active') %}
-      <h1 class="title text-center text-uppercase" id="profile">{{ username }} <img id="caret" src="/static/images/_caret.png"></h1>
+      <h1 class="title text-center text-uppercase" id="profile">{{ username }} <img id="caret" class="rotate" src="/static/images/_caret.png"></h1>
       <h1><a href='/logout' class="text-center hidden" id="logout">LOG OUT</a></h1>
       {% endif %}
     </div>
@@ -64,6 +64,9 @@
         <p class="challenge-title"><a href="/challenge/{{ challenge.id }}">{{ challenge.title }}</a></p>
         <p class="description">{{ challenge.description }}</p>
         <p class="stats">Participants: <span class="num-players" data-challenge_id="{{ challenge.id }}"></span></span></p>
+        <div class="text-center default-image">
+          <img src="/{{ challenge.image_path }}">
+        </div>
       </div>
       {% endfor %}
     </div>

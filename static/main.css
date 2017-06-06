@@ -14,6 +14,7 @@ html, body {
 
 .home a {
   color:black;
+  font-size: 1.3em;
 }
 
 .home a:hover, .home a:focus {
@@ -71,7 +72,7 @@ h1 {
 
 .grey-page h1.title {
     font-family: 'Raleway', sans-serif;
-    font-size: 1.5em;
+    font-size: 1.6em;
 }
 
 .grey-page .top {
@@ -82,14 +83,16 @@ h1 {
     cursor: pointer;
 }
 
+.rotate {
+    transition: transform 160ms;
+}
+
 .rotate180 {
     transform: rotate(180deg);
-    transition: transform 160ms;
 }
 
 .rotate45 {
   transform: rotate(45deg);
-    transition: transform 160ms;
 }
 
 .grey-page h1 img {
@@ -109,9 +112,14 @@ h1 {
     color:#67dbe4;
 }
 
-.complete .time {
+.complete .timestamp {
     color: #ccc;
 }
+
+.complete label {
+  width: 30%;
+}
+
 .challenge {
     margin: .5em;
     padding: 2em;
@@ -136,6 +144,7 @@ h1 {
 .challenge img {
     border: 0;
     border-radius: 4px;
+    margin-bottom: 1.2em;
 }
 
 .section {
@@ -175,13 +184,18 @@ h1 {
 
 .ok-accepted {
    color: #67dbe4;
+   text-shadow: none;
+   cursor: default;
 }
 
 .ok-finished {
   color: #636363;
+  text-shadow: none;
+  cursor: default;
 }
 
-#bottom-button a:hover, .list-accept a:hover{
+#bottom-button a:hover, 
+.list-accept a:hover{
   color: #67dbe4;
   cursor: pointer;
   text-shadow: 2px 2px 4px rgba(138,130,138,.5);
@@ -195,10 +209,16 @@ h1 {
   font-size: 2em;
 }
 
+.button {
+  display: inline-block;
+  padding: 1em;
+}
+
 /* END GREY BACKGROUND PAGE STYLING */
 /* GREY BACKGROUND FORM STYLING */
 
-.grey-page input[type=text], .grey-page .floating-placeholder {
+.grey-page input[type=text], 
+.grey-page .floating-placeholder {
   font-family: 'Raleway', sans-serif;
   font-size: 1.2em;
   color: black;

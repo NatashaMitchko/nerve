@@ -10,7 +10,7 @@
     </div>
     <div class="col-xs-12 col-md-3 col-md-offset-6 top">
       {% if session.get('active') %}
-      <h1 class="title text-center text-uppercase" id="profile">{{ username }} <img id="caret" src="/static/images/_caret.png"></h1>
+      <h1 class="title text-center text-uppercase" id="profile">{{ username }} <img id="caret" class="rotate" src="/static/images/_caret.png"></h1>
       <h1><a href='/logout' class="text-center hidden" id="logout">Log Out</a></h1>
       {% endif %}
     </div>
@@ -48,11 +48,12 @@
       {% for i in info %}
         {% if i.UserChallenge.is_completed == True %}
         <div class="col-xs-6 col-md-5 main challenge">
-          <p class="text-right">completed <span class="time" data-timestamp="{{ i.UserChallenge.accepted_timestamp }}"></span></p>
+          <p class="text-right timestamp">completed <span class="time" data-timestamp="{{ i.UserChallenge.accepted_timestamp }}"></span></p>
           <p class="challenge-title"><a href="/challenge/{{ i.Challenge.id }}">{{ i.Challenge.title }}</a></p>
           <p class="description">{{ i.Challenge.description }}</p>
           <div class="text-center default-image">
-            <p class="stats">Points: {{ i.UserChallenge.points_earned }}</p>
+            <label>Points: <h3>{{ i.UserChallenge.points_earned }}</h3></label>
+            <label>Attempts: <h3>{{ i.UserChallenge.attempts }}</h3></label>
             <img src="/{{ i.UserChallenge.image_path }}">
           </div>
           <!-- <ul class="matched-attributes" data-challenge_id="{{ i.Challenge.id }}"></ul> -->
@@ -69,64 +70,4 @@
   </div>
   {% endif %}
 </div>
-<!-- 
-{% if session.get('active') %}
-<a href="/logout">Log Out</a>
-{% else %}
-<a href="/login">Log In</a>
-{% endif %}
-<h1>{{ username }}</h1>
-
-{% for i in info %}
-  {% if i.UserChallenge.is_completed == False %}
-  <table>
-    <tr>
-      <th>{{ i.Challenge.title }}</th>
-    </tr>
-    <tr>
-      <td>Accepted <span class="time" data-timestamp="{{ i.UserChallenge.accepted_timestamp }}"></span></td>
-    </tr>
-    <tr>
-      <td>{{ i.Challenge.description }}</td>
-    </tr>
-    <tr>
-      <td><a href="/complete/{{ i.UserChallenge.challenge_id }}">Complete Challenge</a></td>
-    </tr>
-  </table>
-  {% endif %}
-{% endfor %}
-
-<h3>Completed Challenges</h3>
-{% for i in info %}
-  {% if i.UserChallenge.is_completed == True %}
-  <div class="row">
-    <table>
-      <tr>
-        <th>{{ i.Challenge.title }}</th>
-      </tr>
-      <tr>
-        <td>Completed <span class="time" data-timestamp="{{ i.UserChallenge.completed_timestamp }}"></span></td>
-      </tr>
-      <tr>
-        <td>Points: {{ i.UserChallenge.points_earned }}</td>
-      </tr>
-      <tr>
-        <td>Participants: <span class="num-players" data-challenge_id="{{ i.UserChallenge.id }}"></span></td>
-      </tr>
-      <tr>
-        <td>{{ i.Challenge.description }}</td>
-      </tr>
-      <tr>
-        <td><img src="/{{ i.UserChallenge.image_path }}"></td>
-      </tr>
-      <tr>
-        <td>Matched attributes: <ul class="matched_attributes" data-challenge_id="{{ i.Challenge.id }}"></ul></td>
-      </tr>
-    </table>
-  </div>
-  {% endif %}
-{% endfor %}
-
-<a href="/challenges" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">+</a>
 {% endblock %}
- -->
