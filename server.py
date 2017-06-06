@@ -384,7 +384,9 @@ def attempt_challenge(id, hits, filename):
     return update
 
 def save_winning_hits(tag_set, user_challenge_id):
-    """Adds information relating UserChallenge to Category"""
+    """Adds information relating UserChallenge to Category
+       At this point the categories must exist in Category to be mapped
+    """
     for tag in tag_set:
         # Get category id for hit
         category = Category.query.filter(Category.tag==tag).first()
@@ -400,7 +402,7 @@ def complete_challenge(id):
     file = request.files['file']
     if file.filename == '':
         flash('No file selected')
-        return redirect('/challenge/id/{}'.format(id))
+        return redirect('/challenge/{}'.format(id))
     elif file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
@@ -408,6 +410,7 @@ def complete_challenge(id):
 
         if image_is_safe(filename):
             tag_set = get_tags_for_image(filename, 5)
+            print tag_set
             categories = ChallengeCategory.query.filter(ChallengeCategory.challenge_id==id).all()
             winning_tags = {i.category.tag for i in categories}
             
@@ -416,12 +419,12 @@ def complete_challenge(id):
             user_challenge = attempt_challenge(id, hits, filename)
 
             if len(hits) != 0:
-                save_winning_hits(tag_set, user_challenge.id)
-            return redirect('/challenge/id/{}'.format(id))
+                save_winning_hits(hits, user_challenge.id)
+            return redirect('/challenge/{}'.format(id))
         else:
             os.remove(filename)
             flash('Try another image')
-            return redirect('/challenge/id/{}'.format(id))
+            return redirect('/challenge/{}'.format(id))
 
 @app.route('/matched_attributes.json')
 def matched_attributes():

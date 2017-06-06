@@ -32,8 +32,8 @@
 
           <form action="/complete/{{ i.Challenge.id }}" name="create" id="create" enctype="multipart/form-data" method="POST">
           <fieldset class="file-container text-center">
-            <input id="file-input" type="file" name="file" accept="image/*" required>
-            <label for="file-input">Upload Image</label>
+            <input id="file-input{{ i.Challenge.id }}" type="file" name="file" accept="image/*" required>
+            <label for="file-input{{ i.Challenge.id }}">Upload Image</label>
           </fieldset>
           <input type="submit" value="Submit" name="submit" id="submit">
         </form>

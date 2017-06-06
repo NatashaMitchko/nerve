@@ -42,6 +42,11 @@ html, body {
   position: fixed;
   top: 40%;
   left: 10%;
+  animation: float 5s cubic-bezier(0.38, 0.12, 0.59, 0.86) infinite;
+}
+
+@keyframes float {
+  50%{transform:translate(0, 16px)}
 }
 
 .homepage {
@@ -310,7 +315,7 @@ input[type="file"]:valid ~ label{
   color: white;
 }
 
-.file-container input#file-input {
+.file-container input[type="file"] {
     opacity: 0;
     height: 0;
 }
