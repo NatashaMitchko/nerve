@@ -40,7 +40,7 @@ html, body {
 
 .scavengerhunt {
   position: fixed;
-  top: 40%;
+  top: 32%;
   left: 10%;
   animation: float 5s cubic-bezier(0.38, 0.12, 0.59, 0.86) infinite;
 }
@@ -459,9 +459,9 @@ input[type=submit]:focus {
 }
 
 .grey-page table {
-  width: 80%;
+  width: 90%;
   margin: 1em;
-  height: 40%
+  height: 16%
 }
 
 .grey-page ul,

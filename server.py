@@ -177,7 +177,7 @@ def register_user():
         post_user(username, password, email, phone)
         # Add newly created user to the session
         session['active'] = True
-        session['user_id'] = User.query.filter(username==username).first().id
+        session['user_id'] = User.query.filter(User.username==username).first().id
         return redirect('/challenges')
 
 def allowed_file(filename):

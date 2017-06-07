@@ -1,6 +1,16 @@
 "use strict";
-// Accept button IIFE (Works both on challenge list and challenge details page)
 
+// Loading Bar Test 
+// (function(){
+//   $('.submit').on('click', function(){
+//     var bar = new ldBar('.ldbar', {
+//     "stroke": '#f00',
+//    "stroke-width": 10
+// });
+//   });
+// })();
+
+// Accept button IIFE (Works both on challenge list and challenge details page)
 (function (){
 
     function getNumPlayers(){
@@ -214,7 +224,6 @@ $.get('/challenge_attributes.json', {'challenge_id':$('.challenge-attributes').a
   $.get('/completion-stats.json', {'challenge_id':challenge_id}, makeChart);
 
 })();
-
 
 // Secret 
   var style1 = [

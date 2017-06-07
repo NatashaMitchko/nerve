@@ -35,10 +35,8 @@
             <input id="file-input{{ i.Challenge.id }}" type="file" name="file" accept="image/*" required>
             <label for="file-input{{ i.Challenge.id }}">Upload Image</label>
           </fieldset>
-          <input type="submit" value="Submit" name="submit" id="submit">
+          <input type="submit" value="Submit" name="submit" class="submit">
         </form>
-
-
         </div>
         {% endif %}
       {% endfor %}
@@ -71,4 +69,5 @@
   </div>
   {% endif %}
 </div>
+<!-- Here to avoid errors -->
 {% endblock %}
