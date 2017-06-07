@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 from model import User, UserChallenge, Challenge, ChallengeCategory, Category, UserChallengeCategory, connect_to_db, db, example_data
 from vision import get_tags_for_image, image_is_safe
 from flask.ext.bcrypt import Bcrypt
-from sqlalchemy import exc
+from sqlalchemy import exc, desc
 import arrow
 
 
@@ -70,7 +70,6 @@ def to_profile_from_id(user_id):
     user = get_user_by_id(user_id)
     if user:
         return redirect('/profile/{}'.format(user.username))
-    flash("Not a valid user.")
     return redirect('/')
 
 
@@ -248,7 +247,6 @@ def create_challenge():
         file = request.files['file']
 
         if file.filename == '':
-            flash('No file selected')
             return redirect('/challenges')
         elif file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
@@ -301,7 +299,7 @@ def is_challenge_completed():
 def leaderboard(challenge_id):
     """Given a challenge id return list of tuples ordered by highest score that
         contain username and score"""
-    query = UserChallenge.query.filter((UserChallenge.challenge_id==challenge_id)&(UserChallenge.is_completed==True)).order_by(UserChallenge.points_earned)
+    query = UserChallenge.query.filter((UserChallenge.challenge_id==challenge_id)&(UserChallenge.is_completed==True)).order_by(desc(UserChallenge.points_earned))
     winners_list = query.limit(6).all()
     print "hello ", winners_list
     return winners_list
