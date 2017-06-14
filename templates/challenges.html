@@ -83,36 +83,13 @@
   </a>
 </div>
 {% endif %}
+  <footer>
+  <p>
+    <span class="left">About &nbsp&nbsp 
+      <a href="https://github.com/NatashaMitchko/nerve">GitHub</a> &nbsp&nbsp 
+      <a href="https://www.linkedin.com/in/natashamitchko/">Linkedin</a></span>
+    <span class="right">Send Feedback &nbsp&nbsp Report a Problem</span> 
+  </p>
+</footer>
 </div>
 {% endblock %}
-
-
-<!-- 
-<div class="row">
-  <h1>Challenges</h1>
-</div>
-
-{% for challenge in challenges %}
-<div class="row">
-  <table>
-    <tr>
-      <th>
-        {{ challenge.title }}
-        {% if session['active'] == True %}
-        <a data-challenge_id="{{ challenge.id }}" class="accept-btn">Accept</a>
-        {% endif %}
-
-        <a href='/challenge/{{ challenge.id }}'>View</a>
-      </th>
-    </tr>
-    <tr>
-      <td>{{ challenge.description }}</td>
-    </tr>
-    <tr>
-      <td>Participants <span class="num-players" data-challenge_id="{{ challenge.id }}"></span></td>
-    </tr>
-  </table>
-</div>
-{% endfor %}
-
-<a href="/add_challenge.json" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">+</a> -->

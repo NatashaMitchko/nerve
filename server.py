@@ -80,14 +80,15 @@ def load_user_profile(username):
     they click another profile it will load that users profile and challenges.
     """
     user = get_user_by_username(username)
+    is_logged_in_user = (user.id == session['user_id'])
     if user:
         info = get_profile_page_info(user.id)
         return render_template('profile.html', 
                                 username=username, 
-                                info=info)
+                                info=info, 
+                                is_logged_in_user=is_logged_in_user)
     else:
-        flash("Not a valid user.")
-        return redirect('/')
+        return redirect('/challenges')
 
 @app.route('/time.json')
 def humanize_timestamp():
@@ -272,7 +273,7 @@ def show_all_challenges():
         username = user.username
     else:
         username = ''
-    challenges = Challenge.query.order_by(Challenge.difficulty).all()
+    challenges = Challenge.query.order_by(desc(Challenge.difficulty)).all()
     return render_template('challenges.html', challenges=challenges, username=username)
 
 @app.route('/is_completed.json')
@@ -499,6 +500,11 @@ def challenge_analytics():
 def contact_me():
     """My profile page that shows how to get in contact with me"""
     return render_template('contact_me.html')
+
+@app.route('/about')
+def about():
+    """Render the about this project page"""
+    return render_template('about.html')
 
 
 if __name__ == "__main__":

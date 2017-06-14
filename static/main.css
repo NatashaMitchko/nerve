@@ -27,6 +27,19 @@ html, body {
   font-size: 1.2em;
 }
 
+.left {
+  float: left;
+}
+
+footer {
+  font-size: .8em;
+  margin-top: 1em;
+}
+
+.right {
+  float: right;
+}
+
 /*COLORED BACKGROUND PAGE STYLING*/
 .color-page {
     background: linear-gradient(to top right, #67dbe4, #c7ffe2);

@@ -29,7 +29,7 @@
           <p class="challenge-title"><a href="/challenge/{{ i.Challenge.id }}">{{ i.Challenge.title }}</a></p>
           <p class="stats">Active participants: <span class="num-players" data-challenge_id="{{ i.UserChallenge.id }}"></span></p>
           <p class="description">{{ i.Challenge.description }}</p>
-
+          {% if is_logged_in_user %}
           <form action="/complete/{{ i.Challenge.id }}" name="create" id="create" enctype="multipart/form-data" method="POST">
           <fieldset class="file-container text-center">
             <input id="file-input{{ i.Challenge.id }}" type="file" name="file" accept="image/*" required>
@@ -37,6 +37,7 @@
           </fieldset>
           <input type="submit" value="Submit" name="submit" class="submit">
         </form>
+        {% endif %}
         </div>
         {% endif %}
       {% endfor %}
@@ -61,6 +62,7 @@
       {% endfor %}
     </div>
   </div>
+
   {% if session.get('active') %}
   <div id="bottom-button" class="col-xs-1 col-xs-offset-11 text-center">
   <a id="create-new-btn" href="/challenges">
@@ -68,6 +70,13 @@
   </a>
   </div>
   {% endif %}
+  <footer>
+  <p>
+    <span class="left">About &nbsp&nbsp 
+      <a href="https://github.com/NatashaMitchko/nerve">GitHub</a> &nbsp&nbsp 
+      <a href="https://www.linkedin.com/in/natashamitchko/">Linkedin</a></span>
+    <span class="right">Send Feedback &nbsp&nbsp Report a Problem</span> 
+  </p>
+</footer>
 </div>
-<!-- Here to avoid errors -->
 {% endblock %}

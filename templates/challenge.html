@@ -20,8 +20,6 @@
       <h1 class="title text-center">Analytics</h1>
     </div>
   </div>
-
-
   <div class="col-xs-10 col-xs-offset-1 main top" id="d3">
     <div class="row">
       <div class="col-xs-10 col-xs-offset-1 col-md-6 col-md-offset-0 section">
@@ -61,7 +59,7 @@
             {% endfor %}
           </tbody>
         </table>
-        <p class="text-left">Total Participants: <span class="num-players" data-challenge_id="{{ challenge[0][0].id }}"></span></p>
+        <p class="text-left">Number of users who have yet to complete this challenge: <span class="num-players" data-challenge_id="{{ challenge[0][0].id }}"></span></p>
       </div>
     </div>
     <div class="row">
@@ -80,9 +78,15 @@
     </a>
   </div>
   {% endif %}
+  <footer>
+  <p>
+    <span class="left">About &nbsp&nbsp 
+      <a href="https://github.com/NatashaMitchko/nerve">GitHub</a> &nbsp&nbsp 
+      <a href="https://www.linkedin.com/in/natashamitchko/">Linkedin</a></span>
+    <span class="right">Send Feedback &nbsp&nbsp Report a Problem</span> 
+  </p>
+</footer>
 </div>
-
-
 </div>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
@@ -185,24 +189,3 @@
 </script>
 
 {% endblock %}
-<!-- ####################################################################### -->
-<!-- {% if session.get('active') %}
-<a href="/logout">Log Out</a>
-<a href="/profile/id/{{ session.get('user_id')}}">Profile</a>
-{% else %}
-<a href="/login">Log In</a>
-{% endif %}
-<h1>{{ challenge[0][0].title }}</h1>
-  {% if session.get('active') %}
-    <a data-challenge_id="{{ challenge[0][0].id }}" data-user_challenge_id="" class="accept-btn">Accept</a>
-  {% endif %}
-<a href='/challenges'>Find a Challenge</a>
-<a href='/create'>Create a Challenge</a>
-<ul>
-{% for tuple in challenge %}
-    <li>{{ tuple[1].category.tag }} </li>
-{% endfor %}
-</ul>
-<p>{{ challenge[0][0].description }}</p>
-<div style="width:50%"><img src="/{{ challenge[0][0].image_path }}"></div>
- -->
