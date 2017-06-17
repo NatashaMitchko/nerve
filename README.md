@@ -6,24 +6,31 @@ I built this app as my final project during my time as a software engineering fe
 ## Table of Contents
 
 [Orginization](##Organization)
-- [Model](###Model)
-- [Server](###Server)
-- [Views](###Views)
+    - [Model](###Model)
+    - [Server](###Server)
+    - [Views](###Views)
 [Built With](##Built-With)
 [Use My Code](##Use-My-Code)
-- [Google Cloud Vision API](###Google-Cloud-Vision-API)
-- [Floating Placeholder Form Styling](###Floating-Placeholder-Form-Styling)
+    - [Google Cloud Vision API](###Google-Cloud-Vision-API)
+    - [Floating Placeholder Form Styling](###Floating-Placeholder-Form-Styling)
 [Author](##Author)
 
 ## Organization
+
+
 
 ### Model
 ### Server
 ### Views
 
 ## Built With
+
 ## Use My Code
 
 ### Google Cloud Vision API
 ### Floating Placeholder Form Styling
 ## Author
+
+#### Hi, I'm Natasha
+
+I graduated with a degree in chemistry from NYU and am a New York native. After graduating I worked at Google for two years as a technical specialist for Google's emerging local ad products. After realizing I was passionate about the technical side of that role I decided to up-skill my computer science knowledge and pursue a career in software engineering. I recently completed a fellowship program at Hackbright Academy in San Francisco where I learning the hard skills to become a backend/ full-stack developer. In my free time, I enjoy 3D modeling in Maya and Unity as well as reading about current trends in chemistry and physics.
