@@ -113,15 +113,58 @@ This table contains two fields, an autoincrementing primary key and the category
 This table is an association table that maps a user challenge to a set of categories. This table only get's updated when a user challenge is completed. Upon completion the categories that matched that caused the user to win get mapped to the user challenge record.
 
 ### Server
+
+The server is built using [Flask](http://flask.pocoo.org/) as a framework. There are three types of functions in [server.py](server.py): app routes that render html templates, app routes that return jsonified data to the Javascript and helper functions. App route code blocks start with ```@app.route('/some-place')```.
+
 ### Views
+
+There are seven HTML templats that extend from a base template. Templating is implemented using Jinja2. The Jinja in the templates handles content and what functionality is available to the user based on information in the session.
 
 ## Built With
 
-## Use My Code
+* [PostgreSQL]()
+* [Flask](http://flask.pocoo.org/)
+* [Jinja2](http://jinja.pocoo.org/docs/2.9/)
+* [JQuery](https://jquery.com/)
+* [D3](https://d3js.org/)
+* [chart.js](www.chartjs.org/)
+* [Google Cloud Vision API](https://cloud.google.com/vision/)
 
-### Google Cloud Vision API
-### Floating Placeholder Form Styling
+## Use My Code
+I built this project with lots of help from the internet, so if you'd like please use what I've done! Below are what I think are the three most reusable components from this code and how to use them in your own projects.
+
 ### Console Messages
+If you open the console while using my application you will see this message:
+
+Inspired by [Pintrest's](https://www.pinterest.com/) console.log message I decided to create one of my own. At the time of writing this I'm job searching so I decided to add a little extra information about myself that can be accessed by following the instructions in the message.
+
+```javascript
+ var style1 = [
+    'color: #74e3ec',
+    'line-height: 1.8;',
+    'font-weight: bold;',
+    'display: block'].join(';');
+  var style2 = [
+    'color: #07292c',
+    'line-height: 1.8;',
+    'font-weight: bold;',
+    'display: block'].join(';');
+
+  console.log('%c Hiring? %cGet in touch %c--> %ccontactMe() ', style1, style2, style1, style2);
+
+  function contactMe(){
+    window.open('/contact-me', '_blank'); 
+    console.log('%c Talk to you soon!', style1);
+  };
+```
+Variables style1 and style2 are CSS-like in that they define the look of the message displayed in the console. 
+
+After the styles are defined there is a simple console.log statement. This is executed when the javascript on your webpage is executed. The styles are applied in this line. The ```%c``` that comes before the text ```Hiring?``` get's styled with style1, the text after the second ```%c``` get's styled with style2. The order of which style is applied where is defined in a comma-separated list after the string.
+
+In the printed text itself I alert the user to a function: ```contactMe()```. This function opens a new tab and prints another message to the console. You need to specify the route you'd like to open and where to open it in your ```window.open```. You can see that I'm opening the route ```/contact-me``` and that I'm opening that route in a new tab (```'_blank'```). Now if the user closes that tab and returns to the app they will see in the console another message saying "Talk to you soon!". This is a cute easter egg that doesn't require a lot work to get set up.
+
+### Floating Placeholder Form Styling
+### Google Cloud Vision API
 
 ## Things I'd Do Differently
 This is the first web application that I've ever built and in the process I learned a ton. Although I love this app and am very proud of it, I'm probably not going to make any more dramatic changes to it. There are, however, a lot of things that I'd do differently if I had to start over knowing what I know now. Here's a loosely organized list of features I wish I had implemented, things I'd change about the structure of my code and miscelaneous thoughts:
