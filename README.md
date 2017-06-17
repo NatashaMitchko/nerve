@@ -15,6 +15,7 @@ I built this app as my final project during my time as a software engineering fe
 [Use My Code](##Use-My-Code)
 * [Google Cloud Vision API](###Google-Cloud-Vision-API)
 * [Floating Placeholder Form Styling](###Floating-Placeholder-Form-Styling)
+* [Console Messages](###Console-Messages)
 
 [Things I'd Do Differently](##Things-I'd-Do-Differently)
 
@@ -22,9 +23,11 @@ I built this app as my final project during my time as a software engineering fe
 
 ## Organization
 
-The data model resides in [model.py](model.py), the server is in [server.py](server.py) which imports functionality from [vision.py](vision.py). The HTML templates are all in the [templates](/templates) directory.
+There are three major components to this repository: the The data model resides in [model.py](model.py), the server is in [server.py](server.py) which imports functionality from [vision.py](vision.py). The HTML templates are all in the [templates](/templates) directory.
 
 ### Model
+The data model implementation uses the [SQLAlchemy ORM](http://docs.sqlalchemy.org/en/latest/orm/). 
+
 There are six tables in the data model, of which only 5 are utilized in the current version of the app. They are:
 
 1. [User](####Users)
@@ -103,13 +106,11 @@ Similarly to the User Challenges table, this table is an association table that 
 #### Categories
 For every challenge created there is an associated standard image that shows a sucessful challenge. The main functionality of this game is the comparison of the categories of the standard image to that of the user uploaded image. These categories are retrieved from a [Google Cloud Vision API](###Google-Cloud-Vision-API) call. These calls take up to three seconds to complete so it's not feasible to make a call for the standard image *and* the user uploaded image each time a challenge is attempted. The Categories table essentially serves as a cache by storing all the results returned by the API call for a particular challenge.
 
-This table contains two fields, an autoincrementing primary key and the category.
+This table contains two fields, an autoincrementing primary key and the category itself.
 
 #### User Challenge Categories
 
 This table is an association table that maps a user challenge to a set of categories. This table only get's updated when a user challenge is completed. Upon completion the categories that matched that caused the user to win get mapped to the user challenge record.
-
-The data model is implemented using the [SQLAlchemy ORM](http://docs.sqlalchemy.org/en/latest/orm/). 
 
 ### Server
 ### Views
@@ -120,6 +121,8 @@ The data model is implemented using the [SQLAlchemy ORM](http://docs.sqlalchemy.
 
 ### Google Cloud Vision API
 ### Floating Placeholder Form Styling
+### Console Messages
+
 ## Things I'd Do Differently
 This is the first web application that I've ever built and in the process I learned a ton. Although I love this app and am very proud of it, I'm probably not going to make any more dramatic changes to it. There are, however, a lot of things that I'd do differently if I had to start over knowing what I know now. Here's a loosely organized list of features I wish I had implemented, things I'd change about the structure of my code and miscelaneous thoughts:
 
@@ -132,8 +135,9 @@ This is the first web application that I've ever built and in the process I lear
     * This app is about taking photos - nowhere here do I attempt to interface with a phone's camera
 * Host the images somewhere
     * I'm currently just saving the images to the images folder in the static directory of this project - bad!
-* Loading bar - MOAR USER FEEDBACK
+* Loading bar - MOAR FEEDBACK FOR THE USER
     * The API calls in this app take forever, a loading bar would make this user experience a little better
+* Send feedback & Report a problem
 
 ## Author
 
