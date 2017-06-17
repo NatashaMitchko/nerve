@@ -1,5 +1,6 @@
 """Database model for nerve
-V2: five tables: User, UserChallenge and Challenge, ChallengeCategory, Category
+V3: six tables: User, UserChallenge and Challenge, ChallengeCategory, Category,
+UserChallengeCategory
 
 User will store id, username, password, email and phone (for verification)
 
@@ -14,6 +15,9 @@ ChallengeCategory stores id, category_id and challenge_id
 Related to Challenge and Category by .challenge and .category
 
 Category stores categories that were recieved via api at challenge creation
+
+UserChallengeCategory stores information about the categories a user returned
+upon sucessful attempt of a challenge.
 
 Class names are singular - table names are plural
 """
