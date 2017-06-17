@@ -1,2 +1,0 @@
-# SCAVENGERHUNT
-Scavenger Hunt is a game where users can accept challenges and complete them for points by uploading a photo of them completing the challenge. Scavenger Hunt uses computer vision to determine if the uploaded image constitutes a successful attempt and, if so, calculates the score based on how close the image is to the goal.
