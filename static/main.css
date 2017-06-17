@@ -484,6 +484,11 @@ input[type=submit]:focus {
 }
 
 /*END ANALYTICS AND D3 STYLING*/
+/*BEGIN  NEW STYLING*/
+.konami {
+  background: linear-gradient(#fc7279 30%, #ff7b9c 60%, #ffc019 125%);
+}
+/*END NEW STYLING*/
 .logged-in {
     fill:linear-gradient(#fc7279 30%, #ff7b9c 60%, #ffc019 125%);
     stroke-width:0px;

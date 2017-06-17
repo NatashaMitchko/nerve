@@ -195,6 +195,30 @@ $.get('/challenge_attributes.json', {'challenge_id':$('.challenge-attributes').a
 
 })();
 
+// Cool stuff down here
+$(document).on('keydown', function(e){
+    console.log(e.keyCode);
+  });
+
+
+  var style1 = [
+    'color: #74e3ec',
+    'line-height: 1.8;',
+    'font-weight: bold;',
+    'display: block'].join(';');
+  var style2 = [
+    'color: #07292c',
+    'line-height: 1.8;',
+    'font-weight: bold;',
+    'display: block'].join(';');
+
+  console.log('%c Hiring? %cGet in touch %c--> %ccontactMe() ', style1, style2, style1, style2);
+
+  function contactMe(){
+    window.open('/contact-me', '_blank'); 
+    console.log('%c Talk to you soon!', style1);
+  };
+
 // Participants/ completed for doughnut graph
 (function(){
   function makeChart(result){
@@ -225,21 +249,3 @@ $.get('/challenge_attributes.json', {'challenge_id':$('.challenge-attributes').a
 
 })();
 
-// Secret 
-  var style1 = [
-    'color: #74e3ec',
-    'line-height: 1.8;',
-    'font-weight: bold;',
-    'display: block'].join(';');
-  var style2 = [
-    'color: #07292c',
-    'line-height: 1.8;',
-    'font-weight: bold;',
-    'display: block'].join(';');
-
-  console.log('%c Hiring? %cGet in touch %c--> %ccontactMe() ', style1, style2, style1, style2);
-
-  function contactMe(){
-    window.open('/contact-me', '_blank'); 
-    console.log('%c Talk to you soon!', style1);
-  };
