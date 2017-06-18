@@ -1,3 +1,5 @@
+![alt text](https://github.com/NatashaMitchko/nerve/blob/master/readme_images/title.gif "Scavenger Hunt Logo Title")
+
 # SCAVENGERHUNT
 Scavenger Hunt is a game where users can accept challenges and complete them for points by uploading a photo of themselves completing the challenge. Scavenger Hunt uses computer vision to determine if the uploaded image constitutes a successful attempt and, if so, calculates the score based on how close the image is to the goal.
 
@@ -136,6 +138,8 @@ I built this project with lots of help from the internet, so if you'd like pleas
 ### Console Messages
 If you open the console while using my application you will see this message:
 
+![alt text](https://github.com/NatashaMitchko/nerve/blob/master/readme_images/console.gif "Console message")
+
 Inspired by [Pinterest's](https://www.pinterest.com/) console.log message I decided to create one of my own. At the time of writing this I'm job searching so I decided to add a little extra information about myself that can be accessed by following the instructions in the message.
 
 ```javascript
@@ -164,6 +168,9 @@ After the styles are defined there is a simple console.log statement. This is ex
 In the printed text itself I alert the user to a function: ```contactMe()```. This function opens a new tab and prints another message to the console. You need to specify the route you'd like to open and where to open it in your ```window.open```. You can see that I'm opening the route ```/contact-me``` and that I'm opening that route in a new tab (```'_blank'```). Now if the user closes that tab and returns to the app they will see in the console another message saying "Talk to you soon!". This is a cute easter egg that doesn't require a lot work to get set up.
 
 ### Floating Placeholder Form Styling
+
+![alt text](https://github.com/NatashaMitchko/nerve/blob/master/readme_images/register.gif "Console message")
+
 
 I got this form styling from [this codepen](https://codepen.io/anon/pen/zwbKGq) and adapted it to what I needed. This is HTML/CSS only - no javascript required. From the gif below you can see that there are four states that a field can be in:
 
