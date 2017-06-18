@@ -136,7 +136,7 @@ I built this project with lots of help from the internet, so if you'd like pleas
 ### Console Messages
 If you open the console while using my application you will see this message:
 
-Inspired by [Pintrest's](https://www.pinterest.com/) console.log message I decided to create one of my own. At the time of writing this I'm job searching so I decided to add a little extra information about myself that can be accessed by following the instructions in the message.
+Inspired by [Pinterest's](https://www.pinterest.com/) console.log message I decided to create one of my own. At the time of writing this I'm job searching so I decided to add a little extra information about myself that can be accessed by following the instructions in the message.
 
 ```javascript
  var style1 = [
@@ -164,6 +164,26 @@ After the styles are defined there is a simple console.log statement. This is ex
 In the printed text itself I alert the user to a function: ```contactMe()```. This function opens a new tab and prints another message to the console. You need to specify the route you'd like to open and where to open it in your ```window.open```. You can see that I'm opening the route ```/contact-me``` and that I'm opening that route in a new tab (```'_blank'```). Now if the user closes that tab and returns to the app they will see in the console another message saying "Talk to you soon!". This is a cute easter egg that doesn't require a lot work to get set up.
 
 ### Floating Placeholder Form Styling
+
+I got this form styling from [this codepen](https://codepen.io/anon/pen/zwbKGq) and adapted it to what I needed. This is HTML/CSS only - no javascript required. From the gif below you can see that there are four states that a field can be in:
+
+Input | Label
+--- | ---
+ Not in focus, no text entered | Full size, grey 
+ Not in focus, text entered| Hovering, grey 
+ In focus, no text entered | Full size, highlight color
+ In focus, text entered | Hovering, highlight color
+
+ In order to make this happen I needed to write CSS selectors that could handle each of those states. Each label and input pair is wrapped in a fieldset tag that has the class "floating-placeholder". The two main selectors are:
+
+```.floating-placeholder input:valid~label```
+and 
+```.floating-placeholder input:focus+label```
+
+The first handles the styling of the label when there is input in the input field. The second styles the label when the input is in focus. The plus sign is the [adjacent sibling selector](https://developer.mozilla.org/en-US/docs/Web/CSS/Adjacent_sibling_selectors) in CSS - this means that in the HTML the label element needs to come directly after the input element.
+
+You can see another version of this [here](https://codepen.io/NatashaMitchko/pen/BZNPgq/) that I wrote to include radio button and file upload styling.
+
 ### Google Cloud Vision API
 
 ## Things I'd Do Differently
@@ -177,7 +197,7 @@ This is the first web application that I've ever built and in the process I lear
 * Make it mobile-friendlier
     * This app is about taking photos - nowhere here do I attempt to interface with a phone's camera
 * Host the images somewhere
-    * I'm currently just saving the images to the images folder in the static directory of this project - bad!
+    * I'm currently just saving the images to the images folder in the static directory of this project - not good!
 * Loading bar - MOAR FEEDBACK FOR THE USER
     * The API calls in this app take forever, a loading bar would make this user experience a little better
 * Send feedback & Report a problem

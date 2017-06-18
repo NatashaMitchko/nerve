@@ -356,7 +356,8 @@ form{
   background:white;
 }
 
-.color-page input, .floating-placeholder{
+.color-page input, 
+.floating-placeholder{
   font-family:'Roboto', sans-serif;
   font-size:20pt;
   line-height:2.6em;
