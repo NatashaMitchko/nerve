@@ -15,9 +15,8 @@ I built this app as my final project during my time as a software engineering fe
 [Built With](##Built-With)
 
 [Use My Code](##Use-My-Code)
-* [Google Cloud Vision API](###Google-Cloud-Vision-API)
-* [Floating Placeholder Form Styling](###Floating-Placeholder-Form-Styling)
 * [Console Messages](###Console-Messages)
+* [Floating Placeholder Form Styling](###Floating-Placeholder-Form-Styling)
 
 [Things I'd Do Differently](##Things-I'd-Do-Differently)
 
@@ -106,7 +105,7 @@ Referenced by:
 Similarly to the User Challenges table, this table is an association table that simply maps categories to a particular challenge. This table only contains three fields: the autoincrementing primary key and the foreign keys to the Challenge and Category. There is also a composite index with a unique constraint to prevent the same category from being mapped to the same challenge twice.
 
 #### Categories
-For every challenge created there is an associated standard image that shows a sucessful challenge. The main functionality of this game is the comparison of the categories of the standard image to that of the user uploaded image. These categories are retrieved from a [Google Cloud Vision API](###Google-Cloud-Vision-API) call. These calls take up to three seconds to complete so it's not feasible to make a call for the standard image *and* the user uploaded image each time a challenge is attempted. The Categories table essentially serves as a cache by storing all the results returned by the API call for a particular challenge.
+For every challenge created there is an associated standard image that shows a sucessful challenge. The main functionality of this game is the comparison of the categories of the standard image to that of the user uploaded image. These categories are retrieved from a Google Cloud Vision API call. These calls take up to three seconds to complete so it's not feasible to make a call for the standard image *and* the user uploaded image each time a challenge is attempted. The Categories table essentially serves as a cache by storing all the results returned by the API call for a particular challenge.
 
 This table contains two fields, an autoincrementing primary key and the category itself.
 
@@ -171,7 +170,6 @@ In the printed text itself I alert the user to a function: ```contactMe()```. Th
 
 ![alt text](https://github.com/NatashaMitchko/nerve/blob/master/readme_images/register.gif "Console message")
 
-
 I got this form styling from [this codepen](https://codepen.io/anon/pen/zwbKGq) and adapted it to what I needed. This is HTML/CSS only - no javascript required. From the gif below you can see that there are four states that a field can be in:
 
 Input | Label
@@ -190,8 +188,6 @@ and
 The first handles the styling of the label when there is input in the input field. The second styles the label when the input is in focus. The plus sign is the [adjacent sibling selector](https://developer.mozilla.org/en-US/docs/Web/CSS/Adjacent_sibling_selectors) in CSS - this means that in the HTML the label element needs to come directly after the input element.
 
 You can see another version of this [here](https://codepen.io/NatashaMitchko/pen/BZNPgq/) that I wrote to include radio button and file upload styling.
-
-### Google Cloud Vision API
 
 ## Things I'd Do Differently
 This is the first web application that I've ever built and in the process I learned a ton. Although I love this app and am very proud of it, I'm probably not going to make any more dramatic changes to it. There are, however, a lot of things that I'd do differently if I had to start over knowing what I know now. Here's a loosely organized list of features I wish I had implemented, things I'd change about the structure of my code and miscelaneous thoughts:
