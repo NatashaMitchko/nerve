@@ -5,7 +5,7 @@ Scavenger Hunt is a game where users can accept challenges and complete them for
 
 I built this app as my final project during my time as a software engineering fellow at [Hackbright academy](https://hackbrightacademy.com/). The program is a 12-week full-time engineering bootcamp that focuses on web-development in python. The main components are a PostgreSQL database, a server built using Flask as a framework, and the views that utilize Jinja templating.
 
-## Check it out: [www.scavengerhunt-app.com](http://www.scavengerhunt-app.com) or at [http://54.202.149.231](http://54.202.149.231)
+### Check it out: [www.scavengerhunt-app.com](http://www.scavengerhunt-app.com) or at [http://54.202.149.231](http://54.202.149.231)
 
 ## Table of Contents
 
