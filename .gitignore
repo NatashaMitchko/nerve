@@ -5,4 +5,5 @@ rescources.txt
 static/images/*
 htmlcov/*
 .coverage
+
 sendgrid.env

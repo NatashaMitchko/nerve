@@ -496,6 +496,17 @@ def challenge_analytics():
 
     return jsonify(d3_dict)
 
+@app.route('/send-feedback')
+def send_feedback():
+    name = request.form.get('name')
+    email = request.form.get('email')
+    type = request.form.get('type')
+    user_feedback = request.form.get('user_feedback')
+
+    generate_feedback_request(name, email, type, user_feedback)
+    
+    return ""
+
 @app.route('/contact-me')
 def contact_me():
     """My profile page that shows how to get in contact with me"""
@@ -509,16 +520,16 @@ def about():
 
 if __name__ == "__main__":
 
-    app.debug = True
-    app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+    # app.debug = False
+    # app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
     connect_to_db(app, 'postgres:///nerve')
-    db.create_all()
+    # db.create_all()
 
     # make sure templates, etc. are not cached in debug mode
-    app.jinja_env.auto_reload = app.debug
+    # app.jinja_env.auto_reload = app.debug
 
 
     # Use the DebugToolbar
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
-    app.run(port=5000, host='0.0.0.0')
+    app.run(port=5000, host='127.0.0.1')    
